@@ -7,10 +7,10 @@ echo -e "Build programm...\n"
 cd src
 SUB_DIR=`../get_directory`
 cd ..
-
+ 
 if [[ $Configure == Release ]]
 then
-    make build configure=$Configure SUB_DIR=$SUB_DIR
+    make build configure=$Configure SUB_DIR="$SUB_DIR"
 
     echo -e "\nRun Program...\n"
 
@@ -29,7 +29,7 @@ then
         echo -e "\n\033[31m-------------------------------------------------------------------------------\033[37m\n"
     fi
 else
-    make build configure=$Configure SUB_DIR=$SUB_DIR compile_flags=-g
+    make build configure=$Configure SUB_DIR="$SUB_DIR" compile_flags=-g
 
     echo -e "\nRun Debug Program...\n"
 

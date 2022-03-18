@@ -2,6 +2,10 @@
 
 namespace wd {
     
+    inline bool charIs(char c, std::string&& str) {
+        return std::count(str.begin(), str.end(), c) != 0;
+    }
+
     std::list<LexicalAnalyzer::Token> LexicalAnalyzer::analyz(std::string text) {
         this->text = text;
         this->position = 0;
@@ -9,7 +13,7 @@ namespace wd {
 
         std::list<LexicalAnalyzer::Token> tokens;
         while (position < size) {
-            LexicalAnalyzer::Token token = keyWords();
+            LexicalAnalyzer::Token token = separators();
             
             if (token.first.empty())
                 break;
@@ -41,7 +45,16 @@ namespace wd {
 
     //--------------------------------------------------------------------------//
 
+    LexicalAnalyzer::Token LexicalAnalyzer::separators() {
+        while (charIs(getChar(0), std::move(c.separators)))
+            next();
+        
+        return keyWords();
+    }
+
     LexicalAnalyzer::Token LexicalAnalyzer::keyWords() {
+        unsigned long long position = this->position;
+
         std::string word = "";
         while (isalnum(getChar(0)))
             word += consume();
@@ -50,9 +63,20 @@ namespace wd {
             if (word == keyWord.second)
                 return keyWord;
             
-        return {"", ""};
+        setPosition(position);
+        return numbers();
     }
 
+    LexicalAnalyzer::Token LexicalAnalyzer::numbers() { 
+        std::string number = ""; 
+        while (isdigit(getChar(0)) || getChar(0) == '.')
+            number += consume();
+
+        if (!number.empty())
+            return LexicalAnalyzer::Token("number", number);
+
+        return { "",  "" };
+    }
 
     //--------------------------------------------------------------------------//
     
@@ -72,4 +96,10 @@ namespace wd {
         next();
         return getChar(-1);
     }
+
+    void LexicalAnalyzer::setPosition(unsigned long long position) {
+        if (position > 0 && position < size)
+            this->position = position;
+        else this->position = size;
+    } 
 }

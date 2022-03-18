@@ -1,4 +1,4 @@
-#include "utils.h"
+#include "Log/Log.h"
 
 namespace wd {
     
@@ -6,6 +6,7 @@ namespace wd {
     public:
         typedef std::pair<std::string, std::string> Token;
         struct Config {
+            std::string separators = " \n\t";
             std::vector<std::pair<std::string, std::string>> keyWords = {};
         } c;
     private:
@@ -19,11 +20,15 @@ namespace wd {
 
         void config(void (*config)(Config& self));
     private:
+        Token separators();
         Token keyWords();
+        Token numbers();
     private:
         char getChar(unsigned long long relativePosition);
         char next();
         char consume();
+
+        void setPosition(unsigned long long position);
     };
 
 }
