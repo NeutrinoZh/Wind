@@ -17,8 +17,11 @@ int main(int countArg, char* args[]) {
         std::cout << "Token ( type: " << token.first << "; value: " << token.second << "; )\n";
 
     wd::Log::warning() << "Warning";
-    wd::Log::error() << "Error";
-    wd::Log::info() << "Info";
+
+    system("read -N 1 -p 'Press any key to continue...'");
+
+    wd::Log::error() << false;
+    wd::Log::info() << true;
 
     system("read -N 1 -p 'Press any key to continue...'");
 

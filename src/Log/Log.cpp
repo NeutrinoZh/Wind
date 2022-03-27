@@ -88,8 +88,11 @@ namespace wd {
 
     void Log::clear() {
         try {
-            for (auto f : std::filesystem::directory_iterator(folder))
-                remove(f.path().string().c_str()); 
+            for (auto f : std::filesystem::directory_iterator(folder)) {
+                std::string path = f.path().string();
+                if (path.substr(path.size() - 4, path.size()) == ".log")
+                    remove(path.c_str()); 
+            }
         } catch (std::filesystem::filesystem_error& ex) {
             std::cout << "This directory cannot be cleared: " << ex.what() << "\n";
         } catch (...) {
@@ -106,13 +109,13 @@ namespace wd {
         hstd = GetStdHandle(STD_OUTPUT_HANDLE);
 
         addColor("INFO", 7);
-        addColor("DEBUG", 8);
-        addColor("WARRING", 14);
-        addColor("ERROR", 4);
+        addColor("DEBUG", 2);
+        addColor("WARNING", 3);
+        addColor("ERROR", 1);
 
         path = folder + getDate();
         
-        file.open(path + ".txt");
+        file.open(path + ".log");
         if (file.is_open()) {
             atexit(close);
         } else if (outFile) {
@@ -142,7 +145,9 @@ namespace wd {
 
         if (Log::outConsole) {
             SetConsoleTextAttribute(hstd, (WORD) color);
-            printf(ss.str().c_str());
+
+            std::string txtColor =  "\033[1;3" + std::to_string(color) + "m";
+            printf((txtColor + ss.str()).c_str());
         }
         
         if (outFile) {

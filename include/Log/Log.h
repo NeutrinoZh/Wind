@@ -120,12 +120,15 @@ namespace wd {
                 return *this;
             }
             
-            /*template <>
+            #ifdef CLANG
+                template<>
+            #endif
+    
             Message operator<<(bool b) {
                 message << (b ? "true" : "false");
                 last = false;
                 return *this;
-            }*/
+            }
         };
     public:
         static Message write(std::string tag, unsigned int code = (unsigned int)(-1)) {
