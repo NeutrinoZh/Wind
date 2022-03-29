@@ -6,6 +6,8 @@ int main(int countArg, char* args[]) {
     Log::config([](auto& self) {
         self.outConsole = true;
         self.folderToSave = "./logs/";
+        self.numSpace = 2;
+        self.filters = { "INFO" };
     });
 
     Log::warning() << "Warning";

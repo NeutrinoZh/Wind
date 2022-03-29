@@ -6,7 +6,8 @@ private:
     struct Config {
         bool outConsole = false;
         std::string folderToSave = "";
-        
+        int numSpace = 1;
+
         std::map<std::string, UINT8> colors = {
             { "INFO", 7 },
             { "DEBUG", 4 },

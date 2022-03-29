@@ -116,17 +116,19 @@ Log::Message::~Message() {
     if (!last) return;
 
     bool begin = (tag == "BEGIN");
+
     Log::numSection -= (tag == "END");
+    Log::numSection = Log::numSection < 0 ? 0 : Log::numSection;
 
     if (tag == "BEGIN" || tag == "END") {
         tag = "SECTION";
     }
 
-    if (!c.filters.empty() && std::find(c.filters.begin(), c.filters.end(), tag) == c.filters.end())
+    if (!c.filters.empty() && std::find(c.filters.begin(), c.filters.end(), tag) == c.filters.end() && tag != "SECTION")
         return;
 
     std::stringstream ss;
-    ss << std::string(Log::numSection, ' ') << "[" << clock() << "] " << "{" << tag << "} " << message.str() << "\n";
+    ss << std::string(Log::numSection * Log::c.numSpace, ' ') << "[" << clock() << "] " << "{" << tag << "} " << message.str() << "\n";
 
     if (Log::c.outConsole) {
         std::string txtColor =  "\033[1;3" + std::to_string(color) + "m";
