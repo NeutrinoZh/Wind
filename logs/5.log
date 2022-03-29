@@ -1,0 +1,12 @@
+[46] {INFO} Logger started
+[46] {WARNING} Warning
+[46] {ERROR} false
+[46] {INFO} true
+[46] {SECTION} Start section
+[46] {INFO} Hello
+[46] {SECTION} And more section
+[46] {DEBUG} Haha
+[46] {SECTION} End hello section
+[46] {INFO} ...
+[46] {SECTION} End section
+[46] {INFO} End program

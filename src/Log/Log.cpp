@@ -1,165 +1,142 @@
 #include "Log/Log.h"
 
-namespace wd {
-    
-    tm Log::tInfo;
-    bool Log::outConsole = true;
-    bool Log::outFile = true;
-    std::string Log::folder = "log\\";
-    std::string Log::path;
-    std::ofstream Log::file;
-    std::map<std::string, UINT8> Log::colors;
-    HANDLE Log::hstd;
-    std::vector<std::string> Log::filters;
+Log::Config Log::c;
+std::ofstream Log::file;
+tm Log::timeInfo;
+int Log::numSection = 0;
 
-    std::string Log::getDate() {
-        return  std::to_string(tInfo.tm_mday) + "." +
-                std::to_string(tInfo.tm_mon + 1) + "." +
-                std::to_string(tInfo.tm_year + 1900) + " (" +
-                std::to_string(tInfo.tm_hour) + "." +
-                std::to_string(tInfo.tm_min) + "." +
-                std::to_string(tInfo.tm_sec) + ")";
-    }
+//============================================================//
 
-     void Log::close() {
-        SetConsoleTextAttribute(hstd, 15);
-        file.close();
-    }
+std::string Log::convertDateToString(tm timeInfo) {
+    return std::to_string(timeInfo.tm_mday) + "." +
+           std::to_string(timeInfo.tm_mon + 1) + "." +
+           std::to_string(timeInfo.tm_year + 1900) + " (" +
+           std::to_string(timeInfo.tm_hour) + "." +
+           std::to_string(timeInfo.tm_min) + "." +
+           std::to_string(timeInfo.tm_sec) + ")";
+}
 
-    void Log::setFilters(std::vector<std::string> _filters) {
-        filters = _filters;
+void Log::closeFile() {
+    file.close();
+}
 
-        file.close();
-        system("clear"); 
-    
-        load(path + ".txt");
+//============================================================//
 
-        if (outFile) {
-            file.open(path + "-filter.txt");
-            if (!file.is_open()) {
-                outFile = false;
-                std::cout << "Failed to open file to write logs:" << path << "\n";
-            }
+void Log::config(void (*config)(Config& self)) {
+    config(Log::c);
+
+    time_t t = time(NULL);
+    Log::timeInfo = *localtime(&t);
+
+    int min = INT16_MAX, max = 0;
+    int numFiles = 0;
+    for (auto f : std::filesystem::directory_iterator(Log::c.folderToSave)) {
+        std::string path = f.path().string();
+        if (path.substr(path.size() - 4, path.size()) == ".log") {
+            int i = atoi(f.path().filename().string().substr(0, path.size() - 4).c_str());
+
+            if (i < min) min = i;
+            if (i > max) max = i;
+
+            numFiles++;
         }
     }
 
-    void Log::addColor(std::string tag, UINT8 color) {
-        colors.insert(std::make_pair(tag, color));
+    if (numFiles >= 10) {
+        remove((
+            Log::c.folderToSave +
+            std::to_string(min) + ".log"
+        ).c_str());
     }
 
-    void Log::load(std::string path) {
-        std::ifstream read(path);
-        if (read.is_open()) {
-            std::string line = "";
-            while (std::getline(read, line)) {
-                line += "\n";
-                
-                std::string tag = "";
-                try {
-                    size_t begin = line.find("{") + 2,
-                        end   = line.find("}") - 2;
+    Log::file.open(
+        Log::c.folderToSave +
+        std::to_string(max + 1) + ".log"
+    );
 
-                    for (size_t i = begin; i <= end; ++i)
-                        tag += line[i];
-                } catch (...) {
-                    std::cout << "The download was interrupted because the log file is damaged:" << path << "\n";
-                    break;
-                }
-
-                if (!filters.empty() && std::find(filters.begin(), filters.end(), tag) == filters.end())
-                    continue;
-
-                if (outFile && file.is_open())
-                    file << line;
-
-                if (outConsole) {
-                    SetConsoleTextAttribute(hstd, (WORD) line[0]);
-                    line.erase(line.begin());
-                    printf(line.c_str());
-                }
-            }
-
-            if (outFile)
-                file.flush();
-            read.close();
-        } else
-            std::cout << "Failed to open file to read the log:" << path << "\n";
+    if (file.is_open()) {
+        atexit(Log::closeFile);
+    } else if (!Log::c.folderToSave.empty()) {
+        std::cout << "Can't open file to write log in folder: '" << Log::c.folderToSave << "'" << std::endl; 
+        Log::c.folderToSave = "";
     }
 
-    void Log::clear() {
-        try {
-            for (auto f : std::filesystem::directory_iterator(folder)) {
-                std::string path = f.path().string();
-                if (path.substr(path.size() - 4, path.size()) == ".log")
-                    remove(path.c_str()); 
-            }
-        } catch (std::filesystem::filesystem_error& ex) {
-            std::cout << "This directory cannot be cleared: " << ex.what() << "\n";
-        } catch (...) {
-            std::cout << "Unknown error while cleaning directory\n";
-        }
+    Log::info() << "Logger started";
+}
+
+Log::Message Log::write(std::string tag) {
+    return Log::Message(tag);
+}
+
+Log::Message Log::info() {
+    return write("INFO");
+}
+
+Log::Message Log::debug() {
+    return write("DEBUG");
+}
+
+Log::Message Log::warning() {
+    return write("WARNING");
+}
+
+Log::Message Log::error() {
+    return write("ERROR");
+}
+
+
+Log::Message Log::begin() {
+    return write("BEGIN");
+}
+
+Log::Message Log::end() {
+    return write("END");
+}
+
+//============================================================//
+
+Log::Message::Message(const Message& copy) {
+    this->message << copy.message.str();
+    this->color = copy.color;
+    this->tag = copy.tag;
+}
+
+Log::Message::Message(std::string tag) {
+    this->tag = tag;
+    this->last = true;
+
+    if (c.colors.find(tag) != c.colors.end())
+        this->color = c.colors[tag];
+    else if (tag == "BEGIN" || tag == "END")
+        this->color = c.colors["SECTION"];
+    else this->color = 7;
+}
+
+Log::Message::~Message() {
+    if (!last) return;
+
+    bool begin = (tag == "BEGIN");
+    Log::numSection -= (tag == "END");
+
+    if (tag == "BEGIN" || tag == "END") {
+        tag = "SECTION";
     }
 
-    void Log::init() {
-        system("clear"); 
-        
-        time_t t = time(NULL);
-        tInfo = *localtime(&t);
+    if (!c.filters.empty() && std::find(c.filters.begin(), c.filters.end(), tag) == c.filters.end())
+        return;
 
-        hstd = GetStdHandle(STD_OUTPUT_HANDLE);
+    std::stringstream ss;
+    ss << std::string(Log::numSection, ' ') << "[" << clock() << "] " << "{" << tag << "} " << message.str() << "\n";
 
-        addColor("INFO", 7);
-        addColor("DEBUG", 2);
-        addColor("WARNING", 3);
-        addColor("ERROR", 1);
-
-        path = folder + getDate();
-        
-        file.open(path + ".log");
-        if (file.is_open()) {
-            atexit(close);
-        } else if (outFile) {
-            outFile = false;
-            std::cout << "Failed to create file to write logs: " << path << "\n";
-        }
+    if (Log::c.outConsole) {
+        std::string txtColor =  "\033[1;3" + std::to_string(color) + "m";
+        printf((txtColor + ss.str()).c_str());
     }
 
-    Log::Message::Message(const Log::Message& copy) {
-        this->message << copy.message.str();
-        this->tag = copy.tag;
-        this->code = copy.code;
-        this->color = copy.color;
+    if (!Log::c.folderToSave.empty()) {
+        Log::file << color << ss.str();
+        Log::file.flush();
     }
 
-    Log::Message::~Message() {
-        if (!last) return;
-
-        if (!filters.empty() && std::find(filters.begin(), filters.end(), tag) == filters.end())
-            return;
-
-        std::stringstream ss;
-        ss << "[ " << clock() << " ] " << "{ " << tag << " } ";
-        if (code != (unsigned int)(-1))
-            ss << "( " << code << " ) ";
-        ss << message.str() << "\n";
-
-        if (Log::outConsole) {
-            SetConsoleTextAttribute(hstd, (WORD) color);
-
-            std::string txtColor =  "\033[1;3" + std::to_string(color) + "m";
-            printf((txtColor + ss.str()).c_str());
-        }
-        
-        if (outFile) {
-            file << color << ss.str();
-            file.flush();
-        }
-    }
-
-    Log::Message::Message(std::string tag, unsigned int code) {
-        this->tag = tag;
-        this->code = code;
-        if (colors.find(tag) != colors.end())
-            this->color = colors[tag];
-    }
+    Log::numSection += begin;
 }

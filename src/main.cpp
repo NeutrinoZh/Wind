@@ -1,27 +1,24 @@
-#include "Lexer/Lexer.h"
+#include "Log/Log.h"
 
 int main(int countArg, char* args[]) {
-    system("read -N 1 -p 'Press any key to continue...'");
+    system("read -N 1 -p 'Press any key to continue...\n'");
 
-    wd::Log::init();
-
-    wd::LexicalAnalyzer analyzer;
-
-    analyzer.config([](auto& self) {
-        self.keyWords = { { "Yeah!", "Happy" } };
+    Log::config([](auto& self) {
+        self.outConsole = true;
+        self.folderToSave = "./logs/";
     });
 
-    auto tokens = analyzer.analyz("Happy 32 Happy 65 Happy 89 Happy91 Happy");
-    std::cout << "Count token:" << tokens.size() << "\n";
-    for (auto token : tokens)
-        std::cout << "Token ( type: " << token.first << "; value: " << token.second << "; )\n";
-
-    wd::Log::warning() << "Warning";
-
-    system("read -N 1 -p 'Press any key to continue...'");
-
-    wd::Log::error() << false;
-    wd::Log::info() << true;
+    Log::warning() << "Warning";
+    Log::error() << false;
+    Log::info() << true;
+    Log::begin() << "Start section";
+    Log::info() << "Hello";
+    Log::begin() << "And more section";
+    Log::debug() << "Haha";
+    Log::end() << "End hello section";
+    Log::info() << "...";
+    Log::end() << "End section";
+    Log::info() << "End program";
 
     system("read -N 1 -p 'Press any key to continue...'");
 
