@@ -27,8 +27,7 @@ private:
     static tm timeInfo;
     static int numSection;
 
-    static std::string convertDateToString(tm timeInfo);
-    static void closeFile();
+    static void close();
 
 public:
 

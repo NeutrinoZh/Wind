@@ -6,9 +6,16 @@ namespace wd {
         return std::count(str.begin(), str.end(), c) != 0;
     }
 
-    std::list<LexicalAnalyzer::Token> LexicalAnalyzer::analyz(std::string text) {
-        this->text = text;
+    std::list<LexicalAnalyzer::Token> LexicalAnalyzer::analyz(std::string text, bool internalCall) {
+        if (!internalCall)
+            Log::begin() << "Launching the Lexical Analyzer"; 
+        Log::debug() << "Length text:" << text.size();
+
+        this->line = 1;
+        this->row = 1;
+
         this->position = 0;
+        this->text = text;
         this->size = text.size();
 
         std::list<LexicalAnalyzer::Token> tokens;
@@ -21,21 +28,28 @@ namespace wd {
             tokens.push_back(token);
         }
 
+        Log::debug() << "Length token list:" << tokens.size();
+        Log::end() << "Lexical analysis completed";
+
         return tokens;
     }
 
     std::list<LexicalAnalyzer::Token> LexicalAnalyzer::operator()(std::filesystem::path path) {
+        Log::begin() << "Launching the Lexical Analyzer"; 
+
         std::ifstream file(path);
 
-        if (!file.is_open())
+        if (!file.is_open()) {
+            Log::error() << "Failed to open file: '" << path << "'";
             return {};
+        }
 
         std::string text = "", line;
         while (std::getline(file, line))
             text += line;
 
         file.close();
-        return this->analyz(text);
+        return this->analyz(text, true);
     }
   
 
@@ -48,6 +62,12 @@ namespace wd {
     LexicalAnalyzer::Token LexicalAnalyzer::separators() {
         while (charIs(getChar(0), std::move(c.separators)))
             next();
+        
+        if (getChar(0) == '\n') {
+            this->line += 1;
+            this->row = 0;
+            next();
+        }
         
         return keyWords();
     }
@@ -75,6 +95,7 @@ namespace wd {
         if (!number.empty())
             return LexicalAnalyzer::Token("number", number);
 
+        Log::error() << "Unknown character: \"" << getChar(0) << "\" Line:" << this->line << "; Row:" << this->row;
         return { "",  "" };
     }
 
@@ -88,7 +109,9 @@ namespace wd {
     }
 
     char LexicalAnalyzer::next() {
-        return getChar(this->position++);
+        this->row += 1;
+        this->position += 1;
+        return getChar(0);
     }
 
     

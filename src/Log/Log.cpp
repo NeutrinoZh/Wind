@@ -7,16 +7,8 @@ int Log::numSection = 0;
 
 //============================================================//
 
-std::string Log::convertDateToString(tm timeInfo) {
-    return std::to_string(timeInfo.tm_mday) + "." +
-           std::to_string(timeInfo.tm_mon + 1) + "." +
-           std::to_string(timeInfo.tm_year + 1900) + " (" +
-           std::to_string(timeInfo.tm_hour) + "." +
-           std::to_string(timeInfo.tm_min) + "." +
-           std::to_string(timeInfo.tm_sec) + ")";
-}
-
-void Log::closeFile() {
+void Log::close() {
+    Log::info() << "Completion of program execution";
     file.close();
 }
 
@@ -55,9 +47,8 @@ void Log::config(void (*config)(Config& self)) {
     );
 
     if (file.is_open()) {
-        atexit(Log::closeFile);
+        atexit(Log::close);
     } else if (!Log::c.folderToSave.empty()) {
-        std::cout << "Can't open file to write log in folder: '" << Log::c.folderToSave << "'" << std::endl; 
         Log::c.folderToSave = "";
     }
 
@@ -96,6 +87,7 @@ Log::Message Log::end() {
 //============================================================//
 
 Log::Message::Message(const Message& copy) {
+    this->last = true;
     this->message << copy.message.str();
     this->color = copy.color;
     this->tag = copy.tag;
@@ -120,9 +112,8 @@ Log::Message::~Message() {
     Log::numSection -= (tag == "END");
     Log::numSection = Log::numSection < 0 ? 0 : Log::numSection;
 
-    if (tag == "BEGIN" || tag == "END") {
+    if (tag == "BEGIN" || tag == "END")
         tag = "SECTION";
-    }
 
     if (!c.filters.empty() && std::find(c.filters.begin(), c.filters.end(), tag) == c.filters.end() && tag != "SECTION")
         return;
@@ -132,7 +123,7 @@ Log::Message::~Message() {
 
     if (Log::c.outConsole) {
         std::string txtColor =  "\033[1;3" + std::to_string(color) + "m";
-        printf((txtColor + ss.str()).c_str());
+        printf((txtColor + ss.str() + "\033[1;37m").c_str());
     }
 
     if (!Log::c.folderToSave.empty()) {
