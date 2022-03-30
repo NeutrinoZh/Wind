@@ -15,7 +15,7 @@ int main(int countArg, char* args[]) {
         self.keyWords = { { "Yeah!", "Happy" } };
     });
 
-    auto tokens = analyzer.analyz("Happy 568 Happy 65 Happy 89 Happy69 gg 77");
+    auto tokens = analyzer("./asset/text.txt");
     
     for (auto token : tokens)
         Log::info() << "Token ( type: " << token.first << "; value: " << token.second << "; )";

@@ -7,7 +7,7 @@ namespace wd {
         
         typedef std::pair<std::string, std::string> Token;
         struct Config {
-            std::string separators = " \t";
+            std::string separators = " \t ";
             std::vector<std::pair<std::string, std::string>> keyWords = {};
         };
 
@@ -20,10 +20,12 @@ namespace wd {
 
         unsigned long long position;
         unsigned long long size;
-        
-        unsigned char current = '\0';
-        std::string text = "";
 
+        unsigned long long memo;
+        unsigned long long memoLine;
+        unsigned long long memoRow;
+
+        std::string text = "";
     public:
         std::list<Token> analyz(std::string text, bool internalCall=false);
         std::list<Token> operator()(std::filesystem::path file);
@@ -32,13 +34,16 @@ namespace wd {
     private:
         Token separators();
         Token keyWords();
+        Token words();
         Token numbers();
+        Token unknown();
     private:
         char getChar(unsigned long long relativePosition);
         char next();
         char consume();
 
-        void setPosition(unsigned long long position);
+        void rememberPosition();
+        void memorizedPosition();
     };
 
 }

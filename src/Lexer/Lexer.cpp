@@ -6,6 +6,28 @@ namespace wd {
         return std::count(str.begin(), str.end(), c) != 0;
     }
 
+    void LexicalAnalyzer::config(void (*config)(LexicalAnalyzer::Config& self)) {
+        config(this->c);
+    }
+
+    std::list<LexicalAnalyzer::Token> LexicalAnalyzer::operator()(std::filesystem::path path) {
+        Log::begin() << "Launching the Lexical Analyzer"; 
+
+        std::ifstream file(path);
+
+        if (!file.is_open()) {
+            Log::error() << "Failed to open file: '" << path << "'";
+            return {};
+        }
+
+        std::string text = "", line;
+        while (std::getline(file, line))
+            text += line + "\n";
+
+        file.close();
+        return this->analyz(text, true);
+    }
+
     std::list<LexicalAnalyzer::Token> LexicalAnalyzer::analyz(std::string text, bool internalCall) {
         if (!internalCall)
             Log::begin() << "Launching the Lexical Analyzer"; 
@@ -17,6 +39,7 @@ namespace wd {
         this->position = 0;
         this->text = text;
         this->size = text.size();
+        this->memo = 0;
 
         std::list<LexicalAnalyzer::Token> tokens;
         while (position < size) {
@@ -34,29 +57,6 @@ namespace wd {
         return tokens;
     }
 
-    std::list<LexicalAnalyzer::Token> LexicalAnalyzer::operator()(std::filesystem::path path) {
-        Log::begin() << "Launching the Lexical Analyzer"; 
-
-        std::ifstream file(path);
-
-        if (!file.is_open()) {
-            Log::error() << "Failed to open file: '" << path << "'";
-            return {};
-        }
-
-        std::string text = "", line;
-        while (std::getline(file, line))
-            text += line;
-
-        file.close();
-        return this->analyz(text, true);
-    }
-  
-
-    void LexicalAnalyzer::config(void (*config)(LexicalAnalyzer::Config& self)) {
-        config(this->c);
-    }
-
     //--------------------------------------------------------------------------//
 
     LexicalAnalyzer::Token LexicalAnalyzer::separators() {
@@ -69,11 +69,14 @@ namespace wd {
             next();
         }
         
+        if (getChar(0) == '\0')
+            return { "", "" };
+
         return keyWords();
     }
 
     LexicalAnalyzer::Token LexicalAnalyzer::keyWords() {
-        unsigned long long position = this->position;
+        rememberPosition();
 
         std::string word = "";
         while (isalnum(getChar(0)))
@@ -82,8 +85,21 @@ namespace wd {
         for (auto keyWord : this->c.keyWords)
             if (word == keyWord.second)
                 return keyWord;
-            
-        setPosition(position);
+    
+        memorizedPosition();
+        return words();
+    }
+
+    LexicalAnalyzer::Token LexicalAnalyzer::words() {
+        std::string word = "";
+
+        if (isalpha(getChar(0)))
+            while (isalnum(getChar(0)))
+                word += consume();
+
+        if (!word.empty())
+            return LexicalAnalyzer::Token("word", word);
+
         return numbers();
     }
 
@@ -95,6 +111,10 @@ namespace wd {
         if (!number.empty())
             return LexicalAnalyzer::Token("number", number);
 
+        return unknown();
+    }
+
+    LexicalAnalyzer::Token LexicalAnalyzer::unknown() {
         Log::error() << "Unknown character: \"" << getChar(0) << "\" Line:" << this->line << "; Row:" << this->row;
         return { "",  "" };
     }
@@ -113,16 +133,21 @@ namespace wd {
         this->position += 1;
         return getChar(0);
     }
-
-    
+   
     char LexicalAnalyzer::consume() {
         next();
         return getChar(-1);
     }
 
-    void LexicalAnalyzer::setPosition(unsigned long long position) {
-        if (position > 0 && position < size)
-            this->position = position;
-        else this->position = size;
+    void LexicalAnalyzer::rememberPosition() {
+        this->memo = this->position;
+        this->memoLine = this->line;
+        this->memoRow = this->row;
     } 
+
+    void LexicalAnalyzer::memorizedPosition() {
+        this->position = this->memo;
+        this->line = this->memoLine;
+        this->row = this->memoRow;
+    }
 }
