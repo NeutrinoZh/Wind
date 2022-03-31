@@ -6,5 +6,3 @@ Hello 5 World
 Hello 6 World
 Hello 7 World
 Hello 8 World
-Hello 9 World
-Hello 10 World

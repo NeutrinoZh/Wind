@@ -21,8 +21,13 @@ namespace wd {
         }
 
         std::string text = "", line;
-        while (std::getline(file, line))
-            text += line + "\n";
+        char last;
+        while (std::getline(file, line)) {
+            text += line.substr(0, line.size() - 1) + "\n";
+            last = *(line.end() - 1);
+        }
+        text.erase(text.end() - 1);
+        text += last;
 
         file.close();
         return this->analyz(text, true);
@@ -63,7 +68,7 @@ namespace wd {
         while (charIs(getChar(0), std::move(c.separators)))
             next();
         
-        if (getChar(0) == '\n') {
+        while (getChar(0) == '\n') {
             this->line += 1;
             this->row = 0;
             next();
