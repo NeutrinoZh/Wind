@@ -49,7 +49,7 @@ namespace wd {
         std::list<LexicalAnalyzer::Token> tokens;
         while (position < size) {
             LexicalAnalyzer::Token token = separators();
-            
+        
             if (token.first.empty())
                 break;
             
@@ -80,11 +80,21 @@ namespace wd {
         return keyWords();
     }
 
+    LexicalAnalyzer::Token LexicalAnalyzer::comments() {
+        if (getChar(0) == '#') {
+            while (getChar(0) != '\n')
+                next();
+            return separators();
+        }
+
+        return keyWords();
+    }
+
     LexicalAnalyzer::Token LexicalAnalyzer::keyWords() {
         rememberPosition();
 
         std::string word = "";
-        while (isalnum(getChar(0)))
+        while (!charIs(getChar(0), std::move(c.separators)))
             word += consume();
 
         for (auto keyWord : this->c.keyWords)
@@ -92,31 +102,111 @@ namespace wd {
                 return keyWord;
     
         memorizedPosition();
-        return words();
+        return prefix();
     }
 
-    LexicalAnalyzer::Token LexicalAnalyzer::words() {
-        std::string word = "";
+    LexicalAnalyzer::Token LexicalAnalyzer::prefix() {
+        this->possibles = {};
 
-        if (isalpha(getChar(0)))
-            while (isalnum(getChar(0)))
-                word += consume();
+        Log::debug() << "START PREFIX";
 
-        if (!word.empty())
-            return LexicalAnalyzer::Token("word", word);
+        for (Type type : c.types)
+            if (!type.prefix.empty()) {
+                
+                char current = getChar(0);
 
-        return numbers();
+                if (
+                    (type.prefix == "number" && (isdigit(current) || current == '-')) ||
+                    (type.prefix == "letter" && isalpha(current)) ||
+                    (type.prefix == "letter_and_number" && isalnum(current)) ||
+                    (type.prefix == "x-number" && isxdigit(current)) ||
+                    (type.prefix == "name" && (isalpha(current) || current == '_')) ||
+                    (type.prefix == "name_and_number" && (isalpha(current) || current == '_'))
+                ) {
+                    if (type.single) {
+                        std::string value = "";
+                        value += consume();
+                        return LexicalAnalyzer::Token(type.name, value);
+                    }
+
+                    this->possibles.push_back(type); 
+                }
+
+            }
+
+        Log::debug() << "END PREFIX";
+
+        if (this->possibles.size() > 0) 
+            return base();
+
+        Log::error() << "Not one possible type found by prefix";
+        return { "", "" };
     }
 
-    LexicalAnalyzer::Token LexicalAnalyzer::numbers() { 
-        std::string number = ""; 
-        while (isdigit(getChar(0)) || getChar(0) == '.')
-            number += consume();
+    LexicalAnalyzer::Token LexicalAnalyzer::base() {
+        
+        auto isBasic = [](char current, std::vector<Type>* possible) {
+            for (Type type : *possible)
+                if (
+                    (type.base == "number" && (isdigit(current) || current == '-')) ||
+                    (type.base == "letter" && isalpha(current)) ||
+                    (type.base == "letter_and_number" && isalnum(current)) ||
+                    (type.base == "x-number" && isxdigit(current)) ||
+                    (type.base == "name" && (isalpha(current) || current == '_')) ||
+                    (type.base == "name_and_number" && (isalnum(current) || current == '_')) ||
+                    (type.base == "all")
+                ) return true;
+            return false;
+        };
 
-        if (!number.empty())
-            return LexicalAnalyzer::Token("number", number);
+        auto removeUnsuitable = [](char current, std::vector<Type>* possible) {
+            unsigned int num = 0;
 
-        return unknown();
+            for (Type type : *possible) {
+                if (type.base == "all") continue;
+                else if (type.base == "number") num += !(isdigit(current) || current == '.');
+                else if (type.base == "letter") num += !isalpha(current);
+                else if (type.base == "letter_and_number") num += !isalnum(current);
+                else if (type.base == "x-number") num += !isxdigit(current);
+                else if (type.base == "name") num += !(isalpha(current) || current == '_');
+                else if (type.base == "name_and_number") num += !(isalnum(current) || current == '_');
+            }
+
+            if (num != possible->size())
+                for (unsigned int i = 0; i < possible->size(); ++i) {
+                    std::string base = possible->at(i).base;
+                    
+                    if (
+                        (base == "number" && (!isdigit(current) || current == '.')) ||
+                        (base == "letter" && !isalpha(current)) ||
+                        (base == "letter_and_number" && !isalnum(current)) ||
+                        (base == "x-number" && !isxdigit(current)) ||
+                        (base == "name" && !(isalpha(current) || current == '_')) ||
+                        (base == "name_and_number" && !(isalnum(current) || current == '_'))
+                    ) {
+                            possible->erase(possible->begin() + i);
+                    }
+                }
+        };
+
+        std::string value = "";
+
+        while (isBasic(getChar(0), &this->possibles)) {
+            Log::debug() << "BASE:" << value;
+            
+            value += getChar(0);
+            removeUnsuitable(getChar(0), &this->possibles);
+
+            next();
+        }
+
+        Log::debug() << "VALUE:" << value << "Types:" << this->possibles[0].name;
+
+        return postfix(value);
+    }
+
+    LexicalAnalyzer::Token LexicalAnalyzer::postfix(std::string value) {
+        return { "", "" };
     }
 
     LexicalAnalyzer::Token LexicalAnalyzer::unknown() {

@@ -12,7 +12,11 @@ int main(int countArg, char* args[]) {
     wd::LexicalAnalyzer analyzer;
 
     analyzer.config([](auto& self) {
-        self.keyWords = { { "Yeah!", "Happy" } };
+        self.keyWords = {};
+        self.types = {
+            wd::LexicalAnalyzer::Type("word", "letter", "letter", "letter"),
+            wd::LexicalAnalyzer::Type("number", "number", "number", "number")
+        };
     });
 
     auto tokens = analyzer("./asset/text.txt");

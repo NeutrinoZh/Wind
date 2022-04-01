@@ -9,11 +9,11 @@ private:
         int numSpace = 1;
 
         std::map<std::string, UINT8> colors = {
-            { "INFO", 7 },
-            { "DEBUG", 4 },
-            { "WARNING", 3 },
             { "ERROR", 1 },
-            { "SECTION", 2 }
+            { "SECTION", 2 },
+            { "WARNING", 3 },
+            { "DEBUG", 4 },
+            { "INFO", 7 },
         };
 
         std::vector<std::string> filters = {};

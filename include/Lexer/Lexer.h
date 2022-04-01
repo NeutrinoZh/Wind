@@ -6,8 +6,40 @@ namespace wd {
     public:
         
         typedef std::pair<std::string, std::string> Token;
+
+        struct Type {
+        private:
+            std::string name;
+
+            std::string prefix;
+            std::string base;
+            std::string postfix;
+
+            bool single = false;
+        
+            friend class LexicalAnalyzer;
+        public:
+        
+            Type(std::string name, std::string base) {
+                this->single = true;
+                this->name = name;
+                this->base = base;
+            }
+
+            Type(std::string name, std::string prefix,
+                 std::string base, std::string postfix) {
+                this->name = name;
+                this->prefix = prefix;
+                this->base = base;
+                this->postfix = postfix;
+            }
+        };
+
+        
         struct Config {
             std::string separators = " \t ";
+            
+            std::vector<Type> types = {};
             std::vector<std::pair<std::string, std::string>> keyWords = {};
         };
 
@@ -26,6 +58,8 @@ namespace wd {
         unsigned long long memoRow;
 
         std::string text = "";
+
+        std::vector<Type> possibles;
     public:
         std::list<Token> analyz(std::string text, bool internalCall=false);
         std::list<Token> operator()(std::filesystem::path file);
@@ -33,9 +67,13 @@ namespace wd {
         void config(void (*config)(Config& self));
     private:
         Token separators();
+        Token comments();
         Token keyWords();
-        Token words();
-        Token numbers();
+
+        Token prefix();
+        Token base();
+        Token postfix(std::string value);
+
         Token unknown();
     private:
         char getChar(unsigned long long relativePosition);
