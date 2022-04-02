@@ -67,7 +67,7 @@ namespace wd {
     LexicalAnalyzer::Token LexicalAnalyzer::separators() {
         while (charIs(getChar(0), std::move(c.separators)))
             next();
-        
+
         while (getChar(0) == '\n') {
             this->line += 1;
             this->row = 0;
@@ -77,7 +77,7 @@ namespace wd {
         if (getChar(0) == '\0')
             return { "", "" };
 
-        return keyWords();
+        return comments();
     }
 
     LexicalAnalyzer::Token LexicalAnalyzer::comments() {
@@ -94,8 +94,9 @@ namespace wd {
         rememberPosition();
 
         std::string word = "";
-        while (!charIs(getChar(0), std::move(c.separators)))
+        while (!charIs(getChar(0), std::move(c.separators)) && position < size) {
             word += consume();
+        }
 
         for (auto keyWord : this->c.keyWords)
             if (word == keyWord.second)
@@ -107,8 +108,6 @@ namespace wd {
 
     LexicalAnalyzer::Token LexicalAnalyzer::prefix() {
         this->possibles = {};
-
-        Log::debug() << "START PREFIX";
 
         for (Type type : c.types)
             if (!type.prefix.empty()) {
@@ -133,8 +132,6 @@ namespace wd {
                 }
 
             }
-
-        Log::debug() << "END PREFIX";
 
         if (this->possibles.size() > 0) 
             return base();
@@ -191,22 +188,40 @@ namespace wd {
 
         std::string value = "";
 
-        while (isBasic(getChar(0), &this->possibles)) {
-            Log::debug() << "BASE:" << value;
-            
+        while (isBasic(getChar(0), &this->possibles)) {            
             value += getChar(0);
             removeUnsuitable(getChar(0), &this->possibles);
 
             next();
         }
 
-        Log::debug() << "VALUE:" << value << "Types:" << this->possibles[0].name;
-
         return postfix(value);
     }
 
     LexicalAnalyzer::Token LexicalAnalyzer::postfix(std::string value) {
-        return { "", "" };
+        
+        auto isPostfix = [](char current, std::vector<Type>* possible) {
+            for (unsigned int i = 0; i < possible->size(); ++i)
+                if (
+                    (possible->at(i).postfix == "number" && (isdigit(current) || current == '.')) ||
+                    (possible->at(i).postfix == "letter" && isalpha(current)) ||
+                    (possible->at(i).postfix == "letter_and_number" && isalnum(current)) ||
+                    (possible->at(i).postfix == "x-number" && isxdigit(current)) ||
+                    (possible->at(i).postfix == "name" && (isalpha(current) || current == '_')) || 
+                    (possible->at(i).postfix == "name_and_number" && (isalnum(current) || current == '_'))
+                ) return i;
+            return UINT32_MAX;
+        };
+
+        unsigned int type = isPostfix(getChar(0), &this->possibles);       
+        if (type == UINT32_MAX) {
+            type = isPostfix(getChar(-1), &this->possibles);
+        } else value += consume();
+
+        if (type != UINT32_MAX)
+            return LexicalAnalyzer::Token(this->possibles[type].name, value);
+
+        return unknown();
     }
 
     LexicalAnalyzer::Token LexicalAnalyzer::unknown() {

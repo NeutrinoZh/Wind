@@ -14,7 +14,7 @@ int main(int countArg, char* args[]) {
     analyzer.config([](auto& self) {
         self.keyWords = {};
         self.types = {
-            wd::LexicalAnalyzer::Type("word", "letter", "letter", "letter"),
+            wd::LexicalAnalyzer::Type("word", "name_and_number", "name_and_number", "name_and_number"),
             wd::LexicalAnalyzer::Type("number", "number", "number", "number")
         };
     });
