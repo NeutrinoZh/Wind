@@ -106,6 +106,17 @@ namespace EngineCore {
 
 			while (SDL_PollEvent(&Window::event)) {
 				if (event.type == SDL_QUIT) quit();
+				else if (event.type == SDL_KEYDOWN) Keyboard::down(&event);
+				else if (event.type == SDL_KEYUP) Keyboard::up(&event);
+				else if (event.type == SDL_MOUSEBUTTONDOWN) Mouse::down(&event);
+				else if (event.type == SDL_MOUSEBUTTONUP) Mouse::up(&event);
+				else if (event.type == SDL_MOUSEWHEEL) Mouse::whell(&event);
+				else if (event.type == SDL_MOUSEMOTION) Mouse::move(&event, Window::size);
+				else if (event.type == SDL_TEXTINPUT) Input::input(&event);
+				else if (event.type == SDL_JOYBUTTONDOWN) HandlerGameController::down(&event);
+				else if (event.type == SDL_JOYBUTTONUP) HandlerGameController::up(&event);
+				else if (event.type == SDL_JOYDEVICEADDED) HandlerGameController::added(event.jdevice.which);
+				else if (event.type == SDL_JOYDEVICEREMOVED) HandlerGameController::removed(event.jdevice.which);
 				else if (event.type == SDL_WINDOWEVENT) {
 					if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
 						int w, h;

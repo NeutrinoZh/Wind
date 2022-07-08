@@ -148,12 +148,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ConfigReader.cpp" />
+    <ClCompile Include="EventHandler.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConfigReader.h" />
+    <ClInclude Include="EventHandler.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="Window.h" />

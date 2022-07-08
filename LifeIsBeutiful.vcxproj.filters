@@ -39,6 +39,9 @@
     <ClCompile Include="ConfigReader.cpp">
       <Filter>Engine\ConfigReader</Filter>
     </ClCompile>
+    <ClCompile Include="EventHandler.cpp">
+      <Filter>Engine\Window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -52,6 +55,9 @@
     </ClInclude>
     <ClInclude Include="ConfigReader.h">
       <Filter>Engine\ConfigReader</Filter>
+    </ClInclude>
+    <ClInclude Include="EventHandler.h">
+      <Filter>Engine\Window</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
