@@ -24,6 +24,32 @@ namespace EngineCore {
 	bool Window::init() {
 		Log::begin() << "Window creation procedure started";
 
+		Log::info() << "Started load config";
+
+		struct _config {
+			std::string title = "Engine";
+			int sizeW = 800, sizeH = 600;
+			float minDelta = 0.15f;
+			Uint32 flags = SDL_WINDOW_SHOWN;
+
+			_config() {
+				Config config = ConfigReader::read("./config.txt");
+
+				if (config.isVar("title")) title = config.getStringValue("title");
+				if (config.isVar("sizeW")) sizeW = config.getIntValue("sizeW");
+				if (config.isVar("sizeH")) sizeH = config.getIntValue("sizeH");
+				if (config.isVar("delta")) minDelta = config.getFloatValue("minDelta");
+
+				if (config.isVar("SDL_WINDOW_OPENGL")) flags |= SDL_WINDOW_OPENGL;
+				if (config.isVar("SDL_WINDOW_FULLSCREEN")) flags |= SDL_WINDOW_FULLSCREEN;
+				if (config.isVar("SDL_WINDOW_RESIZABLE")) flags |= SDL_WINDOW_RESIZABLE;
+			}
+		} config;
+
+		Log::info() << "Finished load config";
+
+		Log::info() << "SDL init (EVERYTHING)";
+
 		if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
 			Log::error() << SDL_GetError();
 			return false;
@@ -40,9 +66,10 @@ namespace EngineCore {
 		Log::info() << "Create a window";
 
 		window = SDL_CreateWindow(
-			"Demo",
+			config.title.c_str(),
 			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-			800, 600, SDL_WINDOW_SHOWN
+			config.sizeW, config.sizeH,
+			config.flags
 		);
 
 		if (!window) {
@@ -57,6 +84,12 @@ namespace EngineCore {
 				Log::error() << "The postinitialization method returned an error.";
 				return false;
 		}
+
+		Window::minFrameTime = config.minDelta;
+		
+		int w, h;
+		SDL_GetWindowSize(Window::window, &w, &h);
+		Window::size = { static_cast<float>(w), static_cast<float>(h) };
 
 		Log::end() << "Window creation procedure finished";
 		return true;
@@ -73,6 +106,13 @@ namespace EngineCore {
 
 			while (SDL_PollEvent(&Window::event)) {
 				if (event.type == SDL_QUIT) quit();
+				else if (event.type == SDL_WINDOWEVENT) {
+					if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+						int w, h;
+						SDL_GetWindowSize(Window::window, &w, &h);
+						Window::size = { static_cast<float>(w), static_cast<float>(h) };
+					}
+				}
 			}
 
 			if (Update)

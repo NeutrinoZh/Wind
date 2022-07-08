@@ -11,10 +11,10 @@ private:
         HANDLE hstd;
 
         std::map<std::string, UINT8> colors = {
-            { "ERROR", 1 },
+            { "ERROR", 4 },
             { "SECTION", 2 },
             { "WARNING", 3 },
-            { "DEBUG", 4 },
+            { "DEBUG", 1 },
             { "INFO", 7 },
         };
 

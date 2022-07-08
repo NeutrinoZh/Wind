@@ -1,0 +1,3 @@
+title=Test Config
+sizeW=1000
+sizeH=600
