@@ -25,6 +25,12 @@
     <Filter Include="Engine\ConfigReader">
       <UniqueIdentifier>{bc85c208-21ba-47a0-b602-e671c4d68762}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Graphics">
+      <UniqueIdentifier>{39639892-3d9f-4975-b54a-05487615662f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Resource">
+      <UniqueIdentifier>{86ae4e8c-c061-4e66-b1a9-2f08fdb4f303}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -41,6 +47,15 @@
     </ClCompile>
     <ClCompile Include="EventHandler.cpp">
       <Filter>Engine\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Textures.cpp">
+      <Filter>Engine\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Резервные копии\TodayEngine\New\TodayEngine\TodayEngine\Engine\Graphics\glad.c">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics.cpp">
+      <Filter>Engine\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -59,5 +74,19 @@
     <ClInclude Include="EventHandler.h">
       <Filter>Engine\Window</Filter>
     </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Textures.h">
+      <Filter>Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ToDo.txt">
+      <Filter>Исходные файлы</Filter>
+    </Text>
   </ItemGroup>
 </Project>

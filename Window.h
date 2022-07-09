@@ -6,7 +6,6 @@ namespace EngineCore {
 	public:
 		static void (*Start) (void);
 		static void (*Update) (void);
-		static void (*Draw) (void);
 		static bool (*Exit) (void);
 		static bool (*PreInit) (void);
 		static bool (*PostInit) (void);

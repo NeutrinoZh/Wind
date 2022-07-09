@@ -24,7 +24,7 @@ namespace EngineCore {
 	bool Window::init() {
 		Log::begin() << "Window creation procedure started";
 
-		Log::info() << "Started load config";
+		Log::info() << "Load window config";
 
 		struct _config {
 			std::string title = "Engine";
@@ -38,15 +38,15 @@ namespace EngineCore {
 				if (config.isVar("title")) title = config.getStringValue("title");
 				if (config.isVar("sizeW")) sizeW = config.getIntValue("sizeW");
 				if (config.isVar("sizeH")) sizeH = config.getIntValue("sizeH");
-				if (config.isVar("delta")) minDelta = config.getFloatValue("minDelta");
+				if (config.isVar("delta")) minDelta = config.getFloatValue("delta");
 
 				if (config.isVar("SDL_WINDOW_OPENGL")) flags |= SDL_WINDOW_OPENGL;
 				if (config.isVar("SDL_WINDOW_FULLSCREEN")) flags |= SDL_WINDOW_FULLSCREEN;
+				if (config.isVar("SDL_WINDOW_FULLSCREEN_DESKTOP")) flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 				if (config.isVar("SDL_WINDOW_RESIZABLE")) flags |= SDL_WINDOW_RESIZABLE;
+				if (config.isVar("SDL_WINDOW_BORDERLESS")) flags |= SDL_WINDOW_BORDERLESS;
 			}
 		} config;
-
-		Log::info() << "Finished load config";
 
 		Log::info() << "SDL init (EVERYTHING)";
 
@@ -104,6 +104,10 @@ namespace EngineCore {
 		while (activeLoop) {
 			beginFrameTime = SDL_GetTicks();
 
+			Keyboard::swapbuffer();
+			Mouse::resetWhell();
+			HandlerGameController::clear();
+
 			while (SDL_PollEvent(&Window::event)) {
 				if (event.type == SDL_QUIT) quit();
 				else if (event.type == SDL_KEYDOWN) Keyboard::down(&event);
@@ -157,11 +161,10 @@ namespace EngineCore {
 	}
 
 	void Window::free() {
-		Log::info() << "Memory cleaning procedure started";
+		Log::info() << "Free memory from SDL";
 
+		HandlerGameController::free();
 		SDL_DestroyWindow(window);
 		SDL_Quit();
-
-		Log::info() << "Memory cleaning procedure finished";
 	}
 }
