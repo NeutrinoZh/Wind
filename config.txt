@@ -1,4 +1,5 @@
 title=Test Config
 sizeW=800
 sizeH=600
+delta=10
 SDL_WINDOW_OPENGL

@@ -84,6 +84,12 @@ namespace EngineCore {
 			return false;
 		}
 
+		Window::minFrameTime = config.minDelta;
+
+		int w, h;
+		SDL_GetWindowSize(Window::window, &w, &h);
+		Window::size = { static_cast<float>(w), static_cast<float>(h) };
+
 		Log::info() << "Calling the postinitialization method";
 
 		if (PostInit)
@@ -91,12 +97,6 @@ namespace EngineCore {
 				Log::error() << "The postinitialization method returned an error.";
 				return false;
 		}
-
-		Window::minFrameTime = config.minDelta;
-		
-		int w, h;
-		SDL_GetWindowSize(Window::window, &w, &h);
-		Window::size = { static_cast<float>(w), static_cast<float>(h) };
 
 		Log::end() << "Window creation procedure finished";
 		return true;

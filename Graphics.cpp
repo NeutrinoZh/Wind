@@ -3,6 +3,7 @@
 namespace EngineCore {
 	glm::vec3 GL_Context::color = { 0, 0, 0 };
 	glm::vec2 GL_Context::currentSize = {0, 0};
+	glm::mat4 GL_Context::proj = glm::mat4(1);
 	bool GL_Context::autoResize = false;
 	void* GL_Context::context = nullptr;
 	void (*GL_Context::Draw) (void) = nullptr;
@@ -202,6 +203,11 @@ namespace EngineCore {
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 6, indicesQuad, GL_DYNAMIC_DRAW);
 
 		Log::info() << "VAO(" << VAO << "); VBO(" << VBO << "); EBO(" << EBO << ")";
+
+		Log::info() << "Create ortho projection matrix";
+
+		GL_Context::proj = glm::ortho(0.0f, Window::size.x / 100.f,
+									  0.0f, Window::size.y / 100.f, -1.f, 1.0f);
 
 		return true;
 	}

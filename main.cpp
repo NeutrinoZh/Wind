@@ -1,4 +1,6 @@
-#include "Shaders.h"
+#include "Sprite.h"
+
+EngineCore::Sprite sprite;
 
 bool preInit() {
 	return EngineCore::GL_Context::preInit();
@@ -8,12 +10,15 @@ bool postInit() {
 	return EngineCore::GL_Context::postInit();
 }
 
-void draw() {
 
+void draw() {
+	sprite.useShader();
+	sprite.draw();
 }
 
 void update() {
 	EngineCore::GL_Context::draw();
+	sprite.position.x += 0.002f;
 }
 
 void free() {
@@ -30,6 +35,12 @@ void free() {
 void start() {
 	EngineCore::textures().loadFolder("asset/textures/");
 	EngineCore::shaders().loadFolder("asset/meta-shaders/");
+
+	sprite = EngineCore::Sprite::builder("asset/sprites/sprite.meta");
+	sprite.shader = EngineCore::shaders()["Shader"];
+
+	sprite.position.x = 3;
+	sprite.position.y = 3;
 }
 
 int main(int argc, char** args) {

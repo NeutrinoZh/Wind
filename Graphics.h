@@ -9,6 +9,7 @@ namespace EngineCore {
 		static bool autoResize;
 		static glm::vec2 currentSize;
 	public:
+		static glm::mat4 proj;
 		static glm::vec3 color;
 		static void (*Draw) (void);
 

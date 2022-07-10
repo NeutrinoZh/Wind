@@ -5,7 +5,7 @@ blue=2
 alpha=1
 
 bufferSize=0
-doubleBuffer=true
+doubleBuffer=false
 accelerated=true
 contextReleaseBehavior=true
 
@@ -18,8 +18,8 @@ clearColorB=1
 
 viewportX=0
 viewportY=0
-viewportW=1280 
-viewportH=720
+viewportW=800 
+viewportH=600
 
 EnableBlend=true
 BlendSfactor=GL_SRC_ALPHA
