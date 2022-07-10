@@ -55,6 +55,13 @@ namespace EngineCore {
 			return false;
 		}
 		
+		Log::info() << "SDL image init (PNG)";
+
+		if (IMG_Init(IMG_INIT_PNG) == 0) {
+			Log::error() << IMG_GetError();
+			return false;
+		}
+
 		Log::info() << "Calling the preinitialization method";
 
 		if (PreInit)
@@ -96,10 +103,10 @@ namespace EngineCore {
 	}
 
 	void Window::loop() {
-		Log::begin() << "Program loop launched";
-
 		if (Start)
 			Start();
+
+		Log::begin() << "Program loop launched";
 
 		while (activeLoop) {
 			beginFrameTime = SDL_GetTicks();

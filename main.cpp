@@ -1,27 +1,35 @@
-#include "Graphics.h"
+#include "Shaders.h"
 
-bool PreInit() {
+bool preInit() {
 	return EngineCore::GL_Context::preInit();
 }
 
-bool PostInit() {
+bool postInit() {
 	return EngineCore::GL_Context::postInit();
 }
 
+void draw() {
+
+}
+
 void update() {
-	/*glClearColor(0, 0, 0, 1);
-	glClear(GL_COLOR_BUFFER_BIT);
-	SDL_GL_SwapWindow(EngineCore::Window::window);*/
 	EngineCore::GL_Context::draw();
 }
 
 void free() {
 	Log::begin() << "Memory cleaning procedure started";
 
+	EngineCore::shaders().freeAll();
+	EngineCore::textures().freeAll();
 	EngineCore::Window::free();
 	EngineCore::GL_Context::free();
 
 	Log::end() << "Memory cleaning procedure finished";
+}
+
+void start() {
+	EngineCore::textures().loadFolder("asset/textures/");
+	EngineCore::shaders().loadFolder("asset/meta-shaders/");
 }
 
 int main(int argc, char** args) {
@@ -31,15 +39,19 @@ int main(int argc, char** args) {
 		self.numSpace = 2;
 	});
 
-	EngineCore::Window::PreInit = PreInit;
-	EngineCore::Window::PostInit = PostInit;
+	EngineCore::Window::PreInit = preInit;
+	EngineCore::Window::PostInit = postInit;
+	EngineCore::Window::Start = start;
 	EngineCore::Window::Update = update;
+	EngineCore::GL_Context::Draw = draw;
 
 	if (!EngineCore::Window::init()) {
 		Log::error() << "Error init window";
-		return false;
+		return EXIT_FAILURE;
 	}
 
 	EngineCore::Window::loop();
 	free();
+
+	return EXIT_SUCCESS;
 }; 

@@ -2,8 +2,25 @@
 
 namespace EngineCore {
 	glm::vec3 GL_Context::color = { 0, 0, 0 };
+	glm::vec2 GL_Context::currentSize = {0, 0};
+	bool GL_Context::autoResize = false;
 	void* GL_Context::context = nullptr;
 	void (*GL_Context::Draw) (void) = nullptr;
+
+	namespace {
+		Uint32 VAO, VBO, EBO;
+
+		float verticesQuad[16] = {
+			0,  0,  0, 0,
+			1,  0,  1, 0,
+			0, -1,  0, 1,
+			1, -1,  1, 1
+		};
+
+		const Uint32 indicesQuad[6] = {
+			0, 1, 2, 1, 2, 3
+		};
+	}
 
 	bool GL_Context::preInit() {
 		Log::info() << "PreInit OpenGL";
@@ -103,7 +120,7 @@ namespace EngineCore {
 				Window::size.x, Window::size.y
 			};
 
-			bool EnableBlend = true;
+			bool EnableBlend = true, autoResize = false;
 			Uint32 sfactor = GL_SRC_ALPHA, dfactor = GL_ONE_MINUS_SRC_ALPHA;
 
 			_config() {
@@ -112,6 +129,7 @@ namespace EngineCore {
 				Config config = ConfigReader::read("./opengl.txt");
 
 				if (config.isVar("EnableBlend")) EnableBlend = config.getBoolValue("EnableBlend");
+				if (config.isVar("autoResize")) autoResize = config.getBoolValue("autoResize");
 
 				if (config.isVar("viewportX")) viewport.x = config.getIntValue("viewportX");
 				if (config.isVar("viewportY")) viewport.y = config.getIntValue("viewportY");
@@ -155,11 +173,35 @@ namespace EngineCore {
 		} config;
 
 		Log::info() << "Set OpenGL parameters";
+		GL_Context::autoResize = config.autoResize;
+		currentSize = Window::size;
 		glViewport(config.viewport.x, config.viewport.y, config.viewport.z, config.viewport.w);
 		if (config.EnableBlend) {
 			glEnable(GL_BLEND);
 			glBlendFunc(config.sfactor, config.dfactor);
 		}
+
+		Log::info() << "Creating VAO, VBO and EBO for sprites";
+		
+		glGenVertexArrays(1, &VAO);
+		glGenBuffers(1, &VBO); 
+		glGenBuffers(1, &EBO);
+
+		glBindVertexArray(VAO);
+
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 16, verticesQuad, GL_DYNAMIC_DRAW);
+
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+		glEnableVertexAttribArray(1);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 6, indicesQuad, GL_DYNAMIC_DRAW);
+
+		Log::info() << "VAO(" << VAO << "); VBO(" << VBO << "); EBO(" << EBO << ")";
 
 		return true;
 	}
@@ -172,7 +214,10 @@ namespace EngineCore {
 
 		glFlush();
 		SDL_GL_SwapWindow(Window::window);
-		// autoresize
+		if (autoResize && currentSize != Window::size) {
+			glViewport(0, 0, (int)Window::size.x, (int)Window::size.y);
+			currentSize = Window::size;
+		}
 	}
 
 	void GL_Context::free() {

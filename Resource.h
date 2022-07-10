@@ -3,6 +3,8 @@
 
 #include <SDL.h>
 
+#include <SDL_image.h>
+
 #include <glad/glad.h>
 #include <SDL_opengl.h>
 

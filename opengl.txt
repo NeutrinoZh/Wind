@@ -6,15 +6,15 @@ alpha=1
 
 bufferSize=0
 doubleBuffer=true
-accelerated=false
+accelerated=true
 contextReleaseBehavior=true
 
 GLMajorVersion=3
 GLMinorVersion=3
 
-clearColorR=0
+clearColorR=1
 clearColorG=1
-clearColorB=0
+clearColorB=1
 
 viewportX=0
 viewportY=0

@@ -3,10 +3,14 @@
 namespace EngineCore {
 	Textures* Textures::textures = new Textures("textures");
 
+	Textures& textures() {
+		return *Textures::textures;
+	}
+
 	UINT32 Textures::load(std::string path) {
 		Log::info() << "Load texture:" << path;
 		
-		SDL_Surface* surface = SDL_LoadBMP(path.c_str());
+		SDL_Surface* surface = IMG_Load(path.c_str());
 		if (!surface) {
 			Log::error() << SDL_GetError();
 			return NULL;
