@@ -7,7 +7,8 @@ namespace EngineCore {
 		Config config = ConfigReader::read(path);
 		
 		if (config.isVar("angle")) sprite.angle = config.getFloatValue("angle");
-		if (config.isVar("texture")) sprite.texture = config.getIntValue("texture");
+		if (config.isVar("texture"))
+			sprite.texture = textures()[config.getStringValue("texture")];
 
 		if (config.isVar("colorR")) sprite.color.r = config.getFloatValue("colorR");
 		if (config.isVar("colorG")) sprite.color.g = config.getFloatValue("colorG");
@@ -38,9 +39,9 @@ namespace EngineCore {
 		transform = glm::scale(transform, glm::vec3(scale, 1.0f));
 
 		shader->use();
-		shader->setMat("tdProj", GL_Context::proj);
-		shader->setMat("tdTransform", transform);
-		shader->setVec4f("tdColor", color);
+		shader->setMat("Proj", GL_Context::proj);
+		shader->setMat("Transform", transform);
+		shader->setVec4f("Color", color);
 	}
 
 	void Sprite::draw() {

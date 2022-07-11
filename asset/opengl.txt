@@ -21,6 +21,7 @@ viewportY=0
 viewportW=800 
 viewportH=600
 
+autoResize=true
 EnableBlend=true
 BlendSfactor=GL_SRC_ALPHA
 BlendDfactor=GL_ONE_MINUS_SRC_ALPHA

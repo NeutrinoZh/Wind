@@ -39,7 +39,7 @@ namespace EngineCore {
 			_config() {
 				Log::info() << "Read OpenGL config file";
 
-				Config config = ConfigReader::read("./opengl.txt");
+				Config config = ConfigReader::read("./asset/opengl.txt");
 
 				if (config.isVar("red")) r = config.getIntValue("red");
 				if (config.isVar("green")) g = config.getIntValue("green");
@@ -127,7 +127,7 @@ namespace EngineCore {
 			_config() {
 				Log::info() << "Read OpenGL config";
 
-				Config config = ConfigReader::read("./opengl.txt");
+				Config config = ConfigReader::read("./asset/opengl.txt");
 
 				if (config.isVar("EnableBlend")) EnableBlend = config.getBoolValue("EnableBlend");
 				if (config.isVar("autoResize")) autoResize = config.getBoolValue("autoResize");
@@ -222,6 +222,8 @@ namespace EngineCore {
 		SDL_GL_SwapWindow(Window::window);
 		if (autoResize && currentSize != Window::size) {
 			glViewport(0, 0, (int)Window::size.x, (int)Window::size.y);
+			GL_Context::proj = glm::ortho(0.0f, Window::size.x / 100.f,
+										  0.0f, Window::size.y / 100.f, -1.f, 1.0f);
 			currentSize = Window::size;
 		}
 	}

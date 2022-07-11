@@ -1,0 +1,5 @@
+title=press W A S D to move
+sizeW=800
+sizeH=600
+delta=10
+SDL_WINDOW_OPENGL

@@ -33,7 +33,7 @@ namespace EngineCore {
 			Uint32 flags = SDL_WINDOW_SHOWN;
 
 			_config() {
-				Config config = ConfigReader::read("./config.txt");
+				Config config = ConfigReader::read("./asset/config.txt");
 
 				if (config.isVar("title")) title = config.getStringValue("title");
 				if (config.isVar("sizeW")) sizeW = config.getIntValue("sizeW");

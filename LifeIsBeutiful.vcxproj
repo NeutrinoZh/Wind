@@ -150,6 +150,7 @@
     <ClCompile Include="ConfigReader.cpp" />
     <ClCompile Include="D:\libs\glad\src\glad.c" />
     <ClCompile Include="EventHandler.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="main.cpp" />
@@ -161,9 +162,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConfigReader.h" />
+    <ClInclude Include="Dirt.h" />
+    <ClInclude Include="Engine.h" />
     <ClInclude Include="EventHandler.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Log.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Shaders.h" />
