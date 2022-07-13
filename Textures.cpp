@@ -7,7 +7,7 @@ namespace EngineCore {
 		return *Textures::textures;
 	}
 
-	UINT32 Textures::load(std::string path) {
+	Texture Textures::load(std::string path) {
 		struct _meta {
 			std::string path = "", name = "";
 			
@@ -17,6 +17,8 @@ namespace EngineCore {
 				magFilter = GL_LINEAR,
 				internalFormat = GL_RGBA,
 				format = GL_RGBA;
+
+			std::vector<std::pair<std::string, glm::vec4>> atlas = {};
 
 			_meta(std::string path) {
 				Log::info() << "Load metadata for texturre:" << path;
@@ -61,7 +63,22 @@ namespace EngineCore {
 				if (config.isVar("path")) this->path = config.getStringValue("path");
 				if (config.isVar("name"))       name = config.getStringValue("name");
 
+				for (Uint32 i = 0; i < 100; ++i) {
+					std::string str = std::to_string(i);
+					
+					std::string name = "";
+					glm::vec4 rect = { 0, 0, 1, 1 };
 
+					if (config.isVar(str)) name = config.getStringValue(str);
+					else break;
+
+					if (config.isVar(str + "x")) rect.x = config.getFloatValue(str + "x");
+					if (config.isVar(str + "y")) rect.y = config.getFloatValue(str + "y");
+					if (config.isVar(str + "w")) rect.z = config.getFloatValue(str + "w");
+					if (config.isVar(str + "h")) rect.w = config.getFloatValue(str + "h");
+
+					atlas.push_back({ name, rect });
+				}
 			}
 		} meta(path);
 
@@ -87,11 +104,17 @@ namespace EngineCore {
 			surface->w, surface->h, 0, meta.format,
 			GL_UNSIGNED_BYTE, surface->pixels);
 
-		this->add(meta.name, texture);
+		this->add(meta.name, Texture(texture));
+
+		for (Uint32 i = 0; i < meta.atlas.size(); ++i) {
+			Log::info() << "Create from " << meta.name << " texture: " << meta.atlas[i].first;
+			this->add(meta.atlas[i].first, Texture(texture, meta.atlas[i].second));
+		}
+
 		return texture;
 	}
 
-	void Textures::free(UINT32 texture) {
-		glDeleteTextures(1, &texture);
+	void Textures::free(Texture texture) {
+		glDeleteTextures(1, &texture.texture);
 	}
 }

@@ -37,6 +37,9 @@
     <Filter Include="Engine\GameObject">
       <UniqueIdentifier>{d30f63d3-04e7-4023-843a-c6c7e1086f4a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Net">
+      <UniqueIdentifier>{77ace87b-dcc5-41d1-aa0c-135bcf13d0d1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -74,6 +77,15 @@
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>Engine\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Animations.cpp">
+      <Filter>Engine\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Net.cpp">
+      <Filter>Engine\Net</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -121,6 +133,18 @@
     </ClInclude>
     <ClInclude Include="Dirt.h">
       <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Animations.h">
+      <Filter>Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Net.h">
+      <Filter>Engine\Net</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

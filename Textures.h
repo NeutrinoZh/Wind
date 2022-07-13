@@ -1,15 +1,15 @@
 #pragma once
-#include "Resource.h"
+#include "Texture.h"
 
 namespace EngineCore {
 	
-	class Textures : public Resource<UINT32> {
+	class Textures : public Resource<Texture> {
 	public:
-		Textures(std::string name) : Resource<UINT32>(name) {};
+		Textures(std::string name) : Resource<Texture>(name) {};
 		static Textures* textures;
 
-		UINT32 load(std::string);
-		void free(UINT32);
+		Texture load(std::string);
+		void free(Texture);
 	};
 	
 	Textures& textures();

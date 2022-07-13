@@ -1,0 +1,2 @@
+port=7709
+maxClients=5

@@ -30,7 +30,28 @@ namespace EngineCore {
 			return;
 		}
 
-		glBindTexture(GL_TEXTURE_2D, texture);
+		{
+			float verticesQuad[16] = {
+				0,  0,  0, 0,
+				1,  0,  1, 0,
+				0, -1,  0, 1,
+				1, -1,  1, 1
+			};
+
+			verticesQuad[2] = texture.rect.x;
+			verticesQuad[6] = texture.rect.z;
+			verticesQuad[10] = texture.rect.x;
+			verticesQuad[14] = texture.rect.z;
+
+			verticesQuad[3] = texture.rect.y;
+			verticesQuad[7] = texture.rect.y;
+			verticesQuad[11] = texture.rect.w;
+			verticesQuad[15] = texture.rect.w;
+
+			glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 16, verticesQuad, GL_DYNAMIC_DRAW);
+		}
+
+		glBindTexture(GL_TEXTURE_2D, texture.texture);
 
 		transform = glm::mat4(1);
 		transform = glm::translate(transform, glm::vec3(position + origin, 0));

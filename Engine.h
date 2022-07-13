@@ -4,6 +4,7 @@
 namespace EngineCore {
 
 	void (*Start) (void);
+	void (*Update) (void);
 
 	GameObject* scene = new GameObject();
 
@@ -13,7 +14,10 @@ namespace EngineCore {
 		}
 
 		bool postInit() {
-			return EngineCore::GL_Context::postInit();
+			return (
+				EngineCore::GL_Context::postInit() &&
+				EngineCore::Net::init()
+			);
 		}
 
 		void start() {
@@ -21,11 +25,11 @@ namespace EngineCore {
 
 			EngineCore::textures().loadFolder("asset/meta-textures/");
 			EngineCore::shaders().loadFolder("asset/meta-shaders/");
+			EngineCore::animations().loadFolder("asset/animations/");
 
 			Log::end() << "Success finish load resource";
 
 			Start();
-
 			scene->Start();
 		}
 
@@ -34,6 +38,9 @@ namespace EngineCore {
 		}
 
 		void update() {
+			Net::update();
+
+			Update();
 			scene->Update();
 
 			EngineCore::GL_Context::draw();
@@ -44,6 +51,8 @@ namespace EngineCore {
 
 			EngineCore::shaders().freeAll();
 			EngineCore::textures().freeAll();
+			
+			EngineCore::Net::free();
 			EngineCore::Window::free();
 			EngineCore::GL_Context::free();
 			

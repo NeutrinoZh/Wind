@@ -4,6 +4,7 @@
 #include <SDL.h>
 
 #include <SDL_image.h>
+#include <SDL_net.h>
 
 #include <glad/glad.h>
 #include <SDL_opengl.h>
