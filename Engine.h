@@ -9,6 +9,8 @@ namespace EngineCore {
 	GameObject* scene = new GameObject();
 
 	namespace {
+		clock_t lastTimeCallNetUpdate = 0;
+
 		bool preInit() {
 			return EngineCore::GL_Context::preInit();
 		}
@@ -40,8 +42,15 @@ namespace EngineCore {
 		void update() {
 			Net::update();
 
-			Update();
+			if (Update)
+				Update();
+			
 			scene->Update();
+
+			if (clock() > lastTimeCallNetUpdate + 30 && !Net::isServer) {
+				scene->NetUpdate();
+				lastTimeCallNetUpdate = clock();
+			}
 
 			EngineCore::GL_Context::draw();
 		}

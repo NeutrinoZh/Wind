@@ -2,7 +2,7 @@
 #pragma comment(lib, "Ws2_32.lib")
 
 namespace EngineCore {
-	bool Net::isServer = true;
+	bool Net::isServer = false;
 
 	bool Net::init() {
 		Log::info() << "SDL net init";
@@ -24,6 +24,7 @@ namespace EngineCore {
 	void Net::update() {
 		if (isServer)
 			Server::update();
+		else Client::update();
 	}
 
 	void Net::free() {
@@ -38,6 +39,11 @@ namespace EngineCore {
 	}
 
 	void Net::send(UDPsocket socket, IPaddress* ip, byte* data, Uint32 len) {
+		if (ip->host == 0 && ip->port == 0) {
+			Log::error() << "Couldn't send data to NULL ip";
+			return;
+		}
+
 		UDPpacket* packet = SDLNet_AllocPacket(len);
 		
 		if (!packet) {
@@ -57,7 +63,7 @@ namespace EngineCore {
 			Log::error() << "SDLNet_UDP_Send:" << SDLNet_GetError();
 	}
 
-	UDPpacket* Net::recieved(UDPsocket socket, SDLNet_SocketSet socket_set, Uint32 len) {
+	UDPpacket* Net::recieved(UDPsocket socket, Uint32 len) {
 		UDPpacket* packet = SDLNet_AllocPacket(len);
 		
 		if (!packet) {
@@ -65,35 +71,35 @@ namespace EngineCore {
 			return NULL;
 		}
 
-		int num_ready = SDLNet_CheckSockets(socket_set, 1000);
-		if (num_ready > 0) {
-			int result = SDLNet_UDP_Recv(socket, packet);
+		int result = SDLNet_UDP_Recv(socket, packet);
 
-			if (result == -1) {
-				Log::error() << SDLNet_GetError();
-				return NULL;
-			}
-
-			if (result == 0)
-				return NULL;
-			
-			return packet;
+		if (result == -1) {
+			Log::error() << SDLNet_GetError();
+			return NULL;
 		}
 
-		Log::warning() << "Connection timed out";
-		return NULL;
+		if (result == 0)
+			return NULL;
+			
+		return packet;
 	}
 
 	//---------------------------------------------------//
 
 	Server Server::self = Server();
+	void (*Server::RequestHandler) (Uint16 code, byte* data, Uint32 len) = NULL;
+	void (*Server::ConnectHandler) (Uint32 id) = NULL;
+
+	namespace {
+		const Uint32 DISCONNECT = 9797;
+		const Uint32 CONNECT = 9798;
+	};
 
 	void Server::start() {
 		Log::info() << "Launched NetUDPServer...";
 
 		struct _config {
 			int port = 7708;
-			int maxClients = 10;
 
 			_config(std::string path) {
 				Log::info() << "Read config NetUDPServer";
@@ -101,7 +107,6 @@ namespace EngineCore {
 				Config config = ConfigReader::read(path);
 
 				if (config.isVar("port")) port = config.getIntValue("port");
-				if (config.isVar("maxClients")) maxClients = config.getIntValue("maxClients");
 			}
 		} config("asset/server.txt");
 
@@ -113,7 +118,7 @@ namespace EngineCore {
 			return;
 		}
 
-		self.socket_set = SDLNet_AllocSocketSet(config.maxClients + 1);
+		self.socket_set = SDLNet_AllocSocketSet(1);
 		if (self.socket_set == NULL) {
 			Log::error() << SDLNet_GetError();
 			return;
@@ -131,6 +136,17 @@ namespace EngineCore {
 		self.run = true;
 	}
 
+	Uint32 Server::getID() {
+		for (Uint32 i = 0; i < self.clients.size(); ++i)
+			if (
+			  self.clients[i].host == 0 &&
+			  self.clients[i].port == 0
+			) return i;
+		
+		self.clients.push_back(IPaddress());
+		return self.clients.size() - 1;
+	}
+
 	void Server::update() {
 		if (!self.run) return;
 
@@ -138,32 +154,48 @@ namespace EngineCore {
 
 		if (num_ready > 0) {
 			if (SDLNet_SocketReady(self.server_socket)) {
-				UDPpacket* packet = Net::recieved(self.server_socket, self.socket_set, 6);
-				if (!packet)
+				UDPpacket* packet = Net::recieved(self.server_socket, 128);
+				if (!packet) {
 					return;
+				}
 
-				Log::info() << "Processing new connection (" << self.clients.size() << ")";
-			
-				IPaddress ip;
+				Uint16 code;
+				memcpy(&code, &packet->data[0], sizeof(Uint16));
+				if (code == DISCONNECT) {
+					Uint32 id;
+					memcpy(&id, &packet->data[2], sizeof(Uint32));
 
-				memcpy(&ip.port, &packet->data[0], 2);
-				memcpy(&ip.host, &packet->data[2], 4);
+					Log::info() << "Net. Processing disconnect (" << id << ")";
 
-				const char* data = "LifeIsBeutifulServer";
-				Net::send(self.server_socket, &ip, (byte*)data, 21);
+					self.clients[id].host = self.clients[id].port = 0;
+				} else if (code == CONNECT) {
+					Uint32 id = getID();
+					Log::info() << "Net. Processing new connection (" << id << ")";
+
+					IPaddress ip;
+
+					memcpy(&ip.port, &packet->data[2], 2);
+					memcpy(&ip.host, &packet->data[4], 4);
+
+					byte data[4];
+					memcpy(&data[0], &id, sizeof(Uint32));
+
+					Net::send(self.server_socket, &ip, (byte*)data, sizeof(Uint32));
+
+					self.clients[id] = ip;
+
+					SDLNet_FreePacket(packet);
+
+					if (ConnectHandler)
+						ConnectHandler(id);
+				} else {
+					if (RequestHandler)
+						RequestHandler(code, packet->data, packet->len);
+					else
+						Log::warning() << "Net. Missing castom request handler; Code:" << code;
+				}
 			}
 		}
-	}
-
-	// ?
-	void Server::close(UDPsocket socket) {
-		if (
-			SDLNet_UDP_DelSocket(self.socket_set, socket) == -1
-		) {
-			Log::error() << SDLNet_GetError();
-			return;
-		}
-		SDLNet_UDP_Close(socket);
 	}
 
 	void Server::free() {
@@ -171,14 +203,32 @@ namespace EngineCore {
 
 		Log::info() << "Free memory from NetUDPServer";
 
-		close(self.server_socket);
+		if (
+			SDLNet_UDP_DelSocket(self.socket_set, self.server_socket) == -1
+		) {
+			Log::error() << SDLNet_GetError();
+			return;
+		}
+		SDLNet_UDP_Close(self.server_socket);
 
 		SDLNet_FreeSocketSet(self.socket_set);
 	}
 
+
+	void Server::Send(Uint32 id, byte* data, Uint32 len) {
+		if (!self.run) {
+			Log::warning() << "Failed to send data because the server was not started";
+			return;
+		}
+
+		Net::send(self.server_socket, &self.clients[id], (byte*)data, len);
+	}
+
+
 	//---------------------------------------------------//
 
 	Client Client::self = Client();
+	void (*Client::ResponseHandler) (byte* data, Uint32 len) = NULL;
 
 	void Client::connect() {
 		Log::info() << "Launched NetUDPClient...";
@@ -241,25 +291,66 @@ namespace EngineCore {
 			return;
 		}
 
+		byte data[8];
+		memcpy(&data[0], &CONNECT, 2);
+		memcpy(&data[2], &ip.port, 2);
+		memcpy(&data[4], &ip.host, 4);
+
+		Net::send(self.client_socket, &self.ip, data, 8);
+		
+		Uint32 num_ready = SDLNet_CheckSockets(self.socket_set, 1000);
+		if (num_ready > 0) {
+			UDPpacket* package = Net::recieved(self.client_socket, sizeof(Uint32));
+			if (!package) {
+				Log::error() << "Couldn't connect to server";
+				return;
+			}
+
+			memcpy(&self.id, &package->data[0], sizeof(Uint32));
+			self.run = true;
+
+			Log::info() << "Connected with ID:" << self.id;
+		} else {
+			Log::warning() << "Connection timeout";
+		}
+	}
+
+	void Client::update() {
+		if (!self.run) return;
+
+		Uint32 num_ready = SDLNet_CheckSockets(self.socket_set, 0);
+
+		if (num_ready > 0) {
+			if (SDLNet_SocketReady(self.client_socket)) {
+				UDPpacket* package = Net::recieved(self.client_socket, 128);
+				if (!package)
+					return;
+
+				if (ResponseHandler)
+					ResponseHandler(package->data, package->len);
+				else Log::warning() << "Net. Missing ResponseHandler";
+
+				SDLNet_FreePacket(package);
+			}
+		}
+	}
+
+	void Client::disconnect() {
+		if (!self.run) return;
+
+		Log::info() << "Disconnect...";
+
 		byte data[6];
-		memcpy(&data[0], &ip.port, 2);
-		memcpy(&data[2], &ip.host, 4);
+		memcpy(&data[0], &DISCONNECT, 2);
+		memcpy(&data[2], &self.id, 4);
 
 		Net::send(self.client_socket, &self.ip, data, 6);
-		
-		UDPpacket* package = Net::recieved(self.client_socket, self.socket_set, 21);
-		if (!package) {
-			Log::error() << "Couldn't connect to server";
-			return;
-		}
-
-		Log::info() << package->data;
-
-		self.run = true;
 	}
 
 	void Client::free() {
 		if (!self.run) return;
+
+		disconnect();
 
 		Log::info() << "Free memory from NetUDPClient";
 
@@ -272,5 +363,14 @@ namespace EngineCore {
 		SDLNet_UDP_Close(self.client_socket);
 
 		SDLNet_FreeSocketSet(self.socket_set);
+	}
+
+	void Client::Send(byte* data, Uint32 len) {
+		if (!self.run) {
+			Log::warning() << "Failed to send data because there is no connection to the server";
+			return;
+		}
+
+		Net::send(self.client_socket, &self.ip, data, len);
 	}
 }
