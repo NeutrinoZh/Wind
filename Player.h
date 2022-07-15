@@ -8,8 +8,11 @@ namespace Game {
 		EngineCore::Animation* current = nullptr;
 
 		bool toMove;
+		bool toSend = false;
 	public:
+		
 		Uint32 ID;
+		Uint8 direction;
 
 		Player(Uint32 ID, bool toMove) : ID(ID), toMove(toMove) {}
 
@@ -37,24 +40,37 @@ namespace Game {
 		void update() {
 			current->update();
 
-			if (!toMove) return;
+			if (toMove) {
+				if (EngineCore::Keyboard::isPressed(SDLK_w)) { toSend = true; sprite.position.y += 0.03f; direction = 0; }
+				if (EngineCore::Keyboard::isPressed(SDLK_a)) { toSend = true; sprite.position.x -= 0.03f; direction = 1; }
+				if (EngineCore::Keyboard::isPressed(SDLK_s)) { toSend = true; sprite.position.y -= 0.03f; direction = 2; }
+				if (EngineCore::Keyboard::isPressed(SDLK_d)) { toSend = true; sprite.position.x += 0.03f; direction = 3; }
 
-			if (EngineCore::Keyboard::isPressed(SDLK_w)) { sprite.position.y += 0.03f; current = &top;    }
-			if (EngineCore::Keyboard::isPressed(SDLK_a)) { sprite.position.x -= 0.03f; current = &left;   }
-			if (EngineCore::Keyboard::isPressed(SDLK_s)) { sprite.position.y -= 0.03f; current = &bottom; }
-			if (EngineCore::Keyboard::isPressed(SDLK_d)) { sprite.position.x += 0.03f; current = &right;  }
+				if (sprite.position.x > 8)  sprite.position.x = -1;
+				if (sprite.position.y > 8)  sprite.position.y = 0;
+				if (sprite.position.x < -1) sprite.position.x = 8;
+				if (sprite.position.y < 0)  sprite.position.y = 8;
+			}
+
+			if (direction == 0) current = &top;
+			if (direction == 1) current = &left;
+			if (direction == 2) current = &bottom;
+			if (direction == 3) current = &right;
+
 		}
 
 		void netUpdate() {
-			if (!toMove) return;
+			if (!toMove || !toSend) return;
+			toSend = false;
 
-			byte data[14];
+			byte data[15];
 			memcpy(&data[0],  &NET_PLAYER_MOVE, 2);
 			memcpy(&data[2],  &sprite.position.x, 4);
 			memcpy(&data[6],  &sprite.position.y, 4);
 			memcpy(&data[10], &ID, 4);
+			memcpy(&data[14], &direction, 1);
 
-			EngineCore::Client::Send(data, 14);
+			EngineCore::Client::Send(data, 15);
 		}
 	};
 }

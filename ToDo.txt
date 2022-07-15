@@ -1,2 +1,2 @@
 - return null or false in resource manager
-- autoresize canvas opengl
++ autoresize canvas opengl

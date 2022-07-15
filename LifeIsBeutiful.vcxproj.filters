@@ -87,6 +87,12 @@
     <ClCompile Include="Net.cpp">
       <Filter>Engine\Net</Filter>
     </ClCompile>
+    <ClCompile Include="Client.cpp">
+      <Filter>Engine\Net</Filter>
+    </ClCompile>
+    <ClCompile Include="Server.cpp">
+      <Filter>Engine\Net</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -145,6 +151,15 @@
     </ClInclude>
     <ClInclude Include="Net.h">
       <Filter>Engine\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="Client.h">
+      <Filter>Engine\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="Server.h">
+      <Filter>Engine\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="Online.h">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
