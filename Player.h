@@ -33,8 +33,8 @@ namespace Game {
 
 			current = &left;
 
-			sprite.position.x = (10 + rand() % 50) / 10.f;
-			sprite.position.y = (10 + rand() % 50) / 10.f;
+			sprite.position.x = (8 + rand() % 4);
+			sprite.position.y = (8 + rand() % 4);
 		}
 
 		void update() {
@@ -46,10 +46,25 @@ namespace Game {
 				if (EngineCore::Keyboard::isPressed(SDLK_s)) { toSend = true; sprite.position.y -= delta(0.03f); direction = 2; }
 				if (EngineCore::Keyboard::isPressed(SDLK_d)) { toSend = true; sprite.position.x += delta(0.03f); direction = 3; }
 
-				if (sprite.position.x > 8)  sprite.position.x = -1;
-				if (sprite.position.y > 8)  sprite.position.y = 0;
-				if (sprite.position.x < -1) sprite.position.x = 8;
-				if (sprite.position.y < 0)  sprite.position.y = 8;
+				float sx = EngineCore::Window::size.x / 200,
+					  sy = EngineCore::Window::size.y / 200;
+
+				glm::vec2 cameraPosition = sprite.position - glm::vec2(
+					sx-sprite.scale.x/2,
+					sy+sprite.scale.y/2
+				);
+
+				if (cameraPosition.x < 0) cameraPosition.x = 0;
+				if (cameraPosition.y < 0) cameraPosition.y = 0;
+				if (cameraPosition.x > 8) cameraPosition.x = 8;
+				if (cameraPosition.y > 10) cameraPosition.y = 10;
+
+				if (sprite.position.x < 0)    sprite.position.x = 0;
+				if (sprite.position.y < 1.35) sprite.position.y = 1.35;
+				if (sprite.position.x > 15)   sprite.position.x = 15;
+				if (sprite.position.y > 16)   sprite.position.y = 16;
+
+				EngineCore::camera().position = cameraPosition;
 			}
 
 			if (direction == 0) current = &top;

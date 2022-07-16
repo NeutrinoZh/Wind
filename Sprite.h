@@ -1,5 +1,5 @@
 #pragma once
-#include "Shaders.h"
+#include "Camera.h"
 
 namespace EngineCore {
 	class Sprite {

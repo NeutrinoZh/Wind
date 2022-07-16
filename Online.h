@@ -47,10 +47,23 @@ namespace Game {
 			} else if (code == NET_MAP_GENERATE) {
 				memcpy(&seed, &data[2], 4);
 
-				srand(seed);
 				for (Uint32 x = 0; x < 16; ++x)
 					for (Uint32 y = 0; y < 16; ++y)
-						tilemap->tilemap.map[x][y] = (rand() % 10 > 7) ? 1 : 2;
+						tilemap->tilemap.map[x][y] = 2;
+
+				EngineCore::perlinNoiseSeed(seed);
+				float temp[16][16];
+				for (Uint32 x = 0; x < 16; ++x)
+					for (Uint32 y = 0; y < 16; ++y)
+						temp[x][y]  = EngineCore::multiPerlinNoise(x / 10.f, y / 10.f, 3, 0.8f);
+
+				EngineCore::perlinNoiseSeed(seed-rand());
+				for (Uint32 x = 0; x < 16; ++x)
+					for (Uint32 y = 0; y < 16; ++y) {
+						float h = EngineCore::multiPerlinNoise(x / 4.f, y / 4.f, 3, 0.8f);
+						if (h > 0.05) 
+							tilemap->tilemap.map[x][y] = temp[x][y] > 0.05 ? 3 : 1;
+					}
 			}
 		}
 
@@ -122,6 +135,7 @@ namespace Game {
 				std::vector<IPaddress> clients = EngineCore::Server::getClients();
 				for (Uint32 i = 0; i < clients.size(); ++i) {
 					if (clients[i].port == NULL) continue;
+					if (i == ID) continue;
 
 					byte data[15];
 

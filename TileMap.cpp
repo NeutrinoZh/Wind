@@ -15,7 +15,7 @@ namespace EngineCore {
 
 		transform = glm::mat4(1);
 		transform = glm::scale(transform, glm::vec3(scale, 1.0f));
-		transform = glm::translate(transform, glm::vec3(position, 0));
+		transform = glm::translate(transform, glm::vec3(position - camera().position, 0));
 
 		float verticesQuad[16] = {
 			0,  0,  0, 0,
