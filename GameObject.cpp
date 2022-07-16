@@ -64,8 +64,5 @@ namespace EngineCore {
 
 		if (config.isVar("sprite"))
 			object->sprite = Sprite::builder(config.getStringValue("sprite"));
-
-		if (config.isVar("shader"))
-			object->sprite.shader = shaders()[config.getStringValue("shader")];
 	}
 }

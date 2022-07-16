@@ -96,6 +96,12 @@
     <ClCompile Include="Engine.cpp">
       <Filter>Engine\Core</Filter>
     </ClCompile>
+    <ClCompile Include="Tile.cpp">
+      <Filter>Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="TileMap.cpp">
+      <Filter>Engine\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -140,7 +146,7 @@
     <ClInclude Include="Player.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Dirt.h">
+    <ClInclude Include="NetCodes.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Animation.h">
@@ -163,6 +169,15 @@
     </ClInclude>
     <ClInclude Include="Online.h">
       <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="TileMap.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="TileMapObject.h">
+      <Filter>Engine\GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

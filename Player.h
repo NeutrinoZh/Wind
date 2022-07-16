@@ -1,5 +1,5 @@
 #pragma once
-#include "Dirt.h"
+#include "NetCodes.h"
 
 namespace Game {
 	class Player : public EngineCore::GameObject {
@@ -41,10 +41,10 @@ namespace Game {
 			current->update();
 
 			if (toMove) {
-				if (EngineCore::Keyboard::isPressed(SDLK_w)) { toSend = true; sprite.position.y += 0.03f; direction = 0; }
-				if (EngineCore::Keyboard::isPressed(SDLK_a)) { toSend = true; sprite.position.x -= 0.03f; direction = 1; }
-				if (EngineCore::Keyboard::isPressed(SDLK_s)) { toSend = true; sprite.position.y -= 0.03f; direction = 2; }
-				if (EngineCore::Keyboard::isPressed(SDLK_d)) { toSend = true; sprite.position.x += 0.03f; direction = 3; }
+				if (EngineCore::Keyboard::isPressed(SDLK_w)) { toSend = true; sprite.position.y += delta(0.03f); direction = 0; }
+				if (EngineCore::Keyboard::isPressed(SDLK_a)) { toSend = true; sprite.position.x -= delta(0.03f); direction = 1; }
+				if (EngineCore::Keyboard::isPressed(SDLK_s)) { toSend = true; sprite.position.y -= delta(0.03f); direction = 2; }
+				if (EngineCore::Keyboard::isPressed(SDLK_d)) { toSend = true; sprite.position.x += delta(0.03f); direction = 3; }
 
 				if (sprite.position.x > 8)  sprite.position.x = -1;
 				if (sprite.position.y > 8)  sprite.position.y = 0;

@@ -24,8 +24,6 @@ namespace Game {
 						player->direction = direction;
 					}
 			} else if (code == NET_PLAYER_CREATE) {
-				Log::debug() << "NET_PLAYER_CREATE!: " << ID;
-
 				for (Player* player : players)
 					if (player->ID == ID)
 						return;
@@ -41,13 +39,18 @@ namespace Game {
 				players.back()->sprite.position.x = x;
 				players.back()->sprite.position.y = y;
 			} else if (code == NET_PLAYER_DESTROY) {
-				Log::debug() << "PLAYER DESTROY: " << ID;
-
 				for (Uint32 i = 0; i < players.size(); ++i)
 					if (players[i]->ID == ID) {
 						EngineCore::Core::scene->DeleteObject(players[i]);
 						players.erase(players.begin() + i);
 					}
+			} else if (code == NET_MAP_GENERATE) {
+				memcpy(&seed, &data[2], 4);
+
+				srand(seed);
+				for (Uint32 x = 0; x < 16; ++x)
+					for (Uint32 y = 0; y < 16; ++y)
+						tilemap->tilemap.map[x][y] = (rand() % 10 > 7) ? 1 : 2;
 			}
 		}
 
@@ -82,6 +85,10 @@ namespace Game {
 					EngineCore::Server::Send(ID, NET_PLAYER_CREATE, data2, 14);
 				}
 			}
+
+			byte data3[6];
+			memcpy(&data3[2], &seed, 4);
+			EngineCore::Server::Send(ID, NET_MAP_GENERATE, data3, 6);
 		}
 
 		void DisconnectHandler(Uint32 ID) {

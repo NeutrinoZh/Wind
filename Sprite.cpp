@@ -14,19 +14,20 @@ namespace EngineCore {
 		if (config.isVar("colorG")) sprite.color.g = config.getFloatValue("colorG");
 		if (config.isVar("colorB")) sprite.color.b = config.getFloatValue("colorB");
 
-
 		if (config.isVar("scaleX")) sprite.scale.x = config.getFloatValue("scaleX");
 		if (config.isVar("scaleY")) sprite.scale.y = config.getFloatValue("scaleY");
 
 		if (config.isVar("originX")) sprite.origin.x = config.getFloatValue("originX");
 		if (config.isVar("originY")) sprite.origin.y = config.getFloatValue("originY");
 
+		if (config.isVar("shader")) sprite.shader = shaders()[config.getStringValue("shader")];
+
 		return sprite;
 	}
 
 	void Sprite::useShader() {
 		if (!shader) {
-			Log::error() << "When drawing shader been NULL";
+			Log::error() << "When sprite drawing shader been NULL";
 			return;
 		}
 

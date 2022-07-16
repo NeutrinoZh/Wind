@@ -1,5 +1,5 @@
 #pragma once
-#include "GameObject.h"
+#include "TileMapObject.h"
 
 namespace EngineCore {
 
@@ -50,7 +50,7 @@ namespace EngineCore {
 			
 			Core::scene->Update();
 
-			if (clock() > lastTimeCallNetUpdate + 30 && !Net::isServer) {
+			if (clock() > lastTimeCallNetUpdate + 15 && !Net::isServer) {
 				Core::scene->NetUpdate();
 				lastTimeCallNetUpdate = clock();
 			}

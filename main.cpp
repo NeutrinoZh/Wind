@@ -2,7 +2,13 @@
 
 namespace Game {
 	void start() {
-		EngineCore::Core::scene->AddObject(new Dirt());
+		tilemap = new EngineCore::TileMapObject(
+			EngineCore::TileMap::builder("./asset/tilemap/tilemap.meta")
+		);
+		EngineCore::Core::scene->AddObject(tilemap);
+		
+		if (EngineCore::Net::isServer)
+			seed = time(0); 
 	}
 }
 

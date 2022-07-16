@@ -1,5 +1,5 @@
 #pragma once
-#include "Animations.h"
+#include "TileMap.h"
 
 namespace EngineCore {
 	class GameObject {
@@ -13,7 +13,7 @@ namespace EngineCore {
 		virtual void draw() {};
 	public:
 
-		Sprite sprite;
+		Sprite sprite; // !
 
 		void Start();
 		void NetUpdate();

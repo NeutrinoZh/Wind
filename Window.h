@@ -25,5 +25,5 @@ namespace EngineCore {
 		static void quit();
 	};
 
-	#define delta(a) (a) * Window::delta
+	#define delta(a) (a) * EngineCore::Window::delta
 }
