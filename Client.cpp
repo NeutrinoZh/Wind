@@ -2,7 +2,7 @@
 
 namespace EngineCore {
 	Client Client::self = Client();
-	void (*Client::ResponseHandler) (byte* data, Uint32 len) = NULL;
+	void (*Client::ResponseHandler) (Uint16 code, byte* data, Uint32 len) = NULL;
 
 	void Client::connect() {
 		Log::info() << "Launched NetUDPClient...";
@@ -107,9 +107,12 @@ namespace EngineCore {
 				if (!package)
 					return;
 
-				if (ResponseHandler)
-					ResponseHandler(package->data, package->len);
-				else Log::warning() << "Net. Missing ResponseHandler";
+				if (ResponseHandler) {
+					Uint16 code;
+					memcpy(&code, &package->data[0], 2);
+
+					ResponseHandler(code, package->data, package->len);
+				} else Log::warning() << "Net. Missing ResponseHandler";
 
 				SDLNet_FreePacket(package);
 			}
@@ -146,11 +149,14 @@ namespace EngineCore {
 		SDLNet_FreeSocketSet(self.socket_set);
 	}
 
-	void Client::Send(byte* data, Uint32 len) {
+	void Client::Send(byte* data, Uint16 code, Uint32 len) {
 		if (!self.run) {
 			Log::warning() << "Failed to send data because there is no connection to the server";
 			return;
 		}
+
+		memcpy(&data[0], &code,	   2);
+		memcpy(&data[2], &self.id, 4);
 
 		Net::send(self.client_socket, &self.ip, data, len);
 	}

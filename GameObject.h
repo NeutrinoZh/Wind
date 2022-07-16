@@ -21,8 +21,8 @@ namespace EngineCore {
 		void Draw();
 		void Free();
 
-		virtual void ProcessNetData(byte* data, Uint32 len) {};
-
+		std::vector<GameObject*> getObjects();
+		void DeleteObject(GameObject* object);
 		void AddObject(GameObject* object);
 
 		static void builder(std::string path, GameObject* object);

@@ -15,10 +15,12 @@ namespace EngineCore {
 
 		static Server self;
 	public:
-		static void (*RequestHandler) (Uint16 code, byte* data, Uint32 len);
+		static void (*RequestHandler) (Uint16 code, Uint32 ID, byte* data, Uint32 len);
 		static void (*ConnectHandler) (Uint32 id);
+		static void (*DisconnectHandler) (Uint32 id);
 
-		static void Send(Uint32 id, byte* data, Uint32 len);
+		static std::vector<IPaddress> getClients();
+		static void Send(Uint32 id, Uint16 code, byte* data, Uint32 len);
 
 		static void start();
 		static void update();

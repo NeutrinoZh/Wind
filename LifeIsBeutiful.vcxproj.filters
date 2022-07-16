@@ -93,6 +93,9 @@
     <ClCompile Include="Server.cpp">
       <Filter>Engine\Net</Filter>
     </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Engine\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">

@@ -34,6 +34,19 @@ namespace EngineCore {
 			object->Draw();
 	}
 
+	std::vector<GameObject*> GameObject::getObjects() {
+		return objects;
+	}
+
+	void GameObject::DeleteObject(GameObject* delObject) {
+		for (Uint32 i = 0; i < objects.size(); ++i)
+			if (delObject == objects[i]) {
+				objects.erase(objects.begin() + i);
+				delObject->Free();
+				delete delObject;
+			}
+	}
+
 	void GameObject::Free() {
 		for (GameObject* object : objects)
 			if (object) {

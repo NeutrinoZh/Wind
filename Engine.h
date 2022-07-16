@@ -3,11 +3,14 @@
 
 namespace EngineCore {
 
-	void (*Start) (void);
-	void (*Update) (void);
+	struct Core {
+		static void (*Start) (void);
+		static void (*Update) (void);
 
-	GameObject* scene = new GameObject();
-
+		static GameObject* scene;
+		static int loop();
+	};
+	
 	namespace {
 		clock_t lastTimeCallNetUpdate = 0;
 
@@ -31,24 +34,24 @@ namespace EngineCore {
 
 			Log::end() << "Success finish load resource";
 
-			Start();
-			scene->Start();
+			Core::Start();
+			Core::scene->Start();
 		}
 
 		void draw() {
-			scene->Draw();
+			Core::scene->Draw();
 		}
 
 		void update() {
 			Net::update();
 
-			if (Update)
-				Update();
+			if (Core::Update)
+				Core::Update();
 			
-			scene->Update();
+			Core::scene->Update();
 
 			if (clock() > lastTimeCallNetUpdate + 30 && !Net::isServer) {
-				scene->NetUpdate();
+				Core::scene->NetUpdate();
 				lastTimeCallNetUpdate = clock();
 			}
 
@@ -65,34 +68,10 @@ namespace EngineCore {
 			EngineCore::Window::free();
 			EngineCore::GL_Context::free();
 			
-			scene->Free();
-			delete scene;
+			Core::scene->Free();
+			delete Core::scene;
 
 			Log::end() << "Memory cleaning procedure finished";
 		}
-	}
-
-	int loop() {
-		Log::config([](auto& self) {
-			self.outConsole = true;
-			self.folderToSave = "./asset/logs/";
-			self.numSpace = 2;
-		});
-
-		EngineCore::Window::PreInit = preInit;
-		EngineCore::Window::PostInit = postInit;
-		EngineCore::Window::Start = start;
-		EngineCore::Window::Update = update;
-		EngineCore::GL_Context::Draw = draw;
-
-		if (!EngineCore::Window::init()) {
-			Log::error() << "Error init window";
-			return EXIT_FAILURE;
-		}
-
-		EngineCore::Window::loop();
-		free();
-
-		return EXIT_SUCCESS;
 	}
 }

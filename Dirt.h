@@ -3,7 +3,8 @@
 
 namespace Game {
 	Uint16 NET_PLAYER_MOVE = 0;
-	Uint16 NET_CREATE_PLAYER = 1;
+	Uint16 NET_PLAYER_CREATE = 1;
+	Uint16 NET_PLAYER_DESTROY = 2;
 
 	class Dirt : public EngineCore::GameObject {
 		void start() {

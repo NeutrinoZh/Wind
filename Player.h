@@ -12,7 +12,7 @@ namespace Game {
 	public:
 		
 		Uint32 ID;
-		Uint8 direction;
+		Uint8 direction = 0;
 
 		Player(Uint32 ID, bool toMove) : ID(ID), toMove(toMove) {}
 
@@ -33,8 +33,8 @@ namespace Game {
 
 			current = &left;
 
-			sprite.position.x = 2;
-			sprite.position.y = 2;
+			sprite.position.x = (10 + rand() % 50) / 10.f;
+			sprite.position.y = (10 + rand() % 50) / 10.f;
 		}
 
 		void update() {
@@ -64,13 +64,11 @@ namespace Game {
 			toSend = false;
 
 			byte data[15];
-			memcpy(&data[0],  &NET_PLAYER_MOVE, 2);
-			memcpy(&data[2],  &sprite.position.x, 4);
-			memcpy(&data[6],  &sprite.position.y, 4);
-			memcpy(&data[10], &ID, 4);
+			memcpy(&data[6],  &sprite.position.x, 4);
+			memcpy(&data[10],  &sprite.position.y, 4);
 			memcpy(&data[14], &direction, 1);
 
-			EngineCore::Client::Send(data, 15);
+			EngineCore::Client::Send(data, NET_PLAYER_MOVE, 15);
 		}
 	};
 }

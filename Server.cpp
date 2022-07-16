@@ -2,8 +2,9 @@
 
 namespace EngineCore {
 	Server Server::self = Server();
-	void (*Server::RequestHandler) (Uint16 code, byte* data, Uint32 len) = NULL;
+	void (*Server::RequestHandler) (Uint16 code, Uint32 ID, byte* data, Uint32 len) = NULL;
 	void (*Server::ConnectHandler) (Uint32 id) = NULL;
+	void (*Server::DisconnectHandler) (Uint32 id) = NULL;
 
 	void Server::start() {
 		Log::info() << "Launched NetUDPServer...";
@@ -77,21 +78,19 @@ namespace EngineCore {
 
 					Log::info() << "Net. Processing disconnect (" << id << ")";
 
+					if (DisconnectHandler)
+						DisconnectHandler(id);
+
 					self.clients[id].host = self.clients[id].port = 0;
-				}
-				else if (code == CONNECT) {
+				} else if (code == CONNECT) {
 					Uint32 id = getID();
-					Log::info() << "Net. Processing new connection (" << id << ")";
 
 					IPaddress ip;
 
 					memcpy(&ip.port, &packet->data[2], 2);
 					memcpy(&ip.host, &packet->data[4], 4);
 
-					byte data[4];
-					memcpy(&data[0], &id, sizeof(Uint32));
-
-					Net::send(self.server_socket, &ip, (byte*)data, sizeof(Uint32));
+					Log::info() << "Net. Processing new connection (" << id << ") " << ip.host << ":" << ip.port;
 
 					for (IPaddress i : self.clients)
 						if (ip.host == i.host && ip.port == i.port) {
@@ -99,14 +98,21 @@ namespace EngineCore {
 							return;
 						}
 
+					byte data[4];
+					memcpy(&data[0], &id, sizeof(Uint32));
+
+					Net::send(self.server_socket, &ip, (byte*)data, sizeof(Uint32));
+
 					self.clients[id] = ip;
 
 					if (ConnectHandler)
 						ConnectHandler(id);
-				}
-				else {
+				} else {
+					Uint32 ID;
+					memcpy(&ID, &packet->data[2], sizeof(Uint32));
+
 					if (RequestHandler)
-						RequestHandler(code, packet->data, packet->len);
+						RequestHandler(code, ID, packet->data, packet->len);
 					else
 						Log::warning() << "Net. Missing castom request handler; Code:" << code;
 				}
@@ -132,12 +138,17 @@ namespace EngineCore {
 		SDLNet_FreeSocketSet(self.socket_set);
 	}
 
+	std::vector<IPaddress> Server::getClients() {
+		return self.clients;
+	}
 
-	void Server::Send(Uint32 id, byte* data, Uint32 len) {
+	void Server::Send(Uint32 id, Uint16 code, byte* data, Uint32 len) {
 		if (!self.run) {
 			Log::warning() << "Failed to send data because the server was not started";
 			return;
 		}
+
+		memcpy(&data[0], &code, 2);
 
 		Net::send(self.server_socket, &self.clients[id], (byte*)data, len);
 	}

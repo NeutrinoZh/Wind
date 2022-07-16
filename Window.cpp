@@ -45,6 +45,7 @@ namespace EngineCore {
 				if (config.isVar("SDL_WINDOW_FULLSCREEN_DESKTOP")) flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 				if (config.isVar("SDL_WINDOW_RESIZABLE")) flags |= SDL_WINDOW_RESIZABLE;
 				if (config.isVar("SDL_WINDOW_BORDERLESS")) flags |= SDL_WINDOW_BORDERLESS;
+				if (config.isVar("SDL_WINDOW_HIDDEN")) flags |= SDL_WINDOW_HIDDEN;
 			}
 		} config;
 

@@ -2,7 +2,7 @@
 #pragma comment(lib, "Ws2_32.lib")
 
 namespace EngineCore {
-	bool Net::isServer = false;
+	bool Net::isServer = true;
 
 	bool Net::init() {
 		Log::info() << "SDL net init";
@@ -14,7 +14,8 @@ namespace EngineCore {
 
 		if (isServer) {
 			Server::start();
-		} else {
+		}
+		else {
 			Client::connect();
 		}
 
@@ -45,7 +46,7 @@ namespace EngineCore {
 		}
 
 		UDPpacket* packet = SDLNet_AllocPacket(len);
-		
+
 		if (!packet) {
 			Log::error() << "Couldn't alloc UDP packet";
 			return;
@@ -54,18 +55,18 @@ namespace EngineCore {
 		packet->address.host = ip->host;
 		packet->address.port = ip->port;
 		packet->len = len;
-		
+
 		memcpy(packet->data, data, len);
 
 		if (
 			SDLNet_UDP_Send(socket, -1, packet) == 0
-		)
+			)
 			Log::error() << "SDLNet_UDP_Send:" << SDLNet_GetError();
 	}
 
 	UDPpacket* Net::recieved(UDPsocket socket, Uint32 len) {
 		UDPpacket* packet = SDLNet_AllocPacket(len);
-		
+
 		if (!packet) {
 			Log::error() << "Couldn't alloc UDP packet";
 			return NULL;
@@ -80,7 +81,7 @@ namespace EngineCore {
 
 		if (result == 0)
 			return NULL;
-			
+
 		return packet;
 	}
 }
