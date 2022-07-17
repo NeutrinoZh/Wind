@@ -8,7 +8,7 @@ namespace EngineCore {
 	public:
 		Shader* shader = nullptr;
 
-		glm::vec2 position = { 0, 1 },
+		glm::vec2 position = { 0, 0 },
 				  scale    = { 1, 1 };
 	public:
 		std::vector<
@@ -21,7 +21,7 @@ namespace EngineCore {
 
 		TileMap(Uint32 x, Uint32 y);
 
-		void draw();
+		void draw(Uint32 w, Uint32 h);
 		static TileMap builder(std::string path);
 	};
 }

@@ -63,21 +63,33 @@ namespace EngineCore {
 				if (config.isVar("path")) this->path = config.getStringValue("path");
 				if (config.isVar("name"))       name = config.getStringValue("name");
 
-				for (Uint32 i = 0; i < 100; ++i) {
-					std::string str = std::to_string(i);
-					
-					std::string name = "";
-					glm::vec4 rect = { 0, 0, 1, 1 };
 
-					if (config.isVar(str)) name = config.getStringValue(str);
-					else break;
+				int x = 0, y = 0;
+				if (config.isVar("gridX")) x = config.getIntValue("gridX");
+				if (config.isVar("gridY")) y = config.getIntValue("gridY");
 
-					if (config.isVar(str + "x")) rect.x = config.getFloatValue(str + "x");
-					if (config.isVar(str + "y")) rect.y = config.getFloatValue(str + "y");
-					if (config.isVar(str + "w")) rect.z = config.getFloatValue(str + "w");
-					if (config.isVar(str + "h")) rect.w = config.getFloatValue(str + "h");
+				if (x + y != 0) {
+					float stepX = 1.f / x,
+						  stepY = 1.f / y;
 
-					atlas.push_back({ name, rect });
+					for (Uint32 i = 0; i < x * y; ++i) {
+						std::string str = std::to_string(i);
+
+						std::string name = "";
+						glm::vec4 rect = {
+							(i % x) * stepX,
+							(i / x) * stepY,
+							(i % x) * stepX + stepX,
+							(i / x) * stepY + stepY
+						};
+
+						if (config.isVar(str))
+							name = config.getStringValue(str);
+						else
+							Log::warning() << "Missing sprite " << i << " from " << this->name;
+
+						atlas.push_back({ name, rect });
+					}
 				}
 			}
 		} meta(path);

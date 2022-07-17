@@ -4,47 +4,54 @@
 namespace Game {
 	class Player : public EngineCore::GameObject {
 	private:
-		EngineCore::Animation left, right, top, bottom;
-		EngineCore::Animation* current = nullptr;
+		EngineCore::Animator animator;
 
 		bool toMove;
 		bool toSend = false;
+
+		const float speed = 0.03;
 	public:
 		
 		Uint32 ID;
-		Uint8 direction = 0;
+		Uint8 state = 0;
 
 		Player(Uint32 ID, bool toMove) : ID(ID), toMove(toMove) {}
 
 		void start() {
 			builder("./asset/gameobjects/player.meta", this);
 			
-			left = EngineCore::animations()["player-run-left"];
-			left.sprite = &sprite;
+			animator.sprite = &sprite;
 
-			right = EngineCore::animations()["player-run-right"];
-			right.sprite = &sprite;
+			animator.add("player-run-left");
+			animator.add("player-run-right");
+			animator.add("player-run-top");
+			animator.add("player-run-bottom");
+			animator.add("player-stay-left");
+			animator.add("player-stay-right");
+			animator.add("player-stay-top");
+			animator.add("player-stay-bottom");
 
-			top = EngineCore::animations()["player-run-top"];
-			top.sprite = &sprite;
-
-			bottom = EngineCore::animations()["player-run-bottom"];
-			bottom.sprite = &sprite;
-
-			current = &left;
-
-			sprite.position.x = (8 + rand() % 4);
-			sprite.position.y = (8 + rand() % 4);
+			animator.set("player-run-left");
 		}
 
 		void update() {
-			current->update();
+			animator.update();
 
 			if (toMove) {
-				if (EngineCore::Keyboard::isPressed(SDLK_w)) { toSend = true; sprite.position.y += delta(0.03f); direction = 0; }
-				if (EngineCore::Keyboard::isPressed(SDLK_a)) { toSend = true; sprite.position.x -= delta(0.03f); direction = 1; }
-				if (EngineCore::Keyboard::isPressed(SDLK_s)) { toSend = true; sprite.position.y -= delta(0.03f); direction = 2; }
-				if (EngineCore::Keyboard::isPressed(SDLK_d)) { toSend = true; sprite.position.x += delta(0.03f); direction = 3; }
+				glm::vec2 velocity = { 0, 0 };
+
+				if      (EngineCore::Keyboard::isPressed(SDLK_w)) { toSend = true; velocity.y =  delta(speed); state = 0; }
+				else if (EngineCore::Keyboard::isPressed(SDLK_s)) { toSend = true; velocity.y = -delta(speed); state = 2; }
+				
+				if      (EngineCore::Keyboard::isPressed(SDLK_a)) { toSend = true; velocity.x = -delta(speed); state = 1; }
+				else if (EngineCore::Keyboard::isPressed(SDLK_d)) { toSend = true; velocity.x =  delta(speed); state = 3; }
+
+				if (velocity.x == 0 && velocity.y == 0.f && state < 4) {
+					toSend = true;
+					state += 4;
+				}
+
+				sprite.position += velocity;
 
 				float sx = EngineCore::Window::size.x / 200,
 					  sy = EngineCore::Window::size.y / 200;
@@ -54,23 +61,18 @@ namespace Game {
 					sy+sprite.scale.y/2
 				);
 
-				if (cameraPosition.x < 0) cameraPosition.x = 0;
-				if (cameraPosition.y < 0) cameraPosition.y = 0;
-				if (cameraPosition.x > 8) cameraPosition.x = 8;
-				if (cameraPosition.y > 10) cameraPosition.y = 10;
-
-				if (sprite.position.x < 0)    sprite.position.x = 0;
-				if (sprite.position.y < 1.35) sprite.position.y = 1.35;
-				if (sprite.position.x > 15)   sprite.position.x = 15;
-				if (sprite.position.y > 16)   sprite.position.y = 16;
-
 				EngineCore::camera().position = cameraPosition;
 			}
 
-			if (direction == 0) current = &top;
-			if (direction == 1) current = &left;
-			if (direction == 2) current = &bottom;
-			if (direction == 3) current = &right;
+			if (state == 0) animator.set("player-run-top");
+			if (state == 1) animator.set("player-run-left");
+			if (state == 2) animator.set("player-run-bottom");
+			if (state == 3) animator.set("player-run-right");
+
+			if (state == 4) animator.set("player-stay-top");
+			if (state == 5) animator.set("player-stay-left");
+			if (state == 6) animator.set("player-stay-bottom");
+			if (state == 7) animator.set("player-stay-right");
 
 		}
 
@@ -80,8 +82,8 @@ namespace Game {
 
 			byte data[15];
 			memcpy(&data[6],  &sprite.position.x, 4);
-			memcpy(&data[10],  &sprite.position.y, 4);
-			memcpy(&data[14], &direction, 1);
+			memcpy(&data[10], &sprite.position.y, 4);
+			memcpy(&data[14], &state, 1);
 
 			EngineCore::Client::Send(data, NET_PLAYER_MOVE, 15);
 		}

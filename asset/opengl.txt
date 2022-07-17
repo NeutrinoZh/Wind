@@ -18,8 +18,8 @@ clearColorB=1
 
 viewportX=0
 viewportY=0
-viewportW=800 
-viewportH=600
+viewportW=1280 
+viewportH=720
 
 autoResize=true
 EnableBlend=true

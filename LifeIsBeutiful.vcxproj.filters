@@ -194,6 +194,9 @@
     <ClInclude Include="Perlin.h">
       <Filter>Engine\Math</Filter>
     </ClInclude>
+    <ClInclude Include="Animator.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ToDo.txt">

@@ -7,11 +7,14 @@ namespace EngineCore {
 			map[i].resize(y);
 	}
 
-	void TileMap::draw() {
+	void TileMap::draw(Uint32 w, Uint32 h) {
 		if (!shader) {
 			Log::error() << "When tilmap drawing shader been NULL";
 			return;
 		}
+
+		int cx = camera().position.x - position.x,
+			cy = camera().position.y - position.y;
 
 		transform = glm::mat4(1);
 		transform = glm::scale(transform, glm::vec3(scale, 1.0f));
@@ -28,6 +31,9 @@ namespace EngineCore {
 			for (Uint32 y = 0; y < map[x].size(); ++y) {
 				if (y != 0)
 					transform = glm::translate(transform, glm::vec3(0, scale.y, 0));
+
+				if (!(x >= cx && x < cx + w && y > cy && y <= cy + h))
+					continue;
 
 				if (map[x][y] == NULL)
 					continue;
@@ -74,6 +80,9 @@ namespace EngineCore {
 
 		if (config.isVar("scaleX")) tilemap.scale.x = config.getFloatValue("scaleX");
 		if (config.isVar("scaleY")) tilemap.scale.y = config.getFloatValue("scaleY");
+
+		if (config.isVar("x")) tilemap.position.x = config.getFloatValue("x");
+		if (config.isVar("y")) tilemap.position.y = config.getFloatValue("y");
 
 		Uint32 i = 0;
 		while (config.isVar(std::to_string(i))) {
