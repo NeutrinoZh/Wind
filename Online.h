@@ -33,17 +33,17 @@ namespace Game {
 		for (Uint32 x = 0; x < w; ++x) {
 			for (Uint32 y = 0; y < h; ++y) {
 				float high;
+				float dist = std::sqrt(std::pow(64.f - x, 2) + std::pow(64.f - y, 2)) / 96;
 
-				high = std::sin(((float)(x + 40) / (w / 2))) * std::sin(((float)(y + 40) / (h / 2)));
-				high *= EngineCore::multiPerlinNoise(x / 32.f, y / 32.f, 1, 0.8f);
+				high = EngineCore::multiPerlinNoise(x / 48.f, y / 48.f, 2, 0.8f);
+				high += 0.05 - 1 * pow(dist, 2);
 
-				if (high > 0.08) {
+				if (high > 0.09) {
 					if (temp[x][y] > 0.05) tilemap->tilemap.map[x][y] = 1;
 					else				   tilemap->tilemap.map[x][y] = 2;
 
-					if (high > 0.3) tilemap->tilemap.map[x][y] = 4;
-				}
-				else if (high > 0.02) tilemap->tilemap.map[x][y] = 3;
+					if (high > 0.2) tilemap->tilemap.map[x][y] = 4;
+				}  else if (high > 0.04) tilemap->tilemap.map[x][y] = 3;
 			}
 		}
 	}
@@ -104,8 +104,14 @@ namespace Game {
 			EngineCore::Core::scene->AddObject(players[ID]);
 			players[ID]->Start();
 
-			players[ID]->sprite.position.x = (-5 + rand() % 10);
-			players[ID]->sprite.position.y = (-5 + rand() % 10);
+			int x = 0, y = 0;
+			do {
+				x = rand() % tilemap->tilemap.map.size();
+				y = rand() % tilemap->tilemap.map[0].size();
+			} while (tilemap->tilemap.map[x][y] == 5);
+			
+			players[ID]->sprite.position.x = -64 + x;
+			players[ID]->sprite.position.y = -64 + y;
 
 			byte data1[14];
 			memcpy(&data1[2], &ID, 4);

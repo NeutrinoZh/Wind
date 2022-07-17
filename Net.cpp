@@ -2,7 +2,7 @@
 #pragma comment(lib, "Ws2_32.lib")
 
 namespace EngineCore {
-	bool Net::isServer = false;
+	bool Net::isServer = true;
 
 	bool Net::init() {
 		Log::info() << "SDL net init";
