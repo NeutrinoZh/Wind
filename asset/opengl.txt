@@ -4,6 +4,7 @@ green=3
 blue=2
 alpha=1
 
+depthSize=0
 bufferSize=0
 doubleBuffer=false
 accelerated=true

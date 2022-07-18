@@ -29,6 +29,7 @@ namespace EngineCore {
 		struct _config {
 			Uint8 r = 3, g = 3, b = 3, a = 0;
 			Uint8 bufferSize = 0;
+			Uint8 depthSize = 16;
 			bool doubleBuffer = false,
 				 accelerated = false,
 				 contextReleaseBehavior = false;
@@ -46,7 +47,9 @@ namespace EngineCore {
 				if (config.isVar("blue")) b = config.getIntValue("blue");
 				if (config.isVar("alpha")) a = config.getIntValue("alpha");
 
+				if (config.isVar("depthSize")) depthSize = config.getIntValue("depthSize");
 				if (config.isVar("bufferSize")) bufferSize = config.getIntValue("bufferSize");
+
 				if (config.isVar("doubleBuffer")) doubleBuffer = config.getBoolValue("doubleBuffer");
 				if (config.isVar("accelerated")) accelerated = config.getBoolValue("accelerated");
 				if (config.isVar("contextReleaseBehavior")) contextReleaseBehavior = config.getBoolValue("contextReleaseBehavior");
@@ -75,6 +78,7 @@ namespace EngineCore {
 		GL_Context::color = config.color;
 
 		UINT8 success =
+			SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, config.depthSize) +
 			SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, config.doubleBuffer) +
 			SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, config.accelerated) +
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, config.GL_Major) +

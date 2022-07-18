@@ -43,6 +43,9 @@
     <Filter Include="Engine\Math">
       <UniqueIdentifier>{f23f8d86-d548-45df-828d-41324c5dba97}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Physics">
+      <UniqueIdentifier>{9e23f2ff-fabe-4d36-9677-6bb45088153d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -196,6 +199,12 @@
     </ClInclude>
     <ClInclude Include="Animator.h">
       <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="MapGenerate.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics.h">
+      <Filter>Engine\Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

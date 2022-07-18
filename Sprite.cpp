@@ -55,9 +55,8 @@ namespace EngineCore {
 		glBindTexture(GL_TEXTURE_2D, texture.texture);
 
 		transform = glm::mat4(1);
-		transform = glm::translate(transform, glm::vec3(position - camera().position + origin, 0));
+		transform = glm::translate(transform, glm::vec3(position - camera().position - origin, 0));
 		transform = glm::rotate(transform, glm::radians(angle), glm::vec3(0, 0, 1));
-		transform = glm::translate(transform, glm::vec3(-origin, 0));
 		transform = glm::scale(transform, glm::vec3(scale, 1.0f));
 
 		shader->use();

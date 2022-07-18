@@ -1,2 +1,6 @@
 - return null or false in resource manager
 + autoresize canvas opengl
+- Update Config Reader
+- NetCodes to static 
+- Allocate udp package 
+- package order

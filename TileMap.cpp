@@ -66,6 +66,12 @@ namespace EngineCore {
 		}
 	}
 
+	Tile TileMap::getTile(Uint32 x, Uint32 y) {
+		if (map[x][y] != NULL)
+			return tiles[map[x][y] - 1];
+		return Tile();
+	}
+
 	TileMap TileMap::builder(std::string path) {
 		Uint32 w = 0, h = 0;
 

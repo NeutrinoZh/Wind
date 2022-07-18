@@ -18,6 +18,7 @@ namespace EngineCore {
 		std::vector<Tile> tiles;
 
 		void addTile(Tile tile);
+		Tile getTile(Uint32 x, Uint32 y);
 
 		TileMap(Uint32 x, Uint32 y);
 

@@ -3,15 +3,20 @@
 namespace Game {
 	void start() {
 		
-		tilemap = new EngineCore::TileMapObject(
-			EngineCore::TileMap::builder("./asset/tilemap/tilemap.meta")
+		background = new EngineCore::TileMapObject(
+			EngineCore::TileMap::builder("./asset/tilemap/background.meta")
 		);
-		EngineCore::Core::scene->AddObject(tilemap);
+		EngineCore::Core::scene->AddObject(background);
 		
+		foreground = new EngineCore::TileMapObject(
+			EngineCore::TileMap::builder("./asset/tilemap/foreground.meta")
+		);
+		EngineCore::Core::scene->AddObject(foreground);
+
 		if (EngineCore::Net::isServer) {
 			seed = time(0);
 
-			generate();
+			mapGenerate("./asset/generator.meta");
 			
 			SDL_Surface* surface = SDL_CreateRGBSurface(NULL, 128, 128, 32, 0, 0, 0, 0);
 			Uint32* pixels = (Uint32*)surface->pixels;
@@ -20,11 +25,11 @@ namespace Game {
 				for (Uint32 y = 0; y < 128; ++y) {
 					Uint32 color = 0;
 
-					if (tilemap->tilemap.map[x][y] == 5) color = SDL_MapRGBA(surface->format, 0, 0, 255, 255);
-					if (tilemap->tilemap.map[x][y] == 4) color = SDL_MapRGBA(surface->format, 132, 132, 132, 255);
-					if (tilemap->tilemap.map[x][y] == 3) color = SDL_MapRGBA(surface->format, 248, 235, 0, 255);
-					if (tilemap->tilemap.map[x][y] == 2) color = SDL_MapRGBA(surface->format, 0, 255, 0, 255);
-					if (tilemap->tilemap.map[x][y] == 1) color = SDL_MapRGBA(surface->format, 113, 42, 30, 255);
+					if (background->tilemap.map[x][y] == 5) color = SDL_MapRGBA(surface->format, 0, 0, 255, 255);
+					if (background->tilemap.map[x][y] == 4) color = SDL_MapRGBA(surface->format, 132, 132, 132, 255);
+					if (background->tilemap.map[x][y] == 3) color = SDL_MapRGBA(surface->format, 248, 235, 0, 255);
+					if (background->tilemap.map[x][y] == 2) color = SDL_MapRGBA(surface->format, 0, 255, 0, 255);
+					if (background->tilemap.map[x][y] == 1) color = SDL_MapRGBA(surface->format, 113, 42, 30, 255);
 
 					pixels[x + (128 * y)] = color;
 				}

@@ -1,53 +1,7 @@
 #pragma once
-#include "Player.h"
-
+#include "MapGenerate.h"
 
 namespace Game {
-	void generate() {
-		Uint32 w = tilemap->tilemap.map.size(),
-			h = tilemap->tilemap.map[0].size();
-
-		for (Uint32 x = 0; x < w; ++x)
-			for (Uint32 y = 0; y < h; ++y)
-				tilemap->tilemap.map[x][y] = 5;
-
-		//=============================================//
-		EngineCore::perlinNoiseSeed(seed);
-
-		std::vector<std::vector<float>> temp;
-		temp.resize(w);
-		for (Uint32 x = 0; x < w; ++x) {
-			temp[x].resize(h);
-			for (Uint32 y = 0; y < h; ++y)
-				temp[x][y] = EngineCore::multiPerlinNoise(x / 32.f, y / 32.f, 3, 0.8f);
-		}
-		//=============================================//
-
-		// 1 - dirt
-		// 2 - grass
-		// 3 - sand
-		// 4 - stone
-		// 5 - water
-
-		EngineCore::perlinNoiseSeed(seed - rand());
-		for (Uint32 x = 0; x < w; ++x) {
-			for (Uint32 y = 0; y < h; ++y) {
-				float high;
-				float dist = std::sqrt(std::pow(64.f - x, 2) + std::pow(64.f - y, 2)) / 96;
-
-				high = EngineCore::multiPerlinNoise(x / 48.f, y / 48.f, 2, 0.8f);
-				high += 0.05 - 1 * pow(dist, 2);
-
-				if (high > 0.09) {
-					if (temp[x][y] > 0.05) tilemap->tilemap.map[x][y] = 1;
-					else				   tilemap->tilemap.map[x][y] = 2;
-
-					if (high > 0.2) tilemap->tilemap.map[x][y] = 4;
-				}  else if (high > 0.04) tilemap->tilemap.map[x][y] = 3;
-			}
-		}
-	}
-
 	namespace Online {
 		std::vector<Player*> players;
 
@@ -92,7 +46,7 @@ namespace Game {
 					}
 			} else if (code == NET_MAP_GENERATE) {
 				memcpy(&seed, &data[2], 4);
-				generate();
+				mapGenerate("./asset/generator.meta");
 			}
 		}
 
@@ -106,12 +60,12 @@ namespace Game {
 
 			int x = 0, y = 0;
 			do {
-				x = rand() % tilemap->tilemap.map.size();
-				y = rand() % tilemap->tilemap.map[0].size();
-			} while (tilemap->tilemap.map[x][y] == 5);
+				x = rand() % background->tilemap.map.size();
+				y = rand() % background->tilemap.map[0].size();
+			} while (background->tilemap.getTile(x, y).solid || foreground->tilemap.getTile(x, y).solid);
 			
-			players[ID]->sprite.position.x = -64 + x;
-			players[ID]->sprite.position.y = -64 + y;
+			players[ID]->sprite.position.x = -64 + x + players[ID]->sprite.origin.x;
+			players[ID]->sprite.position.y = -64 + y + players[ID]->sprite.origin.y;
 
 			byte data1[14];
 			memcpy(&data1[2], &ID, 4);

@@ -5,6 +5,7 @@ namespace Game {
 	class Player : public EngineCore::GameObject {
 	private:
 		EngineCore::Animator animator;
+		EngineCore::Body body;
 
 		bool toMove;
 		bool toSend = false;
@@ -32,6 +33,11 @@ namespace Game {
 			animator.add("player-stay-bottom");
 
 			animator.set("player-run-left");
+		
+			body.position = &sprite.position;
+			body.size = { 3/16.f, 5/16.f };
+			body.tilemaps.push_back(&background->tilemap);
+			body.tilemaps.push_back(&foreground->tilemap);
 		}
 
 		void update() {
@@ -51,14 +57,14 @@ namespace Game {
 					state += 4;
 				}
 
-				sprite.position += velocity;
+				body.move(velocity);
 
 				float sx = EngineCore::Window::size.x / 200,
 					  sy = EngineCore::Window::size.y / 200;
 
 				glm::vec2 cameraPosition = sprite.position - glm::vec2(
-					sx-sprite.scale.x/2,
-					sy+sprite.scale.y/2
+					sx-sprite.scale.x/2+sprite.origin.x,
+					sy+sprite.scale.y/2+sprite.origin.y
 				);
 
 				EngineCore::camera().position = cameraPosition;
