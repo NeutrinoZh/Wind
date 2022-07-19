@@ -37,15 +37,15 @@ namespace Game {
 			}
 		} config(path);
 
-		Uint32 w = background->tilemap.map.size(),
-			   h = background->tilemap.map[0].size();
+		Uint32 w = game().background->tilemap.map.size(),
+			   h = game().background->tilemap.map[0].size();
 
 		for (Uint32 x = 0; x < w; ++x)
 			for (Uint32 y = 0; y < h; ++y)
-				background->tilemap.map[x][y] = 5;
+				game().background->tilemap.map[x][y] = 5;
 
 		//=============================================//
-		EngineCore::perlinNoiseSeed(seed);
+		EngineCore::perlinNoiseSeed(game().seed);
 
 		std::vector<std::vector<float>> temp;
 		temp.resize(w);
@@ -63,7 +63,7 @@ namespace Game {
 		// 4 - stone
 		// 5 - water
 
-		EngineCore::perlinNoiseSeed(seed - rand());
+		EngineCore::perlinNoiseSeed(game().seed - rand());
 		for (Uint32 x = 0; x < w; ++x) {
 			for (Uint32 y = 0; y < h; ++y) {
 				float high, dist;
@@ -80,12 +80,12 @@ namespace Game {
 				high += config.distanceA - config.distanceB * pow(dist, config.distanceC);
 
 				if (high > 0.09) {
-					if (temp[x][y] > 0.05) background->tilemap.map[x][y] = 1;
-					else				   background->tilemap.map[x][y] = 2;
+					if (temp[x][y] > 0.05) game().background->tilemap.map[x][y] = 1;
+					else				   game().background->tilemap.map[x][y] = 2;
 
-					if (high > 0.2) background->tilemap.map[x][y] = 4;
-					else if (rand() % 8 == 0) foreground->tilemap.map[x][y] = 1;
-				} else if (high > 0.04) background->tilemap.map[x][y] = 3;
+					if (high > 0.2) game().background->tilemap.map[x][y] = 4;
+					else if (rand() % 8 == 0) game().foreground->tilemap.map[x][y] = 1;
+				} else if (high > 0.04) game().background->tilemap.map[x][y] = 3;
 			}
 		}
 	}

@@ -2,8 +2,7 @@
 
 namespace EngineCore {
 	Server Server::self = Server();
-	void (*Server::RequestHandler) (Uint16 code, Uint32 ID, byte* data, Uint32 len) = NULL;
-	void (*Server::ConnectHandler) (Uint32 id) = NULL;
+	void (*Server::ConnectHandler)	  (Uint32 id) = NULL;
 	void (*Server::DisconnectHandler) (Uint32 id) = NULL;
 
 	void Server::start() {
@@ -47,15 +46,15 @@ namespace EngineCore {
 		self.run = true;
 	}
 
-	Uint32 Server::getID() {
-		for (Uint32 i = 0; i < self.clients.size(); ++i)
+	Uint16 Server::getID() {
+		for (Uint32 i = 1; i < self.clients.size(); ++i)
 			if (
 				self.clients[i].host == 0 &&
 				self.clients[i].port == 0
 				) return i;
 
 		self.clients.push_back(IPaddress());
-		return self.clients.size() - 1;
+		return (Uint16)(self.clients.size() - 1);
 	}
 
 	void Server::update() {
@@ -65,59 +64,41 @@ namespace EngineCore {
 
 		if (num_ready > 0) {
 			if (SDLNet_SocketReady(self.server_socket)) {
-				UDPpacket* packet = Net::recieved(self.server_socket, 128);
-				if (!packet) {
+				UDPpacket* udp_packet = Net::recieved(self.server_socket, 128);
+				if (!udp_packet) {
 					return;
 				}
 
-				Uint16 code;
-				memcpy(&code, &packet->data[0], sizeof(Uint16));
-				if (code == DISCONNECT) {
-					Uint32 id;
-					memcpy(&id, &packet->data[2], sizeof(Uint32));
-
-					Log::info() << "Net. Processing disconnect (" << id << ")";
-
-					if (DisconnectHandler)
-						DisconnectHandler(id);
-
-					self.clients[id].host = self.clients[id].port = 0;
-				} else if (code == CONNECT) {
-					Uint32 id = getID();
+				Packet packet = Packet(udp_packet->data, udp_packet->len);
+				
+				Uint16 clientID = packet.c_data;
+				if (clientID == NULL) {
+					clientID = Server::getID();
 
 					IPaddress ip;
+					ip.port = packet.read<Uint16>();
+					ip.host = packet.read<Uint32>();
 
-					memcpy(&ip.port, &packet->data[2], 2);
-					memcpy(&ip.host, &packet->data[4], 4);
+					Log::info() << "Server. Proccesing new connection (" << clientID << ") " << ip.host << ":" << ip.port;
 
-					Log::info() << "Net. Processing new connection (" << id << ") " << ip.host << ":" << ip.port;
+					if (ip.port == 0 || ip.host == 0) {
+						Log::warning() << "A null IP was specified in the connection request. The request is ignored.";
+						return;
+					}
 
-					for (IPaddress i : self.clients)
-						if (ip.host == i.host && ip.port == i.port) {
-							Log::info() << "The client is already connected, so will ignore the request.";
-							return;
-						}
+					self.clients[clientID] = ip;
 
-					byte data[4];
-					memcpy(&data[0], &id, sizeof(Uint32));
+					Packet response = Packet(2);
+					response.write<Uint16>(clientID);
+					response.packetID = packet.packetID + 1;
 
-					Net::send(self.server_socket, &ip, (byte*)data, sizeof(Uint32));
+					Server::Send(clientID, response);
+				} 
 
-					self.clients[id] = ip;
+				if (clientID > self.clients.size())
+					Log::warning() << "Server. Packet data received with invalid ID: " << clientID;
 
-					if (ConnectHandler)
-						ConnectHandler(id);
-				} else {
-					Uint32 ID;
-					memcpy(&ID, &packet->data[2], sizeof(Uint32));
-
-					if (RequestHandler)
-						RequestHandler(code, ID, packet->data, packet->len);
-					else
-						Log::warning() << "Net. Missing castom request handler; Code:" << code;
-				}
-
-				SDLNet_FreePacket(packet);
+				SDLNet_FreePacket(udp_packet);
 			}
 		}
 	}
@@ -142,14 +123,16 @@ namespace EngineCore {
 		return self.clients;
 	}
 
-	void Server::Send(Uint32 id, Uint16 code, byte* data, Uint32 len) {
+	void Server::Send(Uint16 clientID, Packet packet) {
 		if (!self.run) {
 			Log::warning() << "Failed to send data because the server was not started";
 			return;
 		}
 
-		memcpy(&data[0], &code, 2);
+		memcpy(&packet.data[0], &packet.code, 2);
+		memcpy(&packet.data[2], &packet.packetID, 2);
+		memcpy(&packet.data[4], &packet.c_data, 2);
 
-		Net::send(self.server_socket, &self.clients[id], (byte*)data, len);
+		Net::send(self.server_socket, &self.clients[clientID], packet.data, packet.len);
 	}
 }

@@ -9,18 +9,17 @@ namespace EngineCore {
 		UDPsocket server_socket;
 		SDLNet_SocketSet socket_set;
 
-		std::vector<IPaddress> clients;
+		std::vector<IPaddress> clients = { IPaddress() };
 
-		static Uint32 getID();
+		static Uint16 getID();
 
 		static Server self;
 	public:
-		static void (*RequestHandler) (Uint16 code, Uint32 ID, byte* data, Uint32 len);
 		static void (*ConnectHandler) (Uint32 id);
 		static void (*DisconnectHandler) (Uint32 id);
 
 		static std::vector<IPaddress> getClients();
-		static void Send(Uint32 id, Uint16 code, byte* data, Uint32 len);
+		static void Send(Uint16 clientID, Packet packet);
 
 		static void start();
 		static void update();

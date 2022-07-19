@@ -2,7 +2,6 @@
 
 namespace EngineCore {
 	Client Client::self = Client();
-	void (*Client::ResponseHandler) (Uint16 code, byte* data, Uint32 len) = NULL;
 
 	void Client::connect() {
 		Log::info() << "Launched NetUDPClient...";
@@ -65,35 +64,15 @@ namespace EngineCore {
 			return;
 		}
 
-		byte data[8];
-		memcpy(&data[0], &CONNECT, 2);
-		memcpy(&data[2], &ip.port, 2);
-		memcpy(&data[4], &ip.host, 4);
+		self.run = true;
 
-		Uint32 num_ready;
+		Packet packet = Packet(6);
+		packet.write<Uint16>(ip.port);
+		packet.write<Uint32>(ip.host);
 
-		for (Uint32 i = 0; i < 100; ++i) {
-			Net::send(self.client_socket, &self.ip, data, 8);
-			num_ready = SDLNet_CheckSockets(self.socket_set, 10);
-			if (num_ready > 0)
-				break;
-		}
+		Log::info() << "SEND DATA " << ip.host << ":" << ip.port;
 
-		if (num_ready > 0) {
-			UDPpacket* package = Net::recieved(self.client_socket, sizeof(Uint32));
-			if (!package) {
-				Log::error() << "Couldn't connect to server";
-				return;
-			}
-
-			memcpy(&self.id, &package->data[0], sizeof(Uint32));
-			self.run = true;
-
-			Log::info() << "Connected with ID:" << self.id;
-		}
-		else {
-			Log::warning() << "Connection timeout";
-		}
+		Client::Send(packet);
 	}
 
 	void Client::update() {
@@ -107,12 +86,7 @@ namespace EngineCore {
 				if (!package)
 					return;
 
-				if (ResponseHandler) {
-					Uint16 code;
-					memcpy(&code, &package->data[0], 2);
-
-					ResponseHandler(code, package->data, package->len);
-				} else Log::warning() << "Net. Missing ResponseHandler";
+				Log::info() << "RESPONSE";
 
 				SDLNet_FreePacket(package);
 			}
@@ -124,11 +98,6 @@ namespace EngineCore {
 
 		Log::info() << "Disconnect...";
 
-		byte data[6];
-		memcpy(&data[0], &DISCONNECT, 2);
-		memcpy(&data[2], &self.id, 4);
-
-		Net::send(self.client_socket, &self.ip, data, 6);
 	}
 
 	void Client::free() {
@@ -149,15 +118,18 @@ namespace EngineCore {
 		SDLNet_FreeSocketSet(self.socket_set);
 	}
 
-	void Client::Send(byte* data, Uint16 code, Uint32 len) {
+	void Client::Send(Packet packet) {
 		if (!self.run) {
 			Log::warning() << "Failed to send data because there is no connection to the server";
 			return;
 		}
 
-		memcpy(&data[0], &code,	   2);
-		memcpy(&data[2], &self.id, 4);
+		packet.c_data = self.id;
 
-		Net::send(self.client_socket, &self.ip, data, len);
+		memcpy(&packet.data[0], &packet.code, 2);
+		memcpy(&packet.data[2], &packet.packetID, 2);
+		memcpy(&packet.data[4], &packet.c_data, 2);
+
+		Net::send(self.client_socket, &self.ip, packet.data, packet.len);
 	}
 }

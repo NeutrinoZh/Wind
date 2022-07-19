@@ -1,5 +1,5 @@
 #pragma once
-#include "Perlin.h"
+#include "Packet.h"
 
 namespace EngineCore {
 	class Client {
@@ -14,9 +14,7 @@ namespace EngineCore {
 
 		static Client self;
 	public:
-		static void (*ResponseHandler) (Uint16 code, byte* data, Uint32 len);
-
-		static void Send(byte* data, Uint16 code, Uint32 len);
+		static void Send(Packet packet);
 
 		static void update();
 		static void connect();

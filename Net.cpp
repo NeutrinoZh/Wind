@@ -14,8 +14,7 @@ namespace EngineCore {
 
 		if (isServer) {
 			Server::start();
-		}
-		else {
+		} else {
 			Client::connect();
 		}
 
@@ -41,7 +40,7 @@ namespace EngineCore {
 
 	void Net::send(UDPsocket socket, IPaddress* ip, byte* data, Uint32 len) {
 		if (ip->host == 0 && ip->port == 0) {
-			Log::error() << "Couldn't send data to NULL ip";
+			Log::error() << "Couldn't send data to NULL ip " << ip->host << ":" << ip->port;
 			return;
 		}
 
@@ -59,7 +58,7 @@ namespace EngineCore {
 		memcpy(packet->data, data, len);
 
 		if (
-			SDLNet_UDP_Send(socket, -1, packet) == 0
+			SDLNet_UDP_Send(socket, -1, packet) != 1
 			)
 			Log::error() << "SDLNet_UDP_Send:" << SDLNet_GetError();
 	}

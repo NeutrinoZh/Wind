@@ -1,5 +1,5 @@
 #pragma once
-#include "NetCodes.h"
+#include "Settings.h"
 
 namespace Game {
 	class Player : public EngineCore::GameObject {
@@ -36,8 +36,8 @@ namespace Game {
 		
 			body.position = &sprite.position;
 			body.size = { 3/16.f, 5/16.f };
-			body.tilemaps.push_back(&background->tilemap);
-			body.tilemaps.push_back(&foreground->tilemap);
+			body.tilemaps.push_back(&game().background->tilemap);
+			body.tilemaps.push_back(&game().foreground->tilemap);
 		}
 
 		void update() {
@@ -46,14 +46,13 @@ namespace Game {
 			if (toMove) {
 				glm::vec2 velocity = { 0, 0 };
 
-				if      (EngineCore::Keyboard::isPressed(SDLK_w)) { toSend = true; velocity.y =  delta(speed); state = 0; }
-				else if (EngineCore::Keyboard::isPressed(SDLK_s)) { toSend = true; velocity.y = -delta(speed); state = 2; }
+				if      (EngineCore::Keyboard::isPressed(SDLK_w)) { velocity.y =  delta(speed); state = 0; }
+				else if (EngineCore::Keyboard::isPressed(SDLK_s)) { velocity.y = -delta(speed); state = 2; }
 				
-				if      (EngineCore::Keyboard::isPressed(SDLK_a)) { toSend = true; velocity.x = -delta(speed); state = 1; }
-				else if (EngineCore::Keyboard::isPressed(SDLK_d)) { toSend = true; velocity.x =  delta(speed); state = 3; }
+				if      (EngineCore::Keyboard::isPressed(SDLK_a)) { velocity.x = -delta(speed); state = 1; }
+				else if (EngineCore::Keyboard::isPressed(SDLK_d)) { velocity.x =  delta(speed); state = 3; }
 
 				if (velocity.x == 0 && velocity.y == 0.f && state < 4) {
-					toSend = true;
 					state += 4;
 				}
 
@@ -83,15 +82,7 @@ namespace Game {
 		}
 
 		void netUpdate() {
-			if (!toMove || !toSend) return;
-			toSend = false;
 
-			byte data[15];
-			memcpy(&data[6],  &sprite.position.x, 4);
-			memcpy(&data[10], &sprite.position.y, 4);
-			memcpy(&data[14], &state, 1);
-
-			EngineCore::Client::Send(data, NET_PLAYER_MOVE, 15);
 		}
 	};
 }

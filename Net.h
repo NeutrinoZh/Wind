@@ -2,9 +2,6 @@
 #include "Server.h"
 
 namespace EngineCore {
-	const Uint32 DISCONNECT = 9797;
-	const Uint32 CONNECT = 9798;
-
 	class Net {
 	public:
 		static bool isServer;

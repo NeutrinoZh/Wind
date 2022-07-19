@@ -123,6 +123,9 @@
     <ClCompile Include="Fonts.cpp">
       <Filter>Engine\Resource</Filter>
     </ClCompile>
+    <ClCompile Include="Settings.cpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -167,7 +170,7 @@
     <ClInclude Include="Player.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="NetCodes.h">
+    <ClInclude Include="Settings.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Animation.h">
@@ -188,7 +191,7 @@
     <ClInclude Include="Server.h">
       <Filter>Engine\Net</Filter>
     </ClInclude>
-    <ClInclude Include="Online.h">
+    <ClInclude Include="GameServer.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Tile.h">
@@ -220,6 +223,12 @@
     </ClInclude>
     <ClInclude Include="Fonts.h">
       <Filter>Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="GameClient.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Packet.h">
+      <Filter>Engine\Net</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
