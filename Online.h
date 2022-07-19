@@ -38,12 +38,40 @@ namespace Game {
 
 				players.back()->sprite.position.x = x;
 				players.back()->sprite.position.y = y;
+
+				if (clock() > 1500) {
+					for (EngineCore::Label* label : chat)
+						label->position.y += label->size.y;
+					chat.push_back(new EngineCore::Label());
+					chat.back()->font = EngineCore::fonts()["PixelFont"];
+					chat.back()->Start();
+					chat.back()->setText("Player with ID: " + std::to_string(ID) + " join to the server");
+					chat.back()->position = { 0.1f, 0.5f };
+				}
+
+				if (players.size() == 1) {
+					for (EngineCore::Label* label : chat)
+						label->position.y += label->size.y;
+					chat.push_back(new EngineCore::Label());
+					chat.back()->font = EngineCore::fonts()["PixelFont"];
+					chat.back()->Start();
+					chat.back()->setText("Welcome to the server");
+					chat.back()->position = { 0.1f, 0.5f };
+				}
 			} else if (code == NET_PLAYER_DESTROY) {
 				for (Uint32 i = 0; i < players.size(); ++i)
 					if (players[i]->ID == ID) {
 						EngineCore::Core::scene->DeleteObject(players[i]);
 						players.erase(players.begin() + i);
 					}
+
+				for (EngineCore::Label* label : chat)
+					label->position.y += label->size.y;
+				chat.push_back(new EngineCore::Label());
+				chat.back()->font = EngineCore::fonts()["PixelFont"];
+				chat.back()->Start();
+				chat.back()->setText("Player with ID: " + std::to_string(ID) + " left the server");
+				chat.back()->position = { 0.1f, 0.5f };
 			} else if (code == NET_MAP_GENERATE) {
 				memcpy(&seed, &data[2], 4);
 				mapGenerate("./asset/generator.meta");

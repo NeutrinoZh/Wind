@@ -1,8 +1,9 @@
 #include "Engine.h"
 
 namespace EngineCore {
-	void (*Core::Start) (void);
-	void (*Core::Update) (void);
+	void (*Core::Start) (void)  = nullptr;
+	void (*Core::Update) (void) = nullptr;
+	void (*Core::Draw) (void)   = nullptr;
 
 	GameObject* Core::scene = new GameObject();
 
@@ -11,7 +12,7 @@ namespace EngineCore {
 			self.outConsole = true;
 			self.folderToSave = "./asset/logs/";
 			self.numSpace = 2;
-			});
+		});
 
 		EngineCore::Window::PreInit = preInit;
 		EngineCore::Window::PostInit = postInit;

@@ -2,7 +2,6 @@
 
 namespace Game {
 	void start() {
-		
 		background = new EngineCore::TileMapObject(
 			EngineCore::TileMap::builder("./asset/tilemap/background.meta")
 		);
@@ -37,10 +36,32 @@ namespace Game {
 			SDL_SaveBMP(surface, "./asset/map.png");
 		}
 	}
+
+	clock_t lastDestroy = 0;
+
+	void update() {
+		for (Uint32 i = 0; i < chat.size(); ++i) 
+			chat[i]->Update();
+
+		if (chat.empty())
+			lastDestroy = clock();
+		if (clock() > lastDestroy + 5000) {
+			chat[0]->Free();
+			chat.erase(chat.begin());
+			lastDestroy = clock();
+		}
+	}
+
+	void draw() {
+		for (Uint32 i = 0; i < chat.size(); ++i)
+			chat[i]->Draw();
+	}
 }
 
 int main(int argc, char** args) {
-	EngineCore::Core::Start = Game::start;
+	EngineCore::Core::Start  = Game::start;
+	EngineCore::Core::Update = Game::update;
+	EngineCore::Core::Draw   = Game::draw;
 
 	EngineCore::Server::RequestHandler = Game::Online::RequestHandler;
 	EngineCore::Server::ConnectHandler = Game::Online::ConnectHandler;

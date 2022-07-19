@@ -1,11 +1,12 @@
 #pragma once
-#include "Physics.h"	
+#include "GUI.h"	
 
 namespace EngineCore {
 
 	struct Core {
 		static void (*Start) (void);
 		static void (*Update) (void);
+		static void (*Draw) (void);
 
 		static GameObject* scene;
 		static int loop();
@@ -26,20 +27,30 @@ namespace EngineCore {
 		}
 
 		void start() {
+			GUI::init();
+
 			Log::begin() << "Start load resource";
 
 			EngineCore::textures().loadFolder("asset/meta-textures/");
 			EngineCore::shaders().loadFolder("asset/meta-shaders/");
+			EngineCore::fonts().loadFolder("asset/meta-fonts/");
 			EngineCore::animations().loadFolder("asset/animations/");
 
 			Log::end() << "Success finish load resource";
 
-			Core::Start();
+			GUI::shader = shaders()["Shader"]; // !
+
+			if (Core::Start)
+				Core::Start();
+			
 			Core::scene->Start();
 		}
 
 		void draw() {
 			Core::scene->Draw();
+
+			if (Core::Draw)
+				Core::Draw();
 		}
 
 		void update() {

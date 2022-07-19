@@ -6,6 +6,29 @@ namespace EngineCore {
 	Textures& textures() {
 		return *Textures::textures;
 	}
+	
+	Texture Textures::createFromSurface(SDL_Surface* surface,
+										Uint32 wrap, Uint32 minFilter, Uint32 magFilter, 
+										Uint32 internalFormat, Uint32 format, std::string name) {
+		UINT32 texture;
+		glGenTextures(1, &texture);
+
+		glBindTexture(GL_TEXTURE_2D, texture);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat,
+			surface->w, surface->h, 0, format,
+			GL_UNSIGNED_BYTE, surface->pixels);
+
+		Texture result = Texture(texture);
+		this->add(name, result);
+
+		return result;
+	}
 
 	Texture Textures::load(std::string path) {
 		struct _meta {
@@ -102,28 +125,16 @@ namespace EngineCore {
 			return NULL;
 		}
 
-		UINT32 texture;
-		glGenTextures(1, &texture);
-
-		glBindTexture(GL_TEXTURE_2D, texture);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, meta.wrap);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, meta.wrap);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, meta.minFilter);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, meta.magFilter);
-
-		glTexImage2D(GL_TEXTURE_2D, 0, meta.internalFormat,
-			surface->w, surface->h, 0, meta.format,
-			GL_UNSIGNED_BYTE, surface->pixels);
-
-		this->add(meta.name, Texture(texture));
+		Texture texture = createFromSurface(surface,
+											meta.wrap, meta.minFilter, meta.magFilter,
+											meta.internalFormat, meta.format, meta.name);
 
 		for (Uint32 i = 0; i < meta.atlas.size(); ++i) {
 			Log::info() << "Create from " << meta.name << " texture: " << meta.atlas[i].first;
-			this->add(meta.atlas[i].first, Texture(texture, meta.atlas[i].second));
+			this->add(meta.atlas[i].first, Texture(texture.texture, meta.atlas[i].second));
 		}
 
-		return texture;
+		return texture.texture;
 	}
 
 	void Textures::free(Texture texture) {

@@ -46,6 +46,9 @@
     <Filter Include="Engine\Physics">
       <UniqueIdentifier>{9e23f2ff-fabe-4d36-9677-6bb45088153d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\GUI">
+      <UniqueIdentifier>{1c4e8a74-6ea5-47f1-a3d8-440c282382a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -113,6 +116,12 @@
     </ClCompile>
     <ClCompile Include="Perlin.cpp">
       <Filter>Engine\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI.cpp">
+      <Filter>Engine\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Fonts.cpp">
+      <Filter>Engine\Resource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -205,6 +214,12 @@
     </ClInclude>
     <ClInclude Include="Physics.h">
       <Filter>Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI.h">
+      <Filter>Engine\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Fonts.h">
+      <Filter>Engine\Resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
