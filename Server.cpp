@@ -4,6 +4,7 @@ namespace EngineCore {
 	Server Server::self = Server();
 	void (*Server::ConnectHandler)	  (Uint32 id) = NULL;
 	void (*Server::DisconnectHandler) (Uint32 id) = NULL;
+	void (*Server::RequestHandler)    (Uint32 id, Packet* packet) = NULL;
 
 	void Server::start() {
 		Log::info() << "Launched NetUDPServer...";
@@ -49,11 +50,11 @@ namespace EngineCore {
 	Uint16 Server::getID() {
 		for (Uint32 i = 1; i < self.clients.size(); ++i)
 			if (
-				self.clients[i].host == 0 &&
-				self.clients[i].port == 0
+				self.clients[i].ip.host == 0 &&
+				self.clients[i].ip.port == 0
 				) return i;
 
-		self.clients.push_back(IPaddress());
+		self.clients.push_back(Client());
 		return (Uint16)(self.clients.size() - 1);
 	}
 
@@ -86,21 +87,53 @@ namespace EngineCore {
 						return;
 					}
 
-					self.clients[clientID] = ip;
+					for (Client client : self.clients)
+						if (ip.host == client.ip.host && ip.port == client.ip.port) {
+							Log::warning() << "The client is already connected, so will ignore the request.";
+							return;
+						}
 
-					Packet response = Packet(2);
-					response.write<Uint16>(clientID);
-					response.packetID = packet.packetID + 1;
+					self.clients[clientID].ip = ip;
+
+					Packet response = Packet(0);
+					response.c_data = clientID;
 
 					Server::Send(clientID, response);
+
+					if (ConnectHandler)
+						ConnectHandler(clientID);
+
+					self.clients[clientID].lastReceiv = clock();
+
+					return;
 				} 
 
 				if (clientID > self.clients.size())
 					Log::warning() << "Server. Packet data received with invalid ID: " << clientID;
 
+				self.clients[clientID].lastReceiv = clock();
+
+				if (RequestHandler)
+					RequestHandler(packet.c_data, &packet);
+
 				SDLNet_FreePacket(udp_packet);
 			}
 		}
+
+		for (Uint32 clientID = 1; clientID < self.clients.size(); ++clientID)
+			if (self.clients[clientID].ip.host == 0 || self.clients[clientID].ip.port == 0)
+				continue;
+			else if (clock() > self.clients[clientID].lastReceiv + 3000) {
+				Log::info() << "Net. Processing disconnect (" << clientID << ")";
+
+				if (DisconnectHandler)
+					DisconnectHandler(clientID);
+
+				self.clients[clientID].ip.host = self.clients[clientID].ip.port = 0;
+			} else if (clock() > self.clients[clientID].lastSend + 50) {
+				Packet nonePacket = Packet(0);
+				Server::Send(clientID, nonePacket);
+			}
 	}
 
 	void Server::free() {
@@ -119,8 +152,38 @@ namespace EngineCore {
 		SDLNet_FreeSocketSet(self.socket_set);
 	}
 
-	std::vector<IPaddress> Server::getClients() {
+	std::vector<Server::Client> Server::getClients() {
 		return self.clients;
+	}
+
+	bool Server::warrantySend(Uint16 clientID, Packet packet) {
+		if (!self.run) {
+			Log::warning() << "Failed to send data because the server was not started";
+			return false;
+		}
+
+		Uint32 num_ready;
+		//for (Uint32 i = 0; i < 10; ++i) {
+			Server::Send(clientID, packet);
+			num_ready = SDLNet_CheckSockets(self.socket_set, 500);
+			//if (num_ready > 0)
+			//	break;
+		//}
+
+		if (num_ready > 0) {
+			UDPpacket* package = Net::recieved(self.server_socket, 128);
+			if (!package) {
+				Log::error() << "Couldn't recieved data from client";
+				return false;
+			}
+
+			SDLNet_FreePacket(package);
+		}
+
+		if (!num_ready)
+			Log::error() << "warrantySend: Client takes too long to respond";
+
+		return num_ready > 0;
 	}
 
 	void Server::Send(Uint16 clientID, Packet packet) {
@@ -129,10 +192,16 @@ namespace EngineCore {
 			return;
 		}
 
+		packet.packetID += 1;
+		if (self.clients[clientID].lastPacketID > packet.packetID)
+			packet.packetID = self.clients[clientID].lastPacketID;
+		self.clients[clientID].lastPacketID = packet.packetID;
+		self.clients[clientID].lastSend = clock();
+
 		memcpy(&packet.data[0], &packet.code, 2);
 		memcpy(&packet.data[2], &packet.packetID, 2);
 		memcpy(&packet.data[4], &packet.c_data, 2);
 
-		Net::send(self.server_socket, &self.clients[clientID], packet.data, packet.len);
+		Net::send(self.server_socket, &self.clients[clientID].ip, packet.data, packet.len);
 	}
 }

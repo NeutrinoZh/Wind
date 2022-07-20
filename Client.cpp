@@ -2,6 +2,8 @@
 
 namespace EngineCore {
 	Client Client::self = Client();
+	void (*Client::ResponseHandler) (Packet* packet) = NULL;
+	void (*Client::SendData) (void) = NULL;
 
 	void Client::connect() {
 		Log::info() << "Launched NetUDPClient...";
@@ -70,9 +72,21 @@ namespace EngineCore {
 		packet.write<Uint16>(ip.port);
 		packet.write<Uint32>(ip.host);
 
-		Log::info() << "SEND DATA " << ip.host << ":" << ip.port;
+		if (Client::warrantySend(packet)) {
+			UDPpacket* package = Net::recieved(self.client_socket, 128);
+			if (!package) {
+				Log::error() << "Couldn't connect to server";
+				return;
+			}
 
-		Client::Send(packet);
+			Packet response = Packet(package->data, package->len);
+			self.id = response.c_data;
+			
+			Log::info() << "Connected with ID:" << self.id;
+
+			SDLNet_FreePacket(package);
+		} else
+			self.run = false;
 	}
 
 	void Client::update() {
@@ -86,9 +100,27 @@ namespace EngineCore {
 				if (!package)
 					return;
 
-				Log::info() << "RESPONSE";
+				Packet packet = Packet(package->data, package->len);
+				if (packet.code && ResponseHandler)
+					ResponseHandler(&packet);
+
+				if (packet.packetID > self.lastPacketID)
+					self.lastPacketID = packet.packetID;
+				self.lastReceiv = clock();
 
 				SDLNet_FreePacket(package);
+			}
+		}
+
+		if (clock() > self.lastReceiv + 3000) {
+			Log::warning() << "Server not responding";
+			self.disconnect();
+		} else if (clock() > self.lastSend + 50) {
+			if (SendData) {
+				SendData();
+			} else {
+				Packet nonePacket = Packet(0);
+				Client::Send(nonePacket);
 			}
 		}
 	}
@@ -97,19 +129,19 @@ namespace EngineCore {
 		if (!self.run) return;
 
 		Log::info() << "Disconnect...";
+		Client::free();
 
+		self.run = false;
 	}
 
 	void Client::free() {
 		if (!self.run) return;
 
-		disconnect();
-
 		Log::info() << "Free memory from NetUDPClient";
 
 		if (
 			SDLNet_UDP_DelSocket(self.socket_set, self.client_socket) == -1
-			) {
+		) {
 			Log::error() << SDLNet_GetError();
 			return;
 		}
@@ -118,11 +150,35 @@ namespace EngineCore {
 		SDLNet_FreeSocketSet(self.socket_set);
 	}
 
+	bool Client::warrantySend(Packet packet) {
+		Uint32 num_ready;
+		for (Uint32 i = 0; i < 10; ++i) {
+			Client::Send(packet);
+			num_ready = SDLNet_CheckSockets(self.socket_set, 100);
+			if (num_ready > 0)
+				break;
+		}
+		
+		self.lastSend = clock();
+
+		if (!num_ready)
+			Log::error() << "warrantySend: Server takes too long to respond";
+
+		return num_ready > 0;
+	}
+
 	void Client::Send(Packet packet) {
 		if (!self.run) {
 			Log::warning() << "Failed to send data because there is no connection to the server";
 			return;
 		}
+
+		self.lastSend = clock();
+
+		packet.packetID += 1;
+		if (self.lastPacketID > packet.packetID)
+			packet.packetID = self.lastPacketID;
+		self.lastPacketID = packet.packetID;
 
 		packet.c_data = self.id;
 

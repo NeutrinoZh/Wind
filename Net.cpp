@@ -33,7 +33,7 @@ namespace EngineCore {
 		if (isServer)
 			Server::free();
 		else
-			Client::free();
+			Client::disconnect();
 
 		SDLNet_Quit();
 	}

@@ -12,17 +12,16 @@ namespace Game {
 		);
 		EngineCore::Core::scene->AddObject(game().foreground);
 
-		if (EngineCore::Net::isServer)
-			game().seed = time(0);
-
 		game().chat->font = EngineCore::fonts()["PixelFont"];
 		game().chat->position = { 0.1f, 0.5f };
 		game().chat->Start();
 
-		mapGenerate("./asset/generator.meta");
-
-		if (EngineCore::Net::isServer)
+		if (EngineCore::Net::isServer) {
+			game().seed = time(0);
+			mapGenerate("./asset/generator.meta");
+		
 			EngineCore::Window::delta = 0.f;
+		}
 	}
 
 	void update() {
@@ -41,6 +40,10 @@ int main(int argc, char** args) {
 
 	EngineCore::Server::ConnectHandler	  = Game::GameServer::ConnectHandler;
 	EngineCore::Server::DisconnectHandler = Game::GameServer::DisconnectHandler;
+	EngineCore::Server::RequestHandler	  = Game::GameServer::RequestHandler;
+
+	EngineCore::Client::SendData = Game::GameClient::SendData;
+	EngineCore::Client::ResponseHandler	  = Game::GameClient::ResponseHandler;
 
 	return EngineCore::Core::loop();
 };

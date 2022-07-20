@@ -25,7 +25,7 @@ namespace EngineCore {
 		}
 
 		Packet(Uint32 len) {
-			this->pointer = 5;
+			this->pointer = 6;
 			this->len = len + 6;
 			data = new byte[this->len];
 		}

@@ -1,7 +1,8 @@
 - return null or false in resource manager
 - Update Config Reader
-- NetCodes to static 
++ NetCodes to static 
 - Allocate udp package 
 - package order
 - mouse absolute/not absolute position
 - delete image text
+- packet id when warranty send

@@ -15,13 +15,6 @@ namespace EngineCore {
 			object->Update();
 	}
 
-	void GameObject::NetUpdate() {
-		netUpdate();
-
-		for (GameObject* object : objects)
-			object->NetUpdate();
-	}
-
 	void GameObject::Draw() {
 		draw();
 

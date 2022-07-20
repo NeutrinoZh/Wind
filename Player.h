@@ -80,9 +80,5 @@ namespace Game {
 			if (state == 7) animator.set("player-stay-right");
 
 		}
-
-		void netUpdate() {
-
-		}
 	};
 }

@@ -6,8 +6,6 @@ namespace EngineCore {
 	protected:
 		std::vector<GameObject*> objects;
 	protected:
-		virtual void netUpdate() {};
-
 		virtual void start() {};
 		virtual void update() {};
 		virtual void draw() {};
@@ -16,7 +14,6 @@ namespace EngineCore {
 		Sprite sprite; // !
 
 		void Start();
-		void NetUpdate();
 		void Update();
 		void Draw();
 		void Free();

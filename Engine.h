@@ -13,8 +13,6 @@ namespace EngineCore {
 	};
 	
 	namespace {
-		clock_t lastTimeCallNetUpdate = 0;
-
 		bool preInit() {
 			return EngineCore::GL_Context::preInit();
 		}
@@ -60,11 +58,6 @@ namespace EngineCore {
 				Core::Update();
 			
 			Core::scene->Update();
-
-			if (clock() > lastTimeCallNetUpdate + 15 && !Net::isServer) {
-				Core::scene->NetUpdate();
-				lastTimeCallNetUpdate = clock();
-			}
 
 			EngineCore::GL_Context::draw();
 		}
