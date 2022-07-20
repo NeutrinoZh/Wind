@@ -1,0 +1,7 @@
+name=player-run-right
+frame0=player-run-right-0
+frame1=player-run-right-1
+frame2=player-run-right-2
+frame3=player-run-right-3
+loop=true
+interval=100

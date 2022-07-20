@@ -1,0 +1,9 @@
+name=foreground
+path=./asset/textures/foreground.png
+minFilter=NEAREST
+magFilter=NEAREST
+
+gridX=1
+gridY=1
+
+0=bush

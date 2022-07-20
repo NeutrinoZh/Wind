@@ -1,0 +1,7 @@
+name=player-run-top
+frame0=player-run-top-0
+frame1=player-run-top-1
+frame2=player-run-top-2
+frame3=player-run-top-3
+loop=true
+interval=100

@@ -1,0 +1,13 @@
+tempGrid=32.0
+tempOctaves=3
+tempPersistence=0.8
+
+distanceMethod=Manhattan
+
+highGrid=48.0
+highOctaves=2
+highPersistence=0.8
+
+distanceA=0.05
+distanceB=1
+distanceC=2

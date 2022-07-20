@@ -1,0 +1,3 @@
+vtx=./asset/shaders/Shader.vtx
+fgt=./asset/shaders/Shader.fgt
+name=Shader
