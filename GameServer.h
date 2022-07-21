@@ -55,7 +55,76 @@ namespace Game {
 		}
 
 		static void ConnectHandler(Uint32 ID) {
+			//===============================================================//		
+			{
+				EngineCore::TileMap* tilemap = NULL;
 
+				tilemap = &game().background->tilemap;
+				for (Uint32 i = 0; i < 128; ++i) {
+					EngineCore::Packet line1 = EngineCore::Packet(64);
+					line1.code = game().NET_MAP_GENERATE_BACKGROUND;
+					for (Uint32 j = 0; j < 64; ++j)
+						line1.write<Uint8>((Uint8)tilemap->map[i][j]);
+
+					EngineCore::Packet line2 = EngineCore::Packet(64);
+					line2.code = game().NET_MAP_GENERATE_BACKGROUND;
+					for (Uint32 j = 64; j < 128; ++j)
+						line2.write<Uint8>((Uint8)tilemap->map[i][j]);
+
+					if (EngineCore::Server::warrantySend(ID, line1)) {
+						if (!EngineCore::Server::warrantySend(ID, line2)) {
+							Log::error() << "Couldn't send data of map";
+							return;
+						}
+					} else {
+						Log::error() << "Couldn't send data of map";
+						return;
+					}
+
+					EngineCore::Packet okPacket = EngineCore::Packet(0);
+					for (Uint32 k = 1; k < EngineCore::Server::getClients().size(); ++k)
+						if (k != ID) {
+							EngineCore::Server::Send(k, okPacket);
+
+							Uint32 ready = SDLNet_SocketReady(EngineCore::Server::self.server_socket);
+							if (ready > 0)
+								EngineCore::Net::recieved(EngineCore::Server::self.server_socket, 128);
+						}
+				}
+
+				tilemap = &game().foreground->tilemap;
+				for (Uint32 i = 0; i < 128; ++i) {
+					EngineCore::Packet line1 = EngineCore::Packet(64);
+					line1.code = game().NET_MAP_GENERATE_FOREGROUND;
+					for (Uint32 j = 0; j < 64; ++j)
+						line1.write<Uint8>((Uint8)tilemap->map[i][j]);
+
+					EngineCore::Packet line2 = EngineCore::Packet(64);
+					line2.code = game().NET_MAP_GENERATE_FOREGROUND;
+					for (Uint32 j = 64; j < 128; ++j)
+						line2.write<Uint8>((Uint8)tilemap->map[i][j]);
+
+					if (EngineCore::Server::warrantySend(ID, line1)) {
+						if (!EngineCore::Server::warrantySend(ID, line2)) {
+							Log::error() << "Couldn't send data of map";
+							return;
+						}
+					} else {
+						Log::error() << "Couldn't send data of map";
+						return;
+					}
+
+					EngineCore::Packet okPacket = EngineCore::Packet(0);
+					for (Uint32 k = 1; k < EngineCore::Server::getClients().size(); ++k)
+						if (k != ID) {
+							EngineCore::Server::Send(k, okPacket);
+						
+							Uint32 ready = SDLNet_SocketReady(EngineCore::Server::self.server_socket);
+							if (ready > 0)
+								EngineCore::Net::recieved(EngineCore::Server::self.server_socket, 128);
+						}
+				}
+			}
 			//===============================================================//
 			{
 				Uint16 index = ID - 1;
@@ -90,30 +159,6 @@ namespace Game {
 				}
 			}
 			//===============================================================//
-			EngineCore::TileMap* tilemap = &game().background->tilemap;
-			for (Uint32 i = 0; i < 128; ++i) {
-				EngineCore::Packet line1 = EngineCore::Packet(64);
-				line1.code = game().NET_MAP_GENERATE;
-				for (Uint32 j = 0; j < 64; ++j)
-					line1.write<Uint8>((Uint8)tilemap->map[i][j]);
-
-				EngineCore::Packet line2 = EngineCore::Packet(64);
-				line2.code = game().NET_MAP_GENERATE;
-				for (Uint32 j = 64; j < 128; ++j)
-					line2.write<Uint8>((Uint8)tilemap->map[i][j]);
-
-				if (EngineCore::Server::warrantySend(ID, line1)) {
-					if (!EngineCore::Server::warrantySend(ID, line2)) {
-						Log::error() << "Couldn't send data of map";
-						return;
-					}
-				} else {
-					Log::error() << "Couldn't send data of map";
-					return;
-				}
-
-				Log::info() << "Send " << (i + 1) << " of 128";
-			}
 		}
 
 		static void DisconnectHandler(Uint32 ID) {

@@ -38,9 +38,27 @@ namespace Game {
 
 				game().players.back()->sprite.position = {x, y};
 
-				if (game().players.size() == 1)
+				if (game().players.size() == 1) {
 					game().chat->send("Welcome to the Server");
-				else
+					
+					SDL_Surface* surface = SDL_CreateRGBSurface(NULL, 128, 128, 32, 0, 0, 0, 0);
+					Uint32* pixels = (Uint32*)surface->pixels;
+
+					for (Uint32 x = 0; x < 128; ++x)
+						for (Uint32 y = 0; y < 128; ++y) {
+							Uint32 color = 0;
+
+							if (game().background->tilemap.map[x][y] == 5) color = SDL_MapRGBA(surface->format, 0, 0, 255, 255);
+							if (game().background->tilemap.map[x][y] == 4) color = SDL_MapRGBA(surface->format, 132, 132, 132, 255);
+							if (game().background->tilemap.map[x][y] == 3) color = SDL_MapRGBA(surface->format, 248, 235, 0, 255);
+							if (game().background->tilemap.map[x][y] == 2) color = SDL_MapRGBA(surface->format, 0, 255, 0, 255);
+							if (game().background->tilemap.map[x][y] == 1) color = SDL_MapRGBA(surface->format, 113, 42, 30, 255);
+
+							pixels[x + (128 * y)] = color;
+						}
+
+					SDL_SaveBMP(surface, "./asset/map.png");
+				} else
 					game().chat->send("Player with ID:" + std::to_string(ID) + " join to the Server");
 			} else if (packet->code == game().NET_PLAYER_MOVE) {
 				Uint16 ID = packet->c_data - 1;
@@ -66,43 +84,46 @@ namespace Game {
 						game().chat->send("Player with ID: " + std::to_string(ID) + " left the server");
 					}
 				}
-			} else if (packet->code == game().NET_MAP_GENERATE) {
-				Log::info() << "MAP GENERATE";
+			} else if (packet->code == game().NET_MAP_GENERATE_BACKGROUND) {
+				static Uint32 x = 0, y = 0;
+				
+				if (x == 128 && y == 128)
+					x = y = 0;
 
-				EngineCore::Packet mypacket = *packet;
+				Uint32 tx = x + 64;
 
-				Uint32 x = 0, y = 0;
-				bool is = true;
+				if (tx > 128) {
+					x = 0;
+					y += 1;
+					tx = 64;
+				}
 
-				do {
-					Uint32 tx = x + 64;
+				for (; x < tx; ++x)
+					game().background->tilemap.map[y][x] = packet->read<Uint8>();
 
-					if (tx >= 128) {
-						x = 0;
-						y += 1;
-						tx = 64;
-					}
+				EngineCore::Packet okPacket = EngineCore::Packet(0);
+				okPacket.code = game().NET_MAP_GENERATE_BACKGROUND;
+				EngineCore::Client::Send(okPacket);
+			} else if (packet->code == game().NET_MAP_GENERATE_FOREGROUND) {
+				static Uint32 x = 0, y = 0;
 
-					for (; x < tx; ++x) {
-						Uint8 tile = mypacket.read<Uint8>();
-						if (tile != 5)
-							game().background->tilemap.map[x][y] = tile;
-					}
+				if (x == 128 && y == 128)
+					x = y = 0;
 
-					if (y != 127) {
-						is = SDLNet_CheckSockets(EngineCore::Client::self.socket_set, 500) > 0;
+				Uint32 tx = x + 64;
 
-						UDPpacket* package = EngineCore::Net::recieved(EngineCore::Client::self.client_socket, 128);
-						if (!package)
-							return;
+				if (tx > 128) {
+					x = 0;
+					y += 1;
+					tx = 64;
+				}
 
-						mypacket = EngineCore::Packet(package->data, package->len);
+				for (; x < tx; ++x)
+					game().foreground->tilemap.map[y][x] = packet->read<Uint8>();
 
-						EngineCore::Packet okPacket = EngineCore::Packet(0);
-						EngineCore::Client::Send(okPacket);
-					} else
-						return;
-				} while (is);
+				EngineCore::Packet okPacket = EngineCore::Packet(0);
+				okPacket.code = game().NET_MAP_GENERATE_FOREGROUND;
+				EngineCore::Client::Send(okPacket);
 			}
 		}
 	};

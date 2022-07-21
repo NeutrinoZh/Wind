@@ -13,15 +13,16 @@ namespace EngineCore {
 	private:
 		bool run = false;
 
-		UDPsocket server_socket;
 		SDLNet_SocketSet socket_set;
 
 		std::vector<Client> clients = { Client() };
 
 		static Uint16 getID();
 
-		static Server self;
 	public:
+		UDPsocket server_socket;
+		static Server self;
+
 		static void (*ConnectHandler) (Uint32 id);
 		static void (*DisconnectHandler) (Uint32 id);
 		static void (*RequestHandler) (Uint32 id, Packet* packet);

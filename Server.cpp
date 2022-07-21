@@ -158,22 +158,27 @@ namespace EngineCore {
 
 	bool Server::warrantySend(Uint16 clientID, Packet packet) {
 		if (!self.run) {
-			Log::warning() << "Failed to send data because the server was not started";
+			Log::warning() << "warrantySend: Failed to send data because the server was not started";
 			return false;
 		}
 
+		Uint32 packetID = packet.packetID;
+
 		Uint32 num_ready;
-		//for (Uint32 i = 0; i < 10; ++i) {
+		for (Uint32 i = 0; i < 10; ++i) {
+			self.clients[clientID].lastPacketID = packetID;
+			packet.packetID = packetID;
+			
 			Server::Send(clientID, packet);
 			num_ready = SDLNet_CheckSockets(self.socket_set, 500);
-			//if (num_ready > 0)
-			//	break;
-		//}
+			if (num_ready > 0)
+				break;
+		}
 
 		if (num_ready > 0) {
 			UDPpacket* package = Net::recieved(self.server_socket, 128);
 			if (!package) {
-				Log::error() << "Couldn't recieved data from client";
+				Log::error() << "warrantySend: Couldn't recieved data from client";
 				return false;
 			}
 

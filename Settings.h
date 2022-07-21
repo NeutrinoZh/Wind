@@ -5,8 +5,9 @@ namespace Game {
 	struct Game {
 		const Uint16 NET_PLAYER_MOVE = 1,
 					 NET_PLAYER_CREATE = 2,
-				     NET_PLAYER_DESTROY = 3,
-					 NET_MAP_GENERATE = 4;
+					 NET_PLAYER_DESTROY = 3,
+					 NET_MAP_GENERATE_BACKGROUND = 4,
+					 NET_MAP_GENERATE_FOREGROUND = 5;
 
 		EngineCore::Chat* chat = new EngineCore::Chat();
 		Uint32 seed = 0;

@@ -151,8 +151,13 @@ namespace EngineCore {
 	}
 
 	bool Client::warrantySend(Packet packet) {
+		Uint32 packetID = packet.packetID;
+		
 		Uint32 num_ready;
 		for (Uint32 i = 0; i < 10; ++i) {
+			self.lastPacketID = packetID;
+			packet.packetID = packetID;
+
 			Client::Send(packet);
 			num_ready = SDLNet_CheckSockets(self.socket_set, 100);
 			if (num_ready > 0)
