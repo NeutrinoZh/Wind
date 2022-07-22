@@ -4,34 +4,28 @@
 namespace EngineCore {
 	class Client {
 	private:
-		bool run = false;
+		static void send(Packet packet);
+		static Packet* read();
+	private:
+		UDPsocket socket;
+		bool is_connect = false;
 
-		IPaddress ip;
-		UDPpacket* packet;
-		Uint32 id;
-
+		IPaddress server;
 		Uint16  lastPacketID = 0;
-		clock_t lastSend     = 0;
-		clock_t lastReceiv   = 0;
+		clock_t lastSend = 0;
+		clock_t lastReceiv = 0;
 
-	public:
+		std::queue<Packet> queue;
+
 		static Client self;
-		SDLNet_SocketSet socket_set;
-		UDPsocket client_socket;
+	public:
+		static Packet(*SendPacket) (void);
+		static void (*GetPacket) (Packet* packet);
 
-		static void Send(Packet packet);
-		static bool warrantySend(Packet packet);
+		static void addToSend(Packet packet);
 
-		static Uint16 ID() {
-			return self.id;
-		}
-
-		static void (*SendData) (void);
-		static void (*ResponseHandler) (Packet* packet);
-
-		static void update();
 		static void connect();
+		static void update();
 		static void disconnect();
-		static void free();
 	};
 }

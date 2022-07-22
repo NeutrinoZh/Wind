@@ -9,10 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Файлы ресурсов">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Engine">
       <UniqueIdentifier>{7962aa8c-1b4a-49b2-bbb2-ce36e344b130}</UniqueIdentifier>
     </Filter>
@@ -49,11 +45,21 @@
     <Filter Include="Engine\GUI">
       <UniqueIdentifier>{1c4e8a74-6ea5-47f1-a3d8-440c282382a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы ресурсов">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Engine\Net\Base">
+      <UniqueIdentifier>{6fe4db0b-cf78-49d6-8f8c-d3e5205e34f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Net\Client">
+      <UniqueIdentifier>{78464d8c-2258-4f55-8111-23528d171d28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Net\Server">
+      <UniqueIdentifier>{370b37c1-fc03-4f27-bc20-58de1981b115}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
     <ClCompile Include="Window.cpp">
       <Filter>Engine\Window</Filter>
     </ClCompile>
@@ -93,15 +99,6 @@
     <ClCompile Include="Animations.cpp">
       <Filter>Engine\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Net.cpp">
-      <Filter>Engine\Net</Filter>
-    </ClCompile>
-    <ClCompile Include="Client.cpp">
-      <Filter>Engine\Net</Filter>
-    </ClCompile>
-    <ClCompile Include="Server.cpp">
-      <Filter>Engine\Net</Filter>
-    </ClCompile>
     <ClCompile Include="Engine.cpp">
       <Filter>Engine\Core</Filter>
     </ClCompile>
@@ -125,6 +122,18 @@
     </ClCompile>
     <ClCompile Include="Settings.cpp">
       <Filter>Файлы заголовков</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Net.cpp">
+      <Filter>Engine\Net\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Client.cpp">
+      <Filter>Engine\Net\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="Server.cpp">
+      <Filter>Engine\Net\Server</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -182,15 +191,6 @@
     <ClInclude Include="Texture.h">
       <Filter>Engine\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Net.h">
-      <Filter>Engine\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="Client.h">
-      <Filter>Engine\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="Server.h">
-      <Filter>Engine\Net</Filter>
-    </ClInclude>
     <ClInclude Include="GameServer.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -227,13 +227,22 @@
     <ClInclude Include="GameClient.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="Net.h">
+      <Filter>Engine\Net\Base</Filter>
+    </ClInclude>
     <ClInclude Include="Packet.h">
-      <Filter>Engine\Net</Filter>
+      <Filter>Engine\Net\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Client.h">
+      <Filter>Engine\Net\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="Server.h">
+      <Filter>Engine\Net\Server</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ToDo.txt">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Файлы ресурсов</Filter>
     </Text>
   </ItemGroup>
 </Project>

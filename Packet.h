@@ -6,28 +6,37 @@ namespace EngineCore {
 	private:
 		Uint32 pointer = 0;
 	public:
-		
-		Uint16 code		= NULL;
-		Uint16 packetID = NULL;
-		Uint16 c_data	= NULL;
+		IPaddress address;
 
-		byte*  data = NULL;
+		Uint16 code = NULL;
+		Uint16 packetID = NULL;
+
+		byte* data = NULL;
 		Uint32 len = NULL;
 
-		Packet(byte* data, Uint32 len) {
-			this->data = data;
-			this->len = len;
-			this->pointer = 0;
+		static Packet* createFromUDP(UDPpacket* packet) {
+			Packet* self = new Packet();
 
-			code	 = read<Uint16>();
-			packetID = read<Uint16>();
-			c_data	 = read<Uint16>();
+			self->data = packet->data;
+			self->len = packet->len;
+			self->pointer = 0;
+			self->address = packet->address;
+
+			self->code = self->read<Uint16>();
+			self->packetID = self->read<Uint16>();
+
+			return self;
 		}
 
-		Packet(Uint32 len) {
-			this->pointer = 6;
-			this->len = len + 6;
-			data = new byte[this->len];
+		static Packet create(Uint32 len) {
+			Packet self;
+
+			self.pointer = 4;
+			self.len = len + 4;
+
+			self.data = new byte[self.len];
+
+			return self;
 		}
 
 		template <typename T>
@@ -36,7 +45,7 @@ namespace EngineCore {
 			pointer += sizeof(T);
 		}
 
-		template <typename T> 
+		template <typename T>
 		T read() {
 			T value;
 			memcpy(&value, &data[pointer], sizeof(T));

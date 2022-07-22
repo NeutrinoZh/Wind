@@ -2,195 +2,141 @@
 
 namespace EngineCore {
 	Client Client::self = Client();
-	void (*Client::ResponseHandler) (Packet* packet) = NULL;
-	void (*Client::SendData) (void) = NULL;
+	Packet(*Client::SendPacket) (void) = NULL;
+	void (*Client::GetPacket) (Packet* packet) = NULL;
 
 	void Client::connect() {
-		Log::info() << "Launched NetUDPClient...";
+		Log::info() << "Launched NetUDPClient";
 
 		struct _config {
 			std::string ip = "127.0.0.1";
-			int server_port = 7708;
-			int client_port = 7706;
+			int port = 7708;
 
 			_config(std::string path) {
-				Log::info() << "Read config NetUDPClient";
+				Log::info() << "Read config NetUDPClient: " << path;
 
 				Config config = ConfigReader::read(path);
 
-				if (config.isVar("serverIp")) ip = config.getStringValue("serverIp");
-				if (config.isVar("serverPort")) server_port = config.getIntValue("serverPort");
-				if (config.isVar("clientPort")) client_port = config.getIntValue("clientPort");
+				if (config.isVar("ip")) ip = config.getStringValue("ip");
+				if (config.isVar("port")) port = config.getIntValue("port");
 			}
-		} config("asset/client.txt");
+		} config("./asset/connect.txt");
 
-		Log::info() << "Launched NetUDPClient on port: " << config.client_port;
-
-		self.client_socket = SDLNet_UDP_Open(config.client_port);
-		if (self.client_socket == NULL) {
+		self.socket = SDLNet_UDP_Open(0);
+		if (self.socket == NULL) {
 			Log::error() << SDLNet_GetError();
 			return;
 		}
 
-		Log::info() << "Connect to NetUDPSerever on address " << config.ip << ":" << config.server_port;
+		Log::info() << "Connect to NetUDPSerever on address " << config.ip << ":" << config.port;
 
-		if (SDLNet_ResolveHost(&self.ip, config.ip.c_str(), config.server_port) == -1) {
+		if (SDLNet_ResolveHost(&self.server, config.ip.c_str(), config.port) == -1) {
 			Log::error() << SDLNet_GetError();
 			return;
 		}
 
-		self.socket_set = SDLNet_AllocSocketSet(1);
-		if (self.socket_set == NULL) {
-			Log::error() << SDLNet_GetError();
-			return;
-		}
-
-		if (SDLNet_UDP_AddSocket(self.socket_set, self.client_socket) == -1) {
-			Log::error() << SDLNet_GetError();
-			return;
-		}
-
-		if (SDLNet_UDP_Bind(self.client_socket, 0, &self.ip) == -1) {
-			Log::error() << SDLNet_GetError();
-			return;
-		}
-
-		char hostname[128];
-		if (gethostname(hostname, 128) < 0)
-			Log::error() << "Couldn't get local hostname";
-		Log::info() << "hostname: " << hostname;
-
-		IPaddress ip;
-		if (SDLNet_ResolveHost(&ip, hostname, config.client_port) == -1) {
-			Log::error() << SDLNet_GetError();
-			return;
-		}
-
-		self.run = true;
-
-		Packet packet = Packet(6);
-		packet.write<Uint16>(ip.port);
-		packet.write<Uint32>(ip.host);
-
-		if (Client::warrantySend(packet)) {
-			UDPpacket* package = Net::recieved(self.client_socket, 128);
-			if (!package) {
-				Log::error() << "Couldn't connect to server";
-				return;
-			}
-
-			Packet response = Packet(package->data, package->len);
-			self.id = response.c_data;
-			
-			Log::info() << "Connected with ID:" << self.id;
-
-			SDLNet_FreePacket(package);
-		} else
-			self.run = false;
+		self.is_connect = true;
 	}
 
 	void Client::update() {
-		if (!self.run) return;
+		if (!self.is_connect) return;
 
-		Uint32 num_ready = SDLNet_CheckSockets(self.socket_set, 0);
+		while (true) {
+			Packet* packet = Client::read();
+			if (!packet)
+				break;
 
-		if (num_ready > 0) {
-			if (SDLNet_SocketReady(self.client_socket)) {
-				UDPpacket* package = Net::recieved(self.client_socket, 128);
-				if (!package)
-					return;
+			if (Client::GetPacket)
+				Client::GetPacket(packet);
 
-				Packet packet = Packet(package->data, package->len);
-				if (packet.code && ResponseHandler)
-					ResponseHandler(&packet);
-
-				if (packet.packetID > self.lastPacketID)
-					self.lastPacketID = packet.packetID;
-				self.lastReceiv = clock();
-
-				SDLNet_FreePacket(package);
-			}
+			self.lastReceiv = clock();
+			delete packet;
 		}
 
 		if (clock() > self.lastReceiv + 3000) {
-			Log::warning() << "Server not responding";
+			Log::info() << "Server not responding";
 			self.disconnect();
-		} else if (clock() > self.lastSend + 50) {
-			if (SendData) {
-				SendData();
-			} else {
-				Packet nonePacket = Packet(0);
-				Client::Send(nonePacket);
+		}
+		else if (clock() > self.lastSend + 50) {
+			self.lastSend = clock();
+			self.lastPacketID += 1;
+
+			if (self.queue.empty()) {
+				Packet packet;
+
+				if (Client::SendPacket)
+					packet = Client::SendPacket();
+				else packet = Packet::create(0);
+
+				Client::send(packet);
+			}
+			else {
+				Client::send(self.queue.back());
+				self.queue.pop();
 			}
 		}
 	}
 
 	void Client::disconnect() {
-		if (!self.run) return;
+		if (!self.is_connect) return;
+		self.is_connect = false;
 
-		Log::info() << "Disconnect...";
-		Client::free();
+		Log::info() << "NetUDPClient disconnect";
 
-		self.run = false;
+		SDLNet_UDP_Close(self.socket);
 	}
 
-	void Client::free() {
-		if (!self.run) return;
+	void Client::addToSend(Packet packet) {
+		self.queue.push(packet);
+	}
 
-		Log::info() << "Free memory from NetUDPClient";
-
-		if (
-			SDLNet_UDP_DelSocket(self.socket_set, self.client_socket) == -1
-		) {
-			Log::error() << SDLNet_GetError();
+	void Client::send(Packet packet) {
+		if (!self.is_connect) {
+			Log::error() << "Couldn't send data because client is not connect to server";
 			return;
 		}
-		SDLNet_UDP_Close(self.client_socket);
-
-		SDLNet_FreeSocketSet(self.socket_set);
-	}
-
-	bool Client::warrantySend(Packet packet) {
-		Uint32 packetID = packet.packetID;
-		
-		Uint32 num_ready;
-		for (Uint32 i = 0; i < 10; ++i) {
-			self.lastPacketID = packetID;
-			packet.packetID = packetID;
-
-			Client::Send(packet);
-			num_ready = SDLNet_CheckSockets(self.socket_set, 100);
-			if (num_ready > 0)
-				break;
-		}
-		
-		self.lastSend = clock();
-
-		if (!num_ready)
-			Log::error() << "warrantySend: Server takes too long to respond";
-
-		return num_ready > 0;
-	}
-
-	void Client::Send(Packet packet) {
-		if (!self.run) {
-			Log::warning() << "Failed to send data because there is no connection to the server";
-			return;
-		}
-
-		self.lastSend = clock();
-
-		packet.packetID += 1;
-		if (self.lastPacketID > packet.packetID)
-			packet.packetID = self.lastPacketID;
-		self.lastPacketID = packet.packetID;
-
-		packet.c_data = self.id;
 
 		memcpy(&packet.data[0], &packet.code, 2);
 		memcpy(&packet.data[2], &packet.packetID, 2);
-		memcpy(&packet.data[4], &packet.c_data, 2);
 
-		Net::send(self.client_socket, &self.ip, packet.data, packet.len);
+		static UDPpacket* udppacket = SDLNet_AllocPacket(packet.len);
+		if (!udppacket) {
+			Log::error() << "Client::send. Couldn't alloc UDP packet";
+			return;
+		}
+
+		udppacket->address = self.server;
+		udppacket->len = packet.len;
+
+		if (packet.data)
+			memcpy(udppacket->data, packet.data, packet.len);
+		else {
+			Log::error() << "Client::send. Packet data is null";
+			return;
+		}
+
+		if (SDLNet_UDP_Send(self.socket, -1, udppacket) != 1)
+			Log::error() << "SDLNet_UDP_Send:" << SDLNet_GetError();
+	}
+
+	Packet* Client::read() {
+		static UDPpacket* packet = SDLNet_AllocPacket(256);
+
+		if (!packet) {
+			Log::error() << "Client::read. Couldn't alloc UDP packet";
+			return NULL;
+		}
+
+		int result = SDLNet_UDP_Recv(self.socket, packet);
+
+		if (result == -1) {
+			Log::error() << SDLNet_GetError();
+			return NULL;
+		}
+
+		if (result == 0)
+			return NULL;
+
+		return Packet::createFromUDP(packet);
 	}
 }

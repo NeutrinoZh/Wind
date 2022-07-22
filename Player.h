@@ -8,7 +8,6 @@ namespace Game {
 		EngineCore::Body body;
 
 		bool toMove;
-		bool toSend = false;
 
 		const float speed = 0.03;
 	public:
