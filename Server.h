@@ -6,6 +6,12 @@ namespace EngineCore {
 	public:
 		struct Client {
 			std::queue<Packet> queue;
+			std::vector<std::pair<clock_t, Packet>> sentPackets;
+			std::queue<Packet> resend;
+			std::vector<Uint16> to_ack;
+
+			Uint16 ack = NULL;
+			Uint16 bitfield = NULL;
 
 			IPaddress ip = IPaddress();
 			Uint16  lastPacketID = 0;

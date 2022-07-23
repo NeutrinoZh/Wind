@@ -1,7 +1,7 @@
 #include "Net.h"
 
 namespace EngineCore {
-	bool Net::isServer = false;
+	bool Net::isServer = true;
 
 	bool Net::init() {
 		Log::info() << "SDL net init";

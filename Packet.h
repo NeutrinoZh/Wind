@@ -8,6 +8,9 @@ namespace EngineCore {
 	public:
 		IPaddress address;
 
+		Uint16 ack = NULL;
+		Uint16 bitfield = NULL;
+
 		Uint16 code = NULL;
 		Uint16 packetID = NULL;
 
@@ -24,6 +27,8 @@ namespace EngineCore {
 
 			self->code = self->read<Uint16>();
 			self->packetID = self->read<Uint16>();
+			self->ack = self->read<Uint16>();
+			self->bitfield = self->read<Uint16>();
 
 			return self;
 		}
@@ -31,8 +36,8 @@ namespace EngineCore {
 		static Packet create(Uint32 len) {
 			Packet self;
 
-			self.pointer = 4;
-			self.len = len + 4;
+			self.pointer = 8;
+			self.len = len + 8;
 
 			self.data = new byte[self.len];
 

@@ -42,9 +42,9 @@ namespace Game {
 		void update() {
 			animator.update();
 
-			if (toMove) {
-				glm::vec2 velocity = { 0, 0 };
+			glm::vec2 velocity = {};
 
+			if (toMove) {
 				if      (EngineCore::Keyboard::isPressed(SDLK_w)) { velocity.y =  delta(speed); state = 0; }
 				else if (EngineCore::Keyboard::isPressed(SDLK_s)) { velocity.y = -delta(speed); state = 2; }
 				
@@ -67,6 +67,7 @@ namespace Game {
 
 				EngineCore::camera().position = cameraPosition;
 			}
+
 
 			if (state == 0) animator.set("player-run-top");
 			if (state == 1) animator.set("player-run-left");

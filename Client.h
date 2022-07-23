@@ -15,7 +15,14 @@ namespace EngineCore {
 		clock_t lastSend = 0;
 		clock_t lastReceiv = 0;
 
+		std::vector<std::pair<clock_t, Packet>> sentPackets;
+		std::queue<Packet> resend;
+
+		std::vector<Uint16> to_ack;
 		std::queue<Packet> queue;
+
+		Uint16 ack = NULL;
+		Uint16 bitfield = NULL;
 
 		static Client self;
 	public:

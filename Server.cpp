@@ -21,7 +21,7 @@ namespace EngineCore {
 
 				if (config.isVar("port")) port = config.getIntValue("port");
 			}
-		} config("./asset/server.txt");
+		} config("./server.txt");
 
 		self.socket = SDLNet_UDP_Open(config.port);
 		if (self.socket == NULL) {
@@ -48,6 +48,36 @@ namespace EngineCore {
 					) {
 					newClient = false;
 
+					std::vector<Uint16> acks = { packet->ack };
+
+					Uint16 bitfield = packet->bitfield;
+					for (Uint16 j = 0; j < 16; ++j)
+						if ((bitfield & (1 << j)) >> j)
+							acks.push_back(packet->ack - (j + 1));
+
+					for (Uint16 j = 0; j < self.clients[i].sentPackets.size(); ++j) {
+						auto it = std::find(acks.begin(), acks.end(), self.clients[i].sentPackets[j].second.packetID);
+						if (it != acks.end()) {
+							self.clients[i].sentPackets.erase(self.clients[i].sentPackets.begin() + j);
+							j -= 1;
+						}
+					}
+
+					{
+						if (packet->packetID != NULL) {
+							auto it = std::find(self.clients[i].to_ack.begin(), self.clients[i].to_ack.end(), packet->packetID);
+							if (it != self.clients[i].to_ack.end()) {
+								self.clients[i].lastReceiv = clock();
+								delete packet;
+							}
+							else {
+								self.clients[i].to_ack.push_back(packet->packetID);
+								if (self.clients[i].to_ack.size() >= 17)
+									self.clients[i].to_ack.erase(self.clients[i].to_ack.begin());
+							}
+						}
+					}
+
 					if (Server::GetPacket)
 						Server::GetPacket(i, packet);
 
@@ -65,6 +95,21 @@ namespace EngineCore {
 				self.clients[clientID].ip = packet->address;
 				self.clients[clientID].lastReceiv = clock();
 
+				{
+					if (packet->packetID != NULL) {
+						auto it = std::find(self.clients[clientID].to_ack.begin(), self.clients[clientID].to_ack.end(), packet->packetID);
+						if (it != self.clients[clientID].to_ack.end()) {
+							self.clients[clientID].lastReceiv = clock();
+							delete packet;
+						}
+						else {
+							self.clients[clientID].to_ack.push_back(packet->packetID);
+							if (self.clients[clientID].to_ack.size() >= 17)
+								self.clients[clientID].to_ack.erase(self.clients[clientID].to_ack.begin());
+						}
+					}
+				}
+
 				if (Server::ConnectHandler)
 					Server::ConnectHandler(clientID);
 				if (Server::GetPacket)
@@ -74,33 +119,62 @@ namespace EngineCore {
 			delete packet;
 		}
 
-		for (Uint32 clientID = 0; clientID < self.clients.size(); ++clientID)
+		for (Uint32 clientID = 0; clientID < self.clients.size(); ++clientID) {
 			if (self.clients[clientID].ip.host == 0 || self.clients[clientID].ip.port == 0)
 				continue;
-			else if (clock() > self.clients[clientID].lastReceiv + 3000) {
+
+			for (Uint16 i = 0; i < self.clients[clientID].sentPackets.size(); ++i)
+				if (clock() > self.clients[clientID].sentPackets[i].first + 200) {
+					self.clients[clientID].sentPackets[i].first = clock();
+					self.clients[clientID].resend.push(self.clients[clientID].sentPackets[i].second);
+				}
+
+			if (clock() > self.clients[clientID].lastReceiv + 2000) {
 				Log::info() << "Net. Processing disconnect (" << clientID << ")";
 
 				if (Server::DisconnectHandler)
 					Server::DisconnectHandler(clientID);
 
 				self.clients[clientID].ip.host = self.clients[clientID].ip.port = 0;
-			} else if (clock() > self.clients[clientID].lastSend + 50) {
-				self.clients[clientID].lastPacketID += 1;
+			}
+			else if (clock() > self.clients[clientID].lastSend + 50) {
 				self.clients[clientID].lastSend = clock();
 
-				if (self.clients[clientID].queue.empty()) {
+				if (!self.clients[clientID].to_ack.empty()) {
+					self.clients[clientID].ack = *std::max_element(self.clients[clientID].to_ack.begin(), self.clients[clientID].to_ack.end());
+					for (Uint8 i = 0; i < 16; ++i) {
+						auto it = std::find(self.clients[clientID].to_ack.begin(), self.clients[clientID].to_ack.end(), self.clients[clientID].ack - i - 1);
+						if (it != self.clients[clientID].to_ack.end())
+							self.clients[clientID].bitfield = self.clients[clientID].bitfield | (1 << i);
+					}
+				}
+
+				if (!self.clients[clientID].resend.empty()) {
+					Server::send(clientID, self.clients[clientID].resend.front());
+					self.clients[clientID].resend.pop();
+				}
+				else if (self.clients[clientID].queue.empty()) {
 					Packet packet;
 
 					if (Server::SendPacket)
-						packet = Server::SendPacket(clientID, self.clients[clientID].lastPacketID);
+						packet = Server::SendPacket(clientID, rand() % 2); // !!!!
 					else packet = Packet::create(0);
 
 					Server::send(clientID, packet);
-				} else {
+				}
+				else {
+					self.clients[clientID].lastPacketID += 1;
+					self.clients[clientID].queue.front().packetID = self.clients[clientID].lastPacketID;
+					self.clients[clientID].sentPackets.push_back(std::make_pair(
+						clock(),
+						self.clients[clientID].queue.front()
+					));
+
 					Server::send(clientID, self.clients[clientID].queue.front());
 					self.clients[clientID].queue.pop();
 				}
 			}
+		}
 	}
 
 	void Server::shutdown() {
@@ -136,10 +210,13 @@ namespace EngineCore {
 			return;
 		}
 
-		packet.packetID = self.clients[clientID].lastPacketID;
+		packet.ack = self.clients[clientID].ack;
+		packet.bitfield = self.clients[clientID].bitfield;
 
 		memcpy(&packet.data[0], &packet.code, 2);
 		memcpy(&packet.data[2], &packet.packetID, 2);
+		memcpy(&packet.data[4], &packet.ack, 2);
+		memcpy(&packet.data[6], &packet.bitfield, 2);
 
 		static UDPpacket* udppacket = SDLNet_AllocPacket(packet.len);
 		if (!udppacket) {

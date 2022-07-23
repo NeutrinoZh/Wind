@@ -20,7 +20,7 @@ namespace EngineCore {
 				if (config.isVar("ip")) ip = config.getStringValue("ip");
 				if (config.isVar("port")) port = config.getIntValue("port");
 			}
-		} config("./asset/connect.txt");
+		} config("./connect.txt");
 
 		self.socket = SDLNet_UDP_Open(0);
 		if (self.socket == NULL) {
@@ -35,6 +35,7 @@ namespace EngineCore {
 			return;
 		}
 
+		self.lastReceiv = clock();
 		self.is_connect = true;
 	}
 
@@ -46,6 +47,35 @@ namespace EngineCore {
 			if (!packet)
 				break;
 
+			if (packet->packetID != NULL) {
+				auto it = std::find(self.to_ack.begin(), self.to_ack.end(), packet->packetID);
+				if (it != self.to_ack.end()) {
+					self.lastReceiv = clock();
+					delete packet;
+					continue;
+				}
+				else {
+					self.to_ack.push_back(packet->packetID);
+					if (self.to_ack.size() >= 17)
+						self.to_ack.erase(self.to_ack.begin());
+				}
+			}
+
+			std::vector<Uint16> acks = { packet->ack };
+
+			Uint16 bitfield = packet->bitfield;
+			for (Uint16 j = 0; j < 16; ++j)
+				if ((bitfield & (1 << j)) >> j)
+					acks.push_back(packet->ack - (j + 1));
+
+			for (Uint16 j = 0; j < self.sentPackets.size(); ++j) {
+				auto it = std::find(acks.begin(), acks.end(), self.sentPackets[j].second.packetID);
+				if (it != acks.end()) {
+					self.sentPackets.erase(self.sentPackets.begin() + j);
+					j -= 1;
+				}
+			}
+
 			if (Client::GetPacket)
 				Client::GetPacket(packet);
 
@@ -53,15 +83,33 @@ namespace EngineCore {
 			delete packet;
 		}
 
-		if (clock() > self.lastReceiv + 3000) {
+		if (clock() > self.lastReceiv + 10000) {
 			Log::info() << "Server not responding";
 			self.disconnect();
 		}
 		else if (clock() > self.lastSend + 50) {
 			self.lastSend = clock();
-			self.lastPacketID += 1;
 
-			if (self.queue.empty()) {
+			for (Uint16 i = 0; i < self.sentPackets.size(); ++i)
+				if (clock() > self.sentPackets[i].first + 200) {
+					self.sentPackets[i].first = clock();
+					self.resend.push(self.sentPackets[i].second);
+				}
+
+			if (!self.to_ack.empty()) {
+				self.ack = *std::max_element(self.to_ack.begin(), self.to_ack.end());
+				for (Uint8 i = 0; i < 16; ++i) {
+					auto it = std::find(self.to_ack.begin(), self.to_ack.end(), self.ack - i - 1);
+					if (it != self.to_ack.end())
+						self.bitfield = self.bitfield | (1 << i);
+				}
+			}
+
+			if (!self.resend.empty()) {
+				Client::send(self.resend.front());
+				self.resend.pop();
+			}
+			else if (self.queue.empty()) {
 				Packet packet;
 
 				if (Client::SendPacket)
@@ -71,7 +119,14 @@ namespace EngineCore {
 				Client::send(packet);
 			}
 			else {
-				Client::send(self.queue.back());
+				self.lastPacketID += 1;
+				self.queue.front().packetID = self.lastPacketID;
+				self.sentPackets.push_back(std::make_pair(
+					clock(),
+					self.queue.front()
+				));
+
+				Client::send(self.queue.front());
 				self.queue.pop();
 			}
 		}
@@ -96,8 +151,13 @@ namespace EngineCore {
 			return;
 		}
 
+		packet.ack = self.ack;
+		packet.bitfield = self.bitfield;
+
 		memcpy(&packet.data[0], &packet.code, 2);
 		memcpy(&packet.data[2], &packet.packetID, 2);
+		memcpy(&packet.data[4], &packet.ack, 2);
+		memcpy(&packet.data[6], &packet.bitfield, 2);
 
 		static UDPpacket* udppacket = SDLNet_AllocPacket(packet.len);
 		if (!udppacket) {
