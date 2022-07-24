@@ -33,11 +33,11 @@ namespace EngineCore {
 			return self;
 		}
 
-		static Packet create(Uint32 len) {
+		static Packet create(Uint32 len, Uint32 pointer = 8) {
 			Packet self;
 
-			self.pointer = 8;
-			self.len = len + 8;
+			self.pointer = pointer;
+			self.len = len + pointer;
 
 			self.data = new byte[self.len];
 

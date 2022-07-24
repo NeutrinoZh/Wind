@@ -31,12 +31,13 @@ namespace EngineCore {
 
 		static Server self;
 	public:
-		static Packet(*SendPacket) (Uint16 clientID, Uint16 packetID);
+		static Packet(*SendPacket) (Uint16 clientID);
 		static void (*GetPacket) (Uint16 clientID, Packet* packet);
 
 		static void (*ConnectHandler) (Uint16 clientID);
 		static void (*DisconnectHandler) (Uint16 clientID);
 
+		static void addToSendData(Uint16 clientID, Packet data);
 		static void addToSend(Uint16 clientID, Packet packet);
 		static void addToSendToEveryone(Packet packet);
 

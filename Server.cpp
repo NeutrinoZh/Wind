@@ -2,7 +2,7 @@
 
 namespace EngineCore {
 	Server Server::self = Server();
-	Packet(*Server::SendPacket) (Uint16 clientID, Uint16 packetID);
+	Packet(*Server::SendPacket) (Uint16 clientID);
 	void(*Server::GetPacket) (Uint16 clientID, Packet* packet);
 
 	void(*Server::ConnectHandler) (Uint16 clientID);
@@ -142,6 +142,8 @@ namespace EngineCore {
 
 				if (!self.clients[clientID].to_ack.empty()) {
 					self.clients[clientID].ack = *std::max_element(self.clients[clientID].to_ack.begin(), self.clients[clientID].to_ack.end());
+					self.clients[clientID].bitfield = NULL;
+
 					for (Uint8 i = 0; i < 16; ++i) {
 						auto it = std::find(self.clients[clientID].to_ack.begin(), self.clients[clientID].to_ack.end(), self.clients[clientID].ack - i - 1);
 						if (it != self.clients[clientID].to_ack.end())
@@ -157,7 +159,7 @@ namespace EngineCore {
 					Packet packet;
 
 					if (Server::SendPacket)
-						packet = Server::SendPacket(clientID, rand() % 2); // !!!!
+						packet = Server::SendPacket(clientID);
 					else packet = Packet::create(0);
 
 					Server::send(clientID, packet);
@@ -202,6 +204,20 @@ namespace EngineCore {
 				continue;
 			else
 				addToSend(i, packet);
+	}
+
+	void Server::addToSendData(Uint16 clientID, Packet data) {
+		Uint8 num_packets = (Uint8)std::ceil(data.len / 246.0);
+		for (Uint8 i = 0; i < num_packets; ++i) {
+			Packet packet = Packet::create(248);
+			packet.code = data.code;
+
+			memcpy(&packet.data[8], &i, 1);
+			memcpy(&packet.data[9], &num_packets, 1);
+			memcpy(&packet.data[10], &data.data[i * 246], 246);
+
+			addToSend(clientID, packet);
+		}
 	}
 
 	void Server::send(Uint16 clientID, Packet packet) {

@@ -30,6 +30,19 @@ namespace Game {
 		static void ConnectHandler(Uint16 clientID) {
 			using namespace EngineCore;
 
+			Packet packet = Packet::create(128 * 128 * 2, 0);
+			packet.code = game().NET_MAP_GENERATE;
+			
+			for (Uint32 x = 0; x < 128; ++x)
+				for (Uint32 y = 0; y < 128; ++y)
+					packet.write<Uint8>((Uint8)game().background->tilemap.map[x][y]);
+
+			for (Uint32 x = 0; x < 128; ++x)
+				for (Uint32 y = 0; y < 128; ++y)
+					packet.write<Uint8>((Uint8)game().foreground->tilemap.map[x][y]);
+
+			Server::addToSendData(clientID, packet);
+
 			{
 				Player* player = addPlayer(clientID);
 
@@ -73,10 +86,15 @@ namespace Game {
 			Server::addToSendToEveryone(packet);
 		}
 
-		static EngineCore::Packet SendPacket(Uint16 clientID, Uint16 packetID) {
+		static EngineCore::Packet SendPacket(Uint16 clientID) {
 			using namespace EngineCore;
 
-			Uint16 i = packetID % game().players.size();
+			static std::vector<Uint16> it;
+			if (it.size() <= clientID)
+				it.resize(clientID + 1);
+
+			it[clientID] += 1;
+			Uint16 i = it[clientID] % game().players.size();
 
 			if (i != clientID) {
 				if (!game().players[i])

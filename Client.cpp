@@ -76,7 +76,29 @@ namespace EngineCore {
 				}
 			}
 
-			if (Client::GetPacket)
+			if (packet->len == 256) {
+				Uint8 i = packet->read<Uint8>(),
+					len = packet->read<Uint8>();
+
+				if (!self.big_data.len) {
+					self.big_data = Packet::create(246 * len);
+					self.big_data.code = 0;
+					self.big_data.address = packet->address;
+				}
+
+				self.big_data.code += 1;
+
+				memcpy(&self.big_data.data[i * 246], &packet->data[10], packet->len - 10);
+
+				if (self.big_data.code == len) {
+					self.big_data.code = packet->code;
+					if (Client::GetPacket)
+						Client::GetPacket(&self.big_data);
+					self.big_data.len = NULL;
+				}
+
+			}
+			else if (Client::GetPacket)
 				Client::GetPacket(packet);
 
 			self.lastReceiv = clock();
@@ -98,10 +120,13 @@ namespace EngineCore {
 
 			if (!self.to_ack.empty()) {
 				self.ack = *std::max_element(self.to_ack.begin(), self.to_ack.end());
+				self.bitfield = NULL;
+
 				for (Uint8 i = 0; i < 16; ++i) {
 					auto it = std::find(self.to_ack.begin(), self.to_ack.end(), self.ack - i - 1);
-					if (it != self.to_ack.end())
+					if (it != self.to_ack.end()) {
 						self.bitfield = self.bitfield | (1 << i);
+					}
 				}
 			}
 

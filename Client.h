@@ -24,6 +24,8 @@ namespace EngineCore {
 		Uint16 ack = NULL;
 		Uint16 bitfield = NULL;
 
+		Packet big_data;
+
 		static Client self;
 	public:
 		static Packet(*SendPacket) (void);
