@@ -15,6 +15,9 @@ namespace Game {
 		EngineCore::TileMapObject* foreground;
 
 		std::vector<EngineCore::GameObject*> players;
+		Uint16 playerID = NULL;
+
+		std::string path = "";
 
 		static Game* game;
 	};

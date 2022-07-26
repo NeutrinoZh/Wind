@@ -58,6 +58,27 @@
     <Filter Include="Engine\Net\Server">
       <UniqueIdentifier>{370b37c1-fc03-4f27-bc20-58de1981b115}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\GUI\Base">
+      <UniqueIdentifier>{54613dba-f653-4472-99b0-6eae1f706fde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GUI\Button">
+      <UniqueIdentifier>{4bae00d4-d8f0-40be-9e35-f720ef514e0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GUI\Label">
+      <UniqueIdentifier>{e8c650fa-1143-45c4-8b67-ba1db561edaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GUI\Chat">
+      <UniqueIdentifier>{0ed9a595-67ea-4b20-afbf-aacd1aae3b60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GUI\Widget">
+      <UniqueIdentifier>{f7cf37ac-efb2-4ba3-8066-ddf7760bd032}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GUI\Container">
+      <UniqueIdentifier>{3ceaf27b-417f-45d2-a5ff-c00fb2d4787f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\GUI\Image">
+      <UniqueIdentifier>{13acf616-0deb-4035-83c4-aafaf97bcf20}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Window.cpp">
@@ -114,9 +135,6 @@
     <ClCompile Include="Perlin.cpp">
       <Filter>Engine\Math</Filter>
     </ClCompile>
-    <ClCompile Include="GUI.cpp">
-      <Filter>Engine\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="Fonts.cpp">
       <Filter>Engine\Resource</Filter>
     </ClCompile>
@@ -134,6 +152,27 @@
     </ClCompile>
     <ClCompile Include="Server.cpp">
       <Filter>Engine\Net\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI.cpp">
+      <Filter>Engine\GUI\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>Engine\GUI\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="Label.cpp">
+      <Filter>Engine\GUI\Label</Filter>
+    </ClCompile>
+    <ClCompile Include="Chat.cpp">
+      <Filter>Engine\GUI\Chat</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget.cpp">
+      <Filter>Engine\GUI\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Contrainer.cpp">
+      <Filter>Engine\GUI\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="Image.cpp">
+      <Filter>Engine\GUI\Image</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -218,9 +257,6 @@
     <ClInclude Include="Physics.h">
       <Filter>Engine\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="GUI.h">
-      <Filter>Engine\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="Fonts.h">
       <Filter>Engine\Resource</Filter>
     </ClInclude>
@@ -238,6 +274,30 @@
     </ClInclude>
     <ClInclude Include="Server.h">
       <Filter>Engine\Net\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI.h">
+      <Filter>Engine\GUI\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>Engine\GUI\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="Label.h">
+      <Filter>Engine\GUI\Label</Filter>
+    </ClInclude>
+    <ClInclude Include="Chat.h">
+      <Filter>Engine\GUI\Chat</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget.h">
+      <Filter>Engine\GUI\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Container.h">
+      <Filter>Engine\GUI\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenu.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>Engine\GUI\Image</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

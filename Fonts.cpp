@@ -34,7 +34,8 @@ namespace EngineCore {
 	}
 
 	void Fonts::free(TTF_Font* font) {
-		delete font;
+		TTF_CloseFont(font);
+		font = NULL;
 	}
 
 	Fonts& fonts() {

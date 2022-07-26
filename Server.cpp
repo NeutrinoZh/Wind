@@ -21,7 +21,7 @@ namespace EngineCore {
 
 				if (config.isVar("port")) port = config.getIntValue("port");
 			}
-		} config("./server.txt");
+		} config("./asset/server.txt");
 
 		self.socket = SDLNet_UDP_Open(config.port);
 		if (self.socket == NULL) {

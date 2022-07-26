@@ -1,7 +1,7 @@
 #include "Net.h"
 
 namespace EngineCore {
-	bool Net::isServer = true;
+	bool Net::isServer = false;
 
 	bool Net::init() {
 		Log::info() << "SDL net init";
@@ -13,8 +13,6 @@ namespace EngineCore {
 
 		if (isServer)
 			Server::run();
-		else
-			Client::connect();
 
 		return true;
 	}

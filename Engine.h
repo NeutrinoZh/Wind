@@ -1,5 +1,5 @@
 #pragma once
-#include "GUI.h"	
+#include "Image.h"
 
 namespace EngineCore {
 
@@ -65,6 +65,8 @@ namespace EngineCore {
 		void free() {
 			Log::begin() << "Memory cleaning procedure started";
 
+			EngineCore::animations().freeAll();
+			EngineCore::fonts().freeAll();
 			EngineCore::shaders().freeAll();
 			EngineCore::textures().freeAll();
 			

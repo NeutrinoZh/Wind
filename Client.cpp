@@ -20,7 +20,7 @@ namespace EngineCore {
 				if (config.isVar("ip")) ip = config.getStringValue("ip");
 				if (config.isVar("port")) port = config.getIntValue("port");
 			}
-		} config("./connect.txt");
+		} config("./asset/connect.txt");
 
 		self.socket = SDLNet_UDP_Open(0);
 		if (self.socket == NULL) {
@@ -81,14 +81,14 @@ namespace EngineCore {
 					len = packet->read<Uint8>();
 
 				if (!self.big_data.len) {
-					self.big_data = Packet::create(246 * len);
+					self.big_data = Packet::create(246 * len, 0);
 					self.big_data.code = 0;
 					self.big_data.address = packet->address;
 				}
 
 				self.big_data.code += 1;
 
-				memcpy(&self.big_data.data[i * 246], &packet->data[10], packet->len - 10);
+				memcpy(&self.big_data.data[i * 246], &packet->data[10], 246);
 
 				if (self.big_data.code == len) {
 					self.big_data.code = packet->code;
@@ -97,8 +97,7 @@ namespace EngineCore {
 					self.big_data.len = NULL;
 				}
 
-			}
-			else if (Client::GetPacket)
+			} else if (Client::GetPacket)
 				Client::GetPacket(packet);
 
 			self.lastReceiv = clock();

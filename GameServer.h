@@ -19,10 +19,10 @@ namespace Game {
 				x = rand() % game().background->tilemap.map.size();
 				y = rand() % game().background->tilemap.map[0].size();
 			} while (game().background->tilemap.getTile(x, y).solid ||
-				game().foreground->tilemap.getTile(x, y).solid);
+					 game().foreground->tilemap.getTile(x, y).solid);
 
-			game().players[ID]->sprite.position.x = -64 + x + game().players[ID]->sprite.origin.x;
-			game().players[ID]->sprite.position.y = -64 + y + game().players[ID]->sprite.origin.y;
+			players[ID]->sprite.position.x = -64 + x + players[ID]->sprite.origin.x;
+			players[ID]->sprite.position.y = -64 + y + players[ID]->sprite.origin.y;
 
 			return (Player*)players[ID];
 		}
@@ -30,18 +30,20 @@ namespace Game {
 		static void ConnectHandler(Uint16 clientID) {
 			using namespace EngineCore;
 
-			Packet packet = Packet::create(128 * 128 * 2, 0);
-			packet.code = game().NET_MAP_GENERATE;
-			
-			for (Uint32 x = 0; x < 128; ++x)
-				for (Uint32 y = 0; y < 128; ++y)
-					packet.write<Uint8>((Uint8)game().background->tilemap.map[x][y]);
+			{
+				Packet packet = Packet::create(128 * 128 * 2, 0);
+				packet.code = game().NET_MAP_GENERATE;
 
-			for (Uint32 x = 0; x < 128; ++x)
-				for (Uint32 y = 0; y < 128; ++y)
-					packet.write<Uint8>((Uint8)game().foreground->tilemap.map[x][y]);
+				for (Uint32 x = 0; x < 128; ++x)
+					for (Uint32 y = 0; y < 128; ++y)
+						packet.write<Uint8>((Uint8)game().background->tilemap.map[x][y]);
 
-			Server::addToSendData(clientID, packet);
+				for (Uint32 x = 0; x < 128; ++x)
+					for (Uint32 y = 0; y < 128; ++y)
+						packet.write<Uint8>((Uint8)game().foreground->tilemap.map[x][y]);
+
+				Server::addToSendData(clientID, packet);
+			}
 
 			{
 				Player* player = addPlayer(clientID);

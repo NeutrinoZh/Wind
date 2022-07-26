@@ -4,8 +4,9 @@
 namespace EngineCore {
 	struct Packet {
 	private:
-		Uint32 pointer = 0;
 	public:
+		Uint32 pointer = 0;
+
 		IPaddress address;
 
 		Uint16 ack = NULL;
@@ -33,7 +34,7 @@ namespace EngineCore {
 			return self;
 		}
 
-		static Packet create(Uint32 len, Uint32 pointer = 8) {
+		static Packet create(Uint32 len, Uint32 pointer=8) {
 			Packet self;
 
 			self.pointer = pointer;
@@ -46,14 +47,23 @@ namespace EngineCore {
 
 		template <typename T>
 		void write(T value) {
-			memcpy(&data[pointer], &value, sizeof(T));
+			if (pointer < len)
+				memcpy(&data[pointer], &value, sizeof(T));
+			else
+				throw std::exception("index out");
+
 			pointer += sizeof(T);
 		}
 
 		template <typename T>
 		T read() {
 			T value;
-			memcpy(&value, &data[pointer], sizeof(T));
+
+			if (pointer < len)
+				memcpy(&value, &data[pointer], sizeof(T));
+			else
+				throw std::exception("index out");
+
 			pointer += sizeof(T);
 			return value;
 		}

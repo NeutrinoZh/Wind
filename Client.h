@@ -8,7 +8,6 @@ namespace EngineCore {
 		static Packet* read();
 	private:
 		UDPsocket socket;
-		bool is_connect = false;
 
 		IPaddress server;
 		Uint16  lastPacketID = 0;
@@ -26,8 +25,10 @@ namespace EngineCore {
 
 		Packet big_data;
 
-		static Client self;
 	public:
+		bool is_connect = false;
+		static Client self;
+
 		static Packet(*SendPacket) (void);
 		static void (*GetPacket) (Packet* packet);
 

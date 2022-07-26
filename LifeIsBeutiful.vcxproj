@@ -149,9 +149,12 @@
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Animations.cpp" />
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Chat.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="ConfigReader.cpp" />
+    <ClCompile Include="Contrainer.cpp" />
     <ClCompile Include="D:\libs\glad\src\glad.c" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="EventHandler.cpp" />
@@ -159,6 +162,8 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="GUI.cpp" />
+    <ClCompile Include="Image.cpp" />
+    <ClCompile Include="Label.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Net.cpp" />
@@ -171,18 +176,25 @@
     <ClCompile Include="Textures.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TileMap.cpp" />
+    <ClCompile Include="Widget.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Animations.h" />
     <ClInclude Include="Animator.h" />
+    <ClInclude Include="Button.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Chat.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="ConfigReader.h" />
+    <ClInclude Include="Container.h" />
     <ClInclude Include="Fonts.h" />
     <ClInclude Include="GameClient.h" />
     <ClInclude Include="GUI.h" />
+    <ClInclude Include="Image.h" />
+    <ClInclude Include="Label.h" />
+    <ClInclude Include="MainMenu.h" />
     <ClInclude Include="MapGenerate.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="Settings.h" />
@@ -207,6 +219,7 @@
     <ClInclude Include="TileMap.h" />
     <ClInclude Include="TileMapObject.h" />
     <ClInclude Include="utils.h" />
+    <ClInclude Include="Widget.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
