@@ -1,5 +1,5 @@
 texture=player-left-0
-shader=Shader
+shader=std-shader
 
 scaleX=1
 scaleY=1

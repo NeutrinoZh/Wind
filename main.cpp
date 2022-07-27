@@ -5,27 +5,38 @@ namespace Game {
 	void start() {
 		game().seed = time(NULL);
 
-		if (EngineCore::Net::isServer) {
-			EngineCore::Window::delta = 0.f;
+		//=============================================================//
 
+		EngineCore::GameObject* gameScene = new EngineCore::GameObject(); {
 			game().background = new EngineCore::TileMapObject(
 				EngineCore::TileMap::builder("./asset/tilemap/background.meta")
 			);
-			EngineCore::Core::scene->AddObject(game().background);
+			gameScene->AddObject(game().background);
 
 			game().foreground = new EngineCore::TileMapObject(
 				EngineCore::TileMap::builder("./asset/tilemap/foreground.meta")
 			);
-			EngineCore::Core::scene->AddObject(game().foreground);
-	
+			gameScene->AddObject(game().foreground);
+		} EngineCore::Core::addScene("game", gameScene);
+
+		EngineCore::GameObject* menuScene = new EngineCore::GameObject(); {
+			menuScene->AddObject(new MainMenu());
+		} EngineCore::Core::addScene("menu", menuScene);
+
+		//=============================================================//
+
+		if (EngineCore::Net::isServer) {
+			EngineCore::Core::setScene("game");
+			EngineCore::Window::delta = 0.f;
+
 			mapGenerate("./asset/generator.meta");
 			saveMapToImage("./asset/map.png");
 		} else {
+			EngineCore::Core::setScene("menu");
+
 			game().chat->font = EngineCore::fonts()["PixelFont"];
 			game().chat->position = { 0.1f, 0.5f };
 			game().chat->Start();
-
-			MainMenu::Start();
 		}
 	}
 
@@ -35,27 +46,24 @@ namespace Game {
 				if (_getch() == 'e')
 					EngineCore::Window::quit();
 
-			if (EngineCore::Keyboard::isPressed(SDLK_w)) EngineCore::camera().position.y += delta(0.03);
-			if (EngineCore::Keyboard::isPressed(SDLK_s)) EngineCore::camera().position.y -= delta(0.03);
-			if (EngineCore::Keyboard::isPressed(SDLK_a)) EngineCore::camera().position.x -= delta(0.03);
-			if (EngineCore::Keyboard::isPressed(SDLK_d)) EngineCore::camera().position.x += delta(0.03);
+			if (EngineCore::Keyboard::isPressed(SDLK_w)) EngineCore::camera().position.y += delta(0.09);
+			if (EngineCore::Keyboard::isPressed(SDLK_s)) EngineCore::camera().position.y -= delta(0.09);
+			if (EngineCore::Keyboard::isPressed(SDLK_a)) EngineCore::camera().position.x -= delta(0.09);
+			if (EngineCore::Keyboard::isPressed(SDLK_d)) EngineCore::camera().position.x += delta(0.09);
 		} else {
 			if (!EngineCore::Client::self.is_connect)
-				MainMenu::self.container->active = true;
+				EngineCore::Core::setScene("menu");
 
 			if (EngineCore::Keyboard::isPressed(SDLK_ESCAPE) && EngineCore::Client::self.is_connect)
 				EngineCore::Client::disconnect();
 
 			game().chat->Update();
-			MainMenu::Update();
 		}
 	}
 
 	void draw() {
-		if (!EngineCore::Net::isServer) {
+		if (!EngineCore::Net::isServer)
 			game().chat->Draw();
-			MainMenu::Draw();
-		}
 	}
 }
 

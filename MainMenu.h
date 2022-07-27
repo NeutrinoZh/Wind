@@ -2,7 +2,7 @@
 #include "GameServer.h"
 
 namespace Game {
-	class MainMenu {
+	class MainMenu : public EngineCore::GUIObject {
 	private:
 		EngineCore::Image* background = NULL;
 
@@ -17,69 +17,49 @@ namespace Game {
 			(*button)->size = {2, 0.6f};
 			(*button)->font = EngineCore::fonts()["PixelFont"];
 			(*button)->text = text;
-			self.container->add(*button);
+			container->add(*button);
 		}
 
-		static void play() {
-			self.container->active = false;
-
-			game().background = new EngineCore::TileMapObject(
-				EngineCore::TileMap::builder("./asset/tilemap/background.meta")
-			);
-			EngineCore::Core::scene->AddObject(game().background);
-
-			game().foreground = new EngineCore::TileMapObject(
-				EngineCore::TileMap::builder("./asset/tilemap/foreground.meta")
-			);
-			EngineCore::Core::scene->AddObject(game().foreground);
-
+		void play() {
+			EngineCore::Core::setScene("game");
 			EngineCore::Client::connect();
 		}
+	protected:
+		void start() {
+			container = new EngineCore::Container();
 
-	public:
-		EngineCore::Container* container = NULL;
-		static MainMenu self;
+			background = new EngineCore::Image(EngineCore::textures()["main-menu"]);
+			background->size = { 12.8f, 7 };
+			background->position.y = 7.4f;
 
-		static void Start() {
-			self.container = new EngineCore::Container();
+			container->add(background);
 
-			self.background = new EngineCore::Image(EngineCore::textures()["main-menu"]);
-			self.background->size = { 12.8f, 7 };
-			self.background->position.y = 7.4f;
+			setButton(&playButton,    { 1, 5.0f }, "Play");
+			setButton(&joinButton,    { 1, 4.3f }, "Join");
+			setButton(&settingButton, { 1, 3.6f }, "Settings");
+			setButton(&exitButton,    { 1, 2.9f }, "Exit");
 
-			self.container->add(self.background);
-
-			self.setButton(&self.playButton,    { 1, 5.0f }, "Play");
-			self.setButton(&self.joinButton,    { 1, 4.3f }, "Join");
-			self.setButton(&self.settingButton, { 1, 3.6f }, "Settings");
-			self.setButton(&self.exitButton,    { 1, 2.9f }, "Exit");
-
-			self.container->Start();
+			container->Start();
 		}
 
-		static void Update() {
-			if (!self.container->active) return;
+		void update() {
+			container->Update();
 
-			self.container->Update();
-
-			if (self.playButton->state == EngineCore::Widget::State::CLICK) {
+			if (playButton->state == EngineCore::Widget::State::CLICK) {
 				WinExec((game().path + " server").c_str(), SW_HIDE);
 				SDL_Delay(300);
-				self.play();
+				play();
 			}
 
-			if (self.joinButton->state == EngineCore::Widget::State::CLICK) {
-				self.play();
-			}
+			if (joinButton->state == EngineCore::Widget::State::CLICK)
+				play();
 
-			if (self.exitButton->state == EngineCore::Widget::State::CLICK)
+			if (exitButton->state == EngineCore::Widget::State::CLICK)
 				EngineCore::Window::quit();
 		}
 
-		static void Draw() {
-			self.container->Draw();
+		void draw() {
+			container->Draw();
 		}
 	};
-
-	MainMenu MainMenu::self = MainMenu();
 }

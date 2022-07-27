@@ -174,6 +174,9 @@
     <ClCompile Include="Image.cpp">
       <Filter>Engine\GUI\Image</Filter>
     </ClCompile>
+    <ClCompile Include="GUIObject.cpp">
+      <Filter>Engine\GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -298,6 +301,9 @@
     </ClInclude>
     <ClInclude Include="Image.h">
       <Filter>Engine\GUI\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIObject.h">
+      <Filter>Engine\GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

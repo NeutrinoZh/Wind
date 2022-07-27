@@ -162,6 +162,7 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="GUI.cpp" />
+    <ClCompile Include="GUIObject.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="Log.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="Fonts.h" />
     <ClInclude Include="GameClient.h" />
     <ClInclude Include="GUI.h" />
+    <ClInclude Include="GUIObject.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="Label.h" />
     <ClInclude Include="MainMenu.h" />
