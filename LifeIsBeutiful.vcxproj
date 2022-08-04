@@ -153,6 +153,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Chat.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="ClientHelper.cpp" />
     <ClCompile Include="ConfigReader.cpp" />
     <ClCompile Include="Contrainer.cpp" />
     <ClCompile Include="D:\libs\glad\src\glad.c" />

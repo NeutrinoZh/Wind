@@ -14,6 +14,10 @@ namespace EngineCore {
 		clock_t lastSend = 0;
 		clock_t lastReceiv = 0;
 
+		clock_t TIME_WAIT_FOR_RESPONSE = 10000;
+		clock_t DELTA_TIME_FOR_SEND	   = 50;
+		clock_t TIME_WAIT_FOR_RESEND   = 200;
+
 		std::vector<std::pair<clock_t, Packet>> sentPackets;
 		std::queue<Packet> resend;
 
@@ -25,14 +29,30 @@ namespace EngineCore {
 
 		Packet big_data;
 
-	public:
+		std::map<Uint16, void (*)(Packet*)> handlers;
+
 		bool is_connect = false;
 		static Client self;
 
+		static bool IsRepeat(Uint16 packetID);
+		static void ReadAck(Uint16 packetID);
+		static void ReadBitfield(Packet* packet);
+		static void ReadBigData(Packet* packet, void(*handler) (Packet*));
+		static void Read();
+
+		static void AddToSent();
+		static void WriteAck();
+		static void Resend();
+		static void SendFromQueue();
+		static void Send();
+
+		static std::map<Uint16, void(*) (Packet*)> codeHandlers;
+	public:
 		static Packet(*SendPacket) (void);
-		static void (*GetPacket) (Packet* packet);
 
 		static void addToSend(Packet packet);
+		static void addCodeHandler(Uint16 code, void(*handler) (Packet*));
+		static bool isConnect();
 
 		static void connect();
 		static void update();

@@ -3,7 +3,6 @@
 
 namespace EngineCore {
 	struct Packet {
-	private:
 	public:
 		Uint32 pointer = 0;
 

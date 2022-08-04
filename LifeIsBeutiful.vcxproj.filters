@@ -79,6 +79,12 @@
     <Filter Include="Engine\GUI\Image">
       <UniqueIdentifier>{13acf616-0deb-4035-83c4-aafaf97bcf20}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы заголовков\Object">
+      <UniqueIdentifier>{76f0199a-0b23-4bd7-b822-e270e1c1389b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\Online">
+      <UniqueIdentifier>{07c9da80-fc81-438f-ba4b-3a17097cedbc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Window.cpp">
@@ -138,9 +144,6 @@
     <ClCompile Include="Fonts.cpp">
       <Filter>Engine\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Settings.cpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
@@ -176,6 +179,12 @@
     </ClCompile>
     <ClCompile Include="GUIObject.cpp">
       <Filter>Engine\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientHelper.cpp">
+      <Filter>Engine\Net\Client</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -218,9 +227,6 @@
     <ClInclude Include="GameObject.h">
       <Filter>Engine\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="Settings.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -232,9 +238,6 @@
     </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Engine\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="GameServer.h">
-      <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Tile.h">
       <Filter>Engine\Graphics</Filter>
@@ -262,9 +265,6 @@
     </ClInclude>
     <ClInclude Include="Fonts.h">
       <Filter>Engine\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="GameClient.h">
-      <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Net.h">
       <Filter>Engine\Net\Base</Filter>
@@ -296,14 +296,23 @@
     <ClInclude Include="Container.h">
       <Filter>Engine\GUI\Container</Filter>
     </ClInclude>
-    <ClInclude Include="MainMenu.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="Image.h">
       <Filter>Engine\GUI\Image</Filter>
     </ClInclude>
     <ClInclude Include="GUIObject.h">
       <Filter>Engine\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenu.h">
+      <Filter>Файлы заголовков\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Файлы заголовков\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="GameClient.h">
+      <Filter>Файлы заголовков\Online</Filter>
+    </ClInclude>
+    <ClInclude Include="GameServer.h">
+      <Filter>Файлы заголовков\Online</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

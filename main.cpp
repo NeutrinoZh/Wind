@@ -51,10 +51,10 @@ namespace Game {
 			if (EngineCore::Keyboard::isPressed(SDLK_a)) EngineCore::camera().position.x -= delta(0.09);
 			if (EngineCore::Keyboard::isPressed(SDLK_d)) EngineCore::camera().position.x += delta(0.09);
 		} else {
-			if (!EngineCore::Client::self.is_connect)
+			if (!EngineCore::Client::isConnect())
 				EngineCore::Core::setScene("menu");
 
-			if (EngineCore::Keyboard::isPressed(SDLK_ESCAPE) && EngineCore::Client::self.is_connect)
+			if (EngineCore::Keyboard::isPressed(SDLK_ESCAPE) && EngineCore::Client::isConnect())
 				EngineCore::Client::disconnect();
 
 			game().chat->Update();
@@ -81,7 +81,11 @@ int main(int argc, char** args) {
 	EngineCore::Server::GetPacket = Game::GameServer::GetPacket;
 
 	EngineCore::Client::SendPacket = Game::GameClient::SendPacket;
-	EngineCore::Client::GetPacket = Game::GameClient::GetPacket;
+
+	EngineCore::Client::addCodeHandler(Game::game().NET_PLAYER_CREATE, Game::GameClient::PlayerCreate);
+	EngineCore::Client::addCodeHandler(Game::game().NET_PLAYER_MOVE, Game::GameClient::PlayerMove);
+	EngineCore::Client::addCodeHandler(Game::game().NET_PLAYER_DESTROY, Game::GameClient::PlayerDestroy);
+	EngineCore::Client::addCodeHandler(Game::game().NET_MAP_GENERATE, Game::GameClient::MapGenerate);
 
 	return EngineCore::Core::loop();
 };
