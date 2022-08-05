@@ -4,6 +4,18 @@
 namespace EngineCore {
 	class Client {
 	private:
+		static bool IsRepeat(Uint16 packetID);
+		static void ReadAck(Uint16 packetID);
+		static void ReadBitfield(Packet* packet);
+		static void ReadBigData(Packet* packet, void(*handler) (Packet*));
+		static void Read();
+
+		static void AddToSent();
+		static void WriteAck();
+		static void Resend();
+		static void SendFromQueue();
+		static void Send();
+
 		static void send(Packet packet);
 		static Packet* read();
 	private:
@@ -29,22 +41,8 @@ namespace EngineCore {
 
 		Packet big_data;
 
-		std::map<Uint16, void (*)(Packet*)> handlers;
-
 		bool is_connect = false;
 		static Client self;
-
-		static bool IsRepeat(Uint16 packetID);
-		static void ReadAck(Uint16 packetID);
-		static void ReadBitfield(Packet* packet);
-		static void ReadBigData(Packet* packet, void(*handler) (Packet*));
-		static void Read();
-
-		static void AddToSent();
-		static void WriteAck();
-		static void Resend();
-		static void SendFromQueue();
-		static void Send();
 
 		static std::map<Uint16, void(*) (Packet*)> codeHandlers;
 	public:

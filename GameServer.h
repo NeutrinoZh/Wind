@@ -27,6 +27,16 @@ namespace Game {
 			return (Player*)players[ID];
 		}
 	public:
+		static void SetHandlers() {
+			using namespace EngineCore;
+
+			Server::ConnectHandler	  = ConnectHandler;
+			Server::DisconnectHandler = DisconnectHandler;
+			Server::SendPacket		  = SendPacket;
+
+			Server::addCodeHandler(game().NET_PLAYER_MOVE, PlayerMove);
+		}
+
 		static void ConnectHandler(Uint16 clientID) {
 			using namespace EngineCore;
 
@@ -116,19 +126,17 @@ namespace Game {
 				return Packet::create(0);
 		}
 
-		static void GetPacket(Uint16 clientID, EngineCore::Packet* packet) {
+		static void PlayerMove(Uint16 clientID, EngineCore::Packet* packet) {
 			using namespace EngineCore;
 
-			if (packet->code == game().NET_PLAYER_MOVE) {
-				Player* player = (Player*)game().players[clientID];
+			Player* player = (Player*)game().players[clientID];
 
-				player->sprite.position = {
-					packet->read<float>(),
-					packet->read<float>()
-				};
+			player->sprite.position = {
+				packet->read<float>(),
+				packet->read<float>()
+			};
 
-				player->state = packet->read<Uint8>();
-			}
+			player->state = packet->read<Uint8>();
 		}
 	};
 }

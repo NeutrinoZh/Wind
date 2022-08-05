@@ -186,6 +186,9 @@
     <ClCompile Include="ClientHelper.cpp">
       <Filter>Engine\Net\Client</Filter>
     </ClCompile>
+    <ClCompile Include="ServerHelper.cpp">
+      <Filter>Engine\Net\Server</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">

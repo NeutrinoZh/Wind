@@ -5,12 +5,7 @@ namespace EngineCore {
 		if (!packetID) return false;
 
 		auto it = std::find(self.to_ack.begin(), self.to_ack.end(), packetID);
-		if (it != self.to_ack.end()) {
-			self.lastReceiv = clock();
-			return true;
-		}
-
-		return false;
+		return (it != self.to_ack.end());
 	}
 	void Client::ReadAck(Uint16 packetID) {
 		if (!packetID) return;
@@ -63,10 +58,10 @@ namespace EngineCore {
 				break;
 
 			if (Client::IsRepeat(packet->packetID)) {
+				self.lastReceiv = clock();
 				delete packet;
 				continue;
-			}
-			else
+			} else
 				Client::ReadAck(packet->packetID);
 
 			Client::ReadBitfield(packet);

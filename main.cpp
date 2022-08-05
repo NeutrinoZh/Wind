@@ -39,7 +39,6 @@ namespace Game {
 			game().chat->Start();
 		}
 	}
-
 	void update() {
 		if (EngineCore::Net::isServer) {
 			if (_kbhit())
@@ -60,7 +59,6 @@ namespace Game {
 			game().chat->Update();
 		}
 	}
-
 	void draw() {
 		if (!EngineCore::Net::isServer)
 			game().chat->Draw();
@@ -75,17 +73,8 @@ int main(int argc, char** args) {
 	EngineCore::Core::Update = Game::update;
 	EngineCore::Core::Draw   = Game::draw;
 
-	EngineCore::Server::ConnectHandler = Game::GameServer::ConnectHandler;
-	EngineCore::Server::DisconnectHandler = Game::GameServer::DisconnectHandler;
-	EngineCore::Server::SendPacket = Game::GameServer::SendPacket;
-	EngineCore::Server::GetPacket = Game::GameServer::GetPacket;
-
-	EngineCore::Client::SendPacket = Game::GameClient::SendPacket;
-
-	EngineCore::Client::addCodeHandler(Game::game().NET_PLAYER_CREATE, Game::GameClient::PlayerCreate);
-	EngineCore::Client::addCodeHandler(Game::game().NET_PLAYER_MOVE, Game::GameClient::PlayerMove);
-	EngineCore::Client::addCodeHandler(Game::game().NET_PLAYER_DESTROY, Game::GameClient::PlayerDestroy);
-	EngineCore::Client::addCodeHandler(Game::game().NET_MAP_GENERATE, Game::GameClient::MapGenerate);
+	Game::GameServer::SetHandlers();
+	Game::GameClient::SetHandlers();
 
 	return EngineCore::Core::loop();
 };

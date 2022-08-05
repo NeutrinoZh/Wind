@@ -14,6 +14,17 @@ namespace Game {
 			return (Player*)players.back();
 		}
 	public:
+		static void SetHandlers() {
+			using namespace EngineCore;
+
+			Client::addCodeHandler(game().NET_PLAYER_CREATE,  PlayerCreate);
+			Client::addCodeHandler(game().NET_PLAYER_MOVE,    PlayerMove);
+			Client::addCodeHandler(game().NET_PLAYER_DESTROY, PlayerDestroy);
+			Client::addCodeHandler(game().NET_MAP_GENERATE,   MapGenerate);
+
+			Client::SendPacket = SendPacket;
+		}
+
 		static EngineCore::Packet SendPacket() {
 			using namespace EngineCore;
 

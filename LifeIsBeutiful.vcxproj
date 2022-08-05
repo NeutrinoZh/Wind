@@ -171,6 +171,7 @@
     <ClCompile Include="Net.cpp" />
     <ClCompile Include="Perlin.cpp" />
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="ServerHelper.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Shaders.cpp" />
