@@ -35,6 +35,7 @@ namespace Game {
 			Server::SendPacket		  = SendPacket;
 
 			Server::addCodeHandler(game().NET_PLAYER_MOVE, PlayerMove);
+			Server::addCodeHandler(game().NET_BUSH_CREATE, BushCreate);
 		}
 
 		static void ConnectHandler(Uint16 clientID) {
@@ -126,6 +127,22 @@ namespace Game {
 				return Packet::create(0);
 		}
 
+		static void BushCreate(Uint16 clientID, EngineCore::Packet* packet) {
+			int x = packet->read<int>(),
+				y = packet->read<int>();
+
+			if (x < 0 || y < 0 || x >= 128 || y >= 128)
+				return;
+
+			game().foreground->tilemap.map[x][y] = 1;
+
+			EngineCore::Packet packetBush = EngineCore::Packet::create(8);
+			packetBush.code = game().NET_BUSH_CREATE;
+			packetBush.write<int>(x);
+			packetBush.write<int>(y);
+
+			EngineCore::Server::addToSendToEveryone(packetBush);
+		}
 		static void PlayerMove(Uint16 clientID, EngineCore::Packet* packet) {
 			using namespace EngineCore;
 

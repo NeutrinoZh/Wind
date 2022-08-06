@@ -21,6 +21,7 @@ namespace Game {
 			Client::addCodeHandler(game().NET_PLAYER_MOVE,    PlayerMove);
 			Client::addCodeHandler(game().NET_PLAYER_DESTROY, PlayerDestroy);
 			Client::addCodeHandler(game().NET_MAP_GENERATE,   MapGenerate);
+			Client::addCodeHandler(game().NET_BUSH_CREATE,    BushCreate);
 
 			Client::SendPacket = SendPacket;
 		}
@@ -42,6 +43,15 @@ namespace Game {
 			return packet;
 		}
 
+		static void BushCreate(EngineCore::Packet* packet) {
+			int x = packet->read<int>(),
+				y = packet->read<int>();
+
+			if (x < 0 || y < 0 || x >= 128 || y >= 128)
+				return;
+
+			game().foreground->tilemap.map[x][y] = 1;
+		}
 		static void PlayerCreate(EngineCore::Packet* packet) {
 			using namespace EngineCore;
 

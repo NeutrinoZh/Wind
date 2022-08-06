@@ -51,23 +51,19 @@ namespace EngineCore {
 		if (handler != Server::codeHandlers.end())
 			handler->second(id, packet);
 	}
-	bool Server::Connect(Uint16 id, Packet* packet) {
-		Uint32 clientID = getFreeID();
+	bool Server::Connect(Uint16 id, Packet* packet) {		
+		id = getFreeID();
 
-		Log::info() << "Server. Proccesing new connection (" << clientID << ") " <<
+		Log::info() << "Server. Proccesing new connection (" << id << ") " <<
 			packet->address.host << ":" << packet->address.port;
 
-		self.clients[clientID].ip = packet->address;
-		self.clients[clientID].lastReceiv = clock();
+		self.clients[id].ip = packet->address;
+		self.clients[id].lastReceiv = clock();
 
-		if (Server::IsRepeat(id, packet)) {
-			self.clients[id].lastReceiv = clock();
-			return false;
-		} else
-			Server::ReadAck(id, packet);
+		Server::ReadAck(id, packet);
 
 		if (Server::ConnectHandler)
-			Server::ConnectHandler(clientID);
+			Server::ConnectHandler(id);
 
 		Server::InvokeHandler(id, packet);
 		return true;
@@ -79,6 +75,7 @@ namespace EngineCore {
 				break;
 
 			Uint16 id = Server::getID(packet->address);
+
 			if (id != UINT16_MAX) {
 				Server::ReadAcks(id, packet);
 

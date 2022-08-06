@@ -68,7 +68,6 @@ namespace Game {
 				EngineCore::camera().position = cameraPosition;
 			}
 
-
 			if (state == 0) animator.set("player-run-top");
 			if (state == 1) animator.set("player-run-left");
 			if (state == 2) animator.set("player-run-bottom");
@@ -79,6 +78,28 @@ namespace Game {
 			if (state == 6) animator.set("player-stay-bottom");
 			if (state == 7) animator.set("player-stay-right");
 
+			if (toMove && EngineCore::Mouse::isPressed(SDL_BUTTON_LEFT)) {
+				glm::vec2 m = EngineCore::Mouse::getGlobalPosition() / 100.f;
+						  m.y = EngineCore::Window::size.y / 100.f - m.y + 0.6f;
+
+				int x = ceilf(m.x + EngineCore::camera().position.x + 63),
+					y = ceilf(m.y + EngineCore::camera().position.y + 63);
+
+				if (!(x < 0 || y < 0 || x >= 128 || y >= 128)) {
+					if (
+						game().foreground->tilemap.map[x][y] == 0 && 
+						game().background->tilemap.map[x][y] != 5
+					) {
+						game().foreground->tilemap.map[x][y] = 1;
+
+						EngineCore::Packet packet = EngineCore::Packet::create(8);
+						packet.code = game().NET_BUSH_CREATE;
+						packet.write<int>(x);
+						packet.write<int>(y);
+						EngineCore::Client::addToSend(packet);
+					}
+				}
+			}
 		}
 	};
 }

@@ -28,6 +28,11 @@ namespace EngineCore {
 	}
 
 	void GUI::drawRect(glm::vec2 position, glm::vec2 size, glm::vec4 color, Texture texture) {
+		if (!GUI::shader) {
+			Log::error() << "GUI shader is NULL";
+			return;
+		}
+
 		static float verticesQuad[16] = {
 			0,  0,  0, 0,
 			1,  0,  1, 0,
