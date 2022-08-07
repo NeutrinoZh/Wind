@@ -1,8 +1,0 @@
-texture=player-left-0
-shader=std-shader
-
-scaleX=1
-scaleY=1
-
-originX=0.5
-originY=0.2

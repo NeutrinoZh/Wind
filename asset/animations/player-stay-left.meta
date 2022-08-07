@@ -1,7 +1,0 @@
-name=player-stay-left
-frame0=player-stay-left-0
-frame1=player-stay-left-1
-frame2=player-stay-left-2
-frame3=player-stay-left-3
-loop=true
-interval=100

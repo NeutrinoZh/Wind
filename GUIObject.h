@@ -2,7 +2,7 @@
 #include "Image.h"
 
 namespace EngineCore {
-	class GUIObject : public GameObject {
+	class GUIObject : public Node {
 	protected:
 		Container* container = NULL;
 

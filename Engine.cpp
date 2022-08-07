@@ -23,6 +23,7 @@ namespace EngineCore {
 			EngineCore::shaders().loadFolder("asset/meta-shaders/");
 			EngineCore::fonts().loadFolder("asset/meta-fonts/");
 			EngineCore::animations().loadFolder("asset/animations/");
+			EngineCore::nodes().loadFolder("asset/nodes/");
 
 			Log::end() << "Success finish load resource";
 
@@ -31,12 +32,11 @@ namespace EngineCore {
 			if (Core::Start)
 				Core::Start();
 
-			Core::scene->Start();
+			if (Core::scene)
+				Core::scene->start();
 		}
 
 		void draw() {
-			Core::scene->Draw();
-
 			if (Core::Draw)
 				Core::Draw();
 		}
@@ -47,7 +47,8 @@ namespace EngineCore {
 			if (Core::Update)
 				Core::Update();
 
-			Core::scene->Update();
+			if (Core::scene)
+				Core::scene->update();
 
 			EngineCore::GL_Context::draw();
 		}
@@ -59,13 +60,16 @@ namespace EngineCore {
 			EngineCore::fonts().freeAll();
 			EngineCore::shaders().freeAll();
 			EngineCore::textures().freeAll();
+			EngineCore::nodes().freeAll();
 
 			EngineCore::Net::free();
 			EngineCore::Window::free();
 			EngineCore::GL_Context::free();
 
-			Core::scene->Free();
-			delete Core::scene;
+			if (Core::scene) { // !
+				Core::scene->free();
+				delete Core::scene;
+			}
 
 			Log::end() << "Memory cleaning procedure finished";
 		}
@@ -77,10 +81,10 @@ namespace EngineCore {
 	void (*Core::Update) (void) = nullptr;
 	void (*Core::Draw) (void)   = nullptr;
 
-	GameObject* Core::scene = NULL;
-	std::map<std::string, GameObject*> Core::scenes = std::map<std::string, GameObject*>();
+	Node* Core::scene = NULL;
+	std::map<std::string, Node*> Core::scenes = std::map<std::string, Node*>();
 
-	void Core::addScene(std::string name, GameObject* scene) {
+	void Core::addScene(std::string name, Node* scene) {
 		if (scene)
 			Core::scenes.insert(std::make_pair(name, scene));
 	}

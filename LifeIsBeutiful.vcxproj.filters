@@ -30,9 +30,6 @@
     <Filter Include="Engine\Core">
       <UniqueIdentifier>{c651fa95-0437-495d-b3d0-76a7c4891dee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\GameObject">
-      <UniqueIdentifier>{d30f63d3-04e7-4023-843a-c6c7e1086f4a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Net">
       <UniqueIdentifier>{77ace87b-dcc5-41d1-aa0c-135bcf13d0d1}</UniqueIdentifier>
     </Filter>
@@ -79,11 +76,23 @@
     <Filter Include="Engine\GUI\Image">
       <UniqueIdentifier>{13acf616-0deb-4035-83c4-aafaf97bcf20}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Файлы заголовков\Object">
-      <UniqueIdentifier>{76f0199a-0b23-4bd7-b822-e270e1c1389b}</UniqueIdentifier>
+    <Filter Include="Engine\Resource\Animations">
+      <UniqueIdentifier>{f19a9b9c-bb94-4c60-b145-d6d65e4c4077}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Файлы заголовков\Online">
-      <UniqueIdentifier>{07c9da80-fc81-438f-ba4b-3a17097cedbc}</UniqueIdentifier>
+    <Filter Include="Engine\Resource\Fonts">
+      <UniqueIdentifier>{eed2c9f0-7639-42a5-882a-cebcae3564ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Resource\Shaders">
+      <UniqueIdentifier>{9eba779c-ec76-4720-bd72-9e821a186086}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Resource\Textures">
+      <UniqueIdentifier>{742f8abc-7ed9-4b30-a911-40d0ba5ff0e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Resource\Nodes">
+      <UniqueIdentifier>{fcbc916e-7ced-44ef-b79d-1bbf8b6ea13d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Nodes">
+      <UniqueIdentifier>{d30f63d3-04e7-4023-843a-c6c7e1086f4a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -99,9 +108,6 @@
     <ClCompile Include="EventHandler.cpp">
       <Filter>Engine\Window</Filter>
     </ClCompile>
-    <ClCompile Include="Textures.cpp">
-      <Filter>Engine\Resource</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics.cpp">
       <Filter>Engine\Graphics</Filter>
     </ClCompile>
@@ -111,20 +117,14 @@
     <ClCompile Include="Shader.cpp">
       <Filter>Engine\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Shaders.cpp">
-      <Filter>Engine\Resource</Filter>
-    </ClCompile>
     <ClCompile Include="Sprite.cpp">
       <Filter>Engine\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>Engine\GameObject</Filter>
+    <ClCompile Include="Node.cpp">
+      <Filter>Engine\Nodes</Filter>
     </ClCompile>
     <ClCompile Include="Animation.cpp">
       <Filter>Engine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Animations.cpp">
-      <Filter>Engine\Resource</Filter>
     </ClCompile>
     <ClCompile Include="Engine.cpp">
       <Filter>Engine\Core</Filter>
@@ -140,9 +140,6 @@
     </ClCompile>
     <ClCompile Include="Perlin.cpp">
       <Filter>Engine\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Fonts.cpp">
-      <Filter>Engine\Resource</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Исходные файлы</Filter>
@@ -178,16 +175,28 @@
       <Filter>Engine\GUI\Image</Filter>
     </ClCompile>
     <ClCompile Include="GUIObject.cpp">
-      <Filter>Engine\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Settings.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Engine\Nodes</Filter>
     </ClCompile>
     <ClCompile Include="ClientHelper.cpp">
       <Filter>Engine\Net\Client</Filter>
     </ClCompile>
     <ClCompile Include="ServerHelper.cpp">
       <Filter>Engine\Net\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Animations.cpp">
+      <Filter>Engine\Resource\Animations</Filter>
+    </ClCompile>
+    <ClCompile Include="Fonts.cpp">
+      <Filter>Engine\Resource\Fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders.cpp">
+      <Filter>Engine\Resource\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Textures.cpp">
+      <Filter>Engine\Resource\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Nodes.cpp">
+      <Filter>Engine\Resource\Nodes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -209,17 +218,11 @@
     <ClInclude Include="Resource.h">
       <Filter>Engine\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Textures.h">
-      <Filter>Engine\Resource</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics.h">
       <Filter>Engine\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
       <Filter>Engine\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Shaders.h">
-      <Filter>Engine\Resource</Filter>
     </ClInclude>
     <ClInclude Include="Sprite.h">
       <Filter>Engine\Graphics</Filter>
@@ -227,17 +230,11 @@
     <ClInclude Include="Engine.h">
       <Filter>Engine\Core</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>Engine\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Settings.h">
-      <Filter>Файлы заголовков</Filter>
+    <ClInclude Include="Node.h">
+      <Filter>Engine\Nodes</Filter>
     </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>Engine\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Animations.h">
-      <Filter>Engine\Resource</Filter>
     </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Engine\Graphics</Filter>
@@ -249,7 +246,7 @@
       <Filter>Engine\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="TileMapObject.h">
-      <Filter>Engine\GameObject</Filter>
+      <Filter>Engine\Nodes</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Engine\Graphics</Filter>
@@ -260,14 +257,8 @@
     <ClInclude Include="Animator.h">
       <Filter>Engine\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="MapGenerate.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="Physics.h">
       <Filter>Engine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Fonts.h">
-      <Filter>Engine\Resource</Filter>
     </ClInclude>
     <ClInclude Include="Net.h">
       <Filter>Engine\Net\Base</Filter>
@@ -303,19 +294,25 @@
       <Filter>Engine\GUI\Image</Filter>
     </ClInclude>
     <ClInclude Include="GUIObject.h">
-      <Filter>Engine\GameObject</Filter>
+      <Filter>Engine\Nodes</Filter>
     </ClInclude>
-    <ClInclude Include="MainMenu.h">
-      <Filter>Файлы заголовков\Object</Filter>
+    <ClInclude Include="Animations.h">
+      <Filter>Engine\Resource\Animations</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Файлы заголовков\Object</Filter>
+    <ClInclude Include="Fonts.h">
+      <Filter>Engine\Resource\Fonts</Filter>
     </ClInclude>
-    <ClInclude Include="GameClient.h">
-      <Filter>Файлы заголовков\Online</Filter>
+    <ClInclude Include="Shaders.h">
+      <Filter>Engine\Resource\Shaders</Filter>
     </ClInclude>
-    <ClInclude Include="GameServer.h">
-      <Filter>Файлы заголовков\Online</Filter>
+    <ClInclude Include="Textures.h">
+      <Filter>Engine\Resource\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Nodes.h">
+      <Filter>Engine\Resource\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Behavior.h">
+      <Filter>Engine\Nodes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

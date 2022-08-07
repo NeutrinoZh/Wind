@@ -1,7 +1,0 @@
-name=player-run-left
-frame0=player-run-left-0
-frame1=player-run-left-1
-frame2=player-run-left-2
-frame3=player-run-left-3
-loop=true
-interval=100

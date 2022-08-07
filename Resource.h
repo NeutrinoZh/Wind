@@ -34,12 +34,13 @@ namespace EngineCore {
 		}
 
 		void loadFolder(std::string path) {
-			Log::info() << "Loading resource(" << name << "):" << path;
+			Log::begin() << "Start loading resource(" << name << ") from folder:" << path;
 			if (std::filesystem::is_directory(path))
 				for (const auto& entry : std::filesystem::directory_iterator(path))
 					load(entry.path().string());
 			else
 				Log::error() << "Failed loading resource(" << name << ") Could not find directory:" << path;
+			Log::end() << "Finish loading resource(" << name << ") from folder:" << path;
 		};
 
 		void add(std::string name, Type obj) {

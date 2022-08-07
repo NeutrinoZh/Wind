@@ -8,11 +8,11 @@ namespace EngineCore {
 		static void (*Update) (void);
 		static void (*Draw) (void);
 
-		static GameObject* scene;
+		static Node* scene;
 	private:
-		static std::map<std::string, GameObject*> scenes;
+		static std::map<std::string, Node*> scenes;
 	public:
-		static void addScene(std::string name, GameObject* scene);
+		static void addScene(std::string name, Node* scene);
 		static void setScene(std::string name);
 
 		static int loop();
