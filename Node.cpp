@@ -1,6 +1,8 @@
 #include "Behavior.h"
 
 namespace EngineCore {
+	Node* Node::root = NULL;
+
 	void Node::addChild(Node* child, bool runtime) {
 
 		bool add = false;
@@ -47,12 +49,27 @@ namespace EngineCore {
 			if (this->children[i])
 				this->children[i]->update();
 	}
-	void Node::free() {
+	void Node::render() {
+		if (!toRender)
+			return;
+
 		for (size_t i = 0; i < this->behavior.size(); ++i)
-			this->behavior[i]->free();
+			this->behavior[i]->render();
 
 		for (size_t i = 0; i < this->children.size(); ++i)
 			if (this->children[i])
+				this->children[i]->render();
+	}
+	void Node::free() {
+		for (size_t i = 0; i < this->behavior.size(); ++i) {
+			this->behavior[i]->free();
+			delete this->behavior[i];
+		}
+
+		for (size_t i = 0; i < this->children.size(); ++i)
+			if (this->children[i]) {
 				this->children[i]->free();
+				delete this->children[i];
+			}
 	}
 }

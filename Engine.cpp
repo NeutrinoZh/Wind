@@ -24,52 +24,54 @@ namespace EngineCore {
 			EngineCore::fonts().loadFolder("asset/meta-fonts/");
 			EngineCore::animations().loadFolder("asset/animations/");
 			EngineCore::nodes().loadFolder("asset/nodes/");
+			EngineCore::scenes().loadFolder("asset/scenes/");
 
 			Log::end() << "Success finish load resource";
 
 			GUI::shader = shaders()["std-shader"]; // !
 
-			if (Core::Start)
-				Core::Start();
+			if (Core::user_start)
+				Core::user_start();
 
-			if (Core::scene)
-				Core::scene->start();
+			if (Node::root)
+				Node::root->start();
 		}
 
-		void draw() {
-			if (Core::Draw)
-				Core::Draw();
+		void render() {
+			if (Node::root)
+				Node::root->render();
 		}
 
 		void update() {
 			Net::update();
 
-			if (Core::Update)
-				Core::Update();
+			if (Core::user_update)
+				Core::user_update();
 
-			if (Core::scene)
-				Core::scene->update();
+			if (Node::root)
+				Node::root->update();
 
-			EngineCore::GL_Context::draw();
+			EngineCore::GL_Context::render();
 		}
 
 		void free() {
 			Log::begin() << "Memory cleaning procedure started";
+
+			if (Node::root) {
+				Node::root->free();
+				delete Node::root;
+			}
 
 			EngineCore::animations().freeAll();
 			EngineCore::fonts().freeAll();
 			EngineCore::shaders().freeAll();
 			EngineCore::textures().freeAll();
 			EngineCore::nodes().freeAll();
+			EngineCore::scenes().freeAll();
 
 			EngineCore::Net::free();
 			EngineCore::Window::free();
 			EngineCore::GL_Context::free();
-
-			if (Core::scene) { // !
-				Core::scene->free();
-				delete Core::scene;
-			}
 
 			Log::end() << "Memory cleaning procedure finished";
 		}
@@ -77,25 +79,8 @@ namespace EngineCore {
 
 	//======================================================//
 
-	void (*Core::Start) (void)  = nullptr;
-	void (*Core::Update) (void) = nullptr;
-	void (*Core::Draw) (void)   = nullptr;
-
-	Node* Core::scene = NULL;
-	std::map<std::string, Node*> Core::scenes = std::map<std::string, Node*>();
-
-	void Core::addScene(std::string name, Node* scene) {
-		if (scene)
-			Core::scenes.insert(std::make_pair(name, scene));
-	}
-
-	void Core::setScene(std::string name) {
-		try {
-			Core::scene = Core::scenes.at(name);
-		} catch (std::out_of_range& ex) {
-			Log::error() << "Couldn't set scene: " << ex.what();
-		}
-	}
+	void (*Core::user_start)  (void) = nullptr;
+	void (*Core::user_update) (void) = nullptr;
 
 	int Core::loop() {
 		Log::config([](auto& self) {
@@ -108,7 +93,7 @@ namespace EngineCore {
 		EngineCore::Window::PostInit = postInit;
 		EngineCore::Window::Start = start;
 		EngineCore::Window::Update = update;
-		EngineCore::GL_Context::Draw = draw;
+		EngineCore::GL_Context::user_render = render;
 
 		if (!EngineCore::Window::init()) {
 			Log::error() << "Error init window";

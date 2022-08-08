@@ -11,11 +11,11 @@ namespace EngineCore {
 	public:
 		static glm::mat4 proj;
 		static glm::vec3 color;
-		static void (*Draw) (void);
+		static void (*user_render) (void);
 
 		static bool preInit();
 		static bool postInit();
-		static void draw();
+		static void render();
 		static void free();
 	};
 }

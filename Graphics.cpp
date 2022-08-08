@@ -6,7 +6,7 @@ namespace EngineCore {
 	glm::mat4 GL_Context::proj = glm::mat4(1);
 	bool GL_Context::autoResize = false;
 	void* GL_Context::context = nullptr;
-	void (*GL_Context::Draw) (void) = nullptr;
+	void (*GL_Context::user_render) (void) = nullptr;
 
 	namespace {
 		Uint32 VAO, VBO, EBO;
@@ -216,11 +216,11 @@ namespace EngineCore {
 		return true;
 	}
 
-	void GL_Context::draw() {
+	void GL_Context::render() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(color.r, color.g, color.b, 1.f);
 
-		if (Draw) Draw();
+		if (user_render) user_render();
 
 		glFlush();
 		SDL_GL_SwapWindow(Window::window);

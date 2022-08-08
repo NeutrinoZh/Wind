@@ -171,6 +171,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Net.cpp" />
     <ClCompile Include="Perlin.cpp" />
+    <ClCompile Include="Scenes.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="ServerHelper.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -194,6 +195,7 @@
     <ClInclude Include="ConfigReader.h" />
     <ClInclude Include="Container.h" />
     <ClInclude Include="Fonts.h" />
+    <ClInclude Include="Node2D.h" />
     <ClInclude Include="Nodes.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="GUIObject.h" />
@@ -209,6 +211,7 @@
     <ClInclude Include="Perlin.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Scenes.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Shaders.h" />

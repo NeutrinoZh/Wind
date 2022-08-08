@@ -1,5 +1,5 @@
 #pragma once
-#include "Behavior.h"
+#include "Animator.h"
 
 namespace EngineCore {
 	class TileMapObject : public Node {

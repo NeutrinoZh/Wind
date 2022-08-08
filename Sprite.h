@@ -1,27 +1,26 @@
 #pragma once
-#include "Camera.h"
+#include "Node2D.h"
 
 namespace EngineCore {
-	class Sprite {
+	class Sprite : public Behavior {
 	private:
 		glm::mat4 transform = glm::mat4(1);
 	public:
 		Shader* shader = nullptr;
 
-		glm::vec2 position = { 0, 0 },
-				  scale = { 1, 1 };
-		float angle = 0;
 		bool flipX = false,
-			 flipY = false;
+			flipY = false;
 
-		Texture texture;	
+		Texture texture;
 
 		glm::vec4 color = { 1, 1, 1, 1 };
-		glm::vec2 origin = { 0, 0 };
 
-		void useShader();
-		void draw();
+		void start() {};
+		void update() {};
+		void free() {};
 
-		static Sprite builder(std::string path);
+		void render();
+
+		static Sprite* builder(std::string path);
 	};
 }

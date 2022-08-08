@@ -153,7 +153,7 @@ namespace EngineCore {
 				SDL_Delay(minFrameTime - (endFrameTime - beginFrameTime));
 
 			endFrameTime = SDL_GetTicks();
-			delta = (endFrameTime - beginFrameTime) / 14.f;
+			delta = (endFrameTime - beginFrameTime) / 14.f; // what?
 		}
 
 		Log::end() << "Program cycle break";
