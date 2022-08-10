@@ -160,6 +160,8 @@
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="EventHandler.cpp" />
     <ClCompile Include="Fonts.cpp" />
+    <ClCompile Include="JText.cpp" />
+    <ClCompile Include="LexicalAnalyzer.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="Nodes.cpp" />
     <ClCompile Include="Graphics.cpp" />
@@ -195,6 +197,8 @@
     <ClInclude Include="ConfigReader.h" />
     <ClInclude Include="Container.h" />
     <ClInclude Include="Fonts.h" />
+    <ClInclude Include="JText.h" />
+    <ClInclude Include="LexicalAnalyzer.h" />
     <ClInclude Include="Node2D.h" />
     <ClInclude Include="Nodes.h" />
     <ClInclude Include="GUI.h" />

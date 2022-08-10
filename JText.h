@@ -1,6 +1,10 @@
 #pragma once
 #include "LexicalAnalyzer.h"
 
+/*
+	( Refactoring in a separate project )
+*/
+
 namespace EngineCore {
 	struct JObject {
 		std::string name = "";

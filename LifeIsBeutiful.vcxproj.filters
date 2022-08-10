@@ -100,6 +100,9 @@
     <Filter Include="Engine\Nodes\2D">
       <UniqueIdentifier>{31e6076a-8db4-4f1a-b4e3-3d605466e689}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\JText">
+      <UniqueIdentifier>{da2a6869-5eba-47a4-afe9-fb24491d1fa3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Window.cpp">
@@ -206,6 +209,12 @@
     </ClCompile>
     <ClCompile Include="Scenes.cpp">
       <Filter>Engine\Resource\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="JText.cpp">
+      <Filter>Engine\JText</Filter>
+    </ClCompile>
+    <ClCompile Include="LexicalAnalyzer.cpp">
+      <Filter>Engine\JText</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -328,6 +337,12 @@
     </ClInclude>
     <ClInclude Include="Node2D.h">
       <Filter>Engine\Nodes\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="JText.h">
+      <Filter>Engine\JText</Filter>
+    </ClInclude>
+    <ClInclude Include="LexicalAnalyzer.h">
+      <Filter>Engine\JText</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
