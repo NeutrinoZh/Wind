@@ -23,59 +23,58 @@ namespace EngineCore {
 		};
 	}
 
-	bool GL_Context::preInit() {
+	bool GL_Context::preInit(JText::Object& obj_config) {
 		Log::info() << "PreInit OpenGL";
 
-		struct _config {
-			Uint8 r = 3, g = 3, b = 3, a = 0;
+		struct _ {
+			Uint8 depthR = 3,
+				  depthG = 3,
+				  depthB = 3,
+				  depthA = 0;
+
 			Uint8 bufferSize = 0;
 			Uint8 depthSize = 16;
+
 			bool doubleBuffer = false,
 				 accelerated = false,
 				 contextReleaseBehavior = false;
-			Uint8 GL_Major = 3, GL_Minor = 1,
-					contextProfile = 0;
-			glm::vec3 color = {};
 
-			_config() {
-				Log::info() << "Read OpenGL config file";
-
-				Config config = ConfigReader::read("./asset/opengl.txt");
-
-				if (config.isVar("red")) r = config.getIntValue("red");
-				if (config.isVar("green")) g = config.getIntValue("green");
-				if (config.isVar("blue")) b = config.getIntValue("blue");
-				if (config.isVar("alpha")) a = config.getIntValue("alpha");
-
-				if (config.isVar("depthSize")) depthSize = config.getIntValue("depthSize");
-				if (config.isVar("bufferSize")) bufferSize = config.getIntValue("bufferSize");
-
-				if (config.isVar("doubleBuffer")) doubleBuffer = config.getBoolValue("doubleBuffer");
-				if (config.isVar("accelerated")) accelerated = config.getBoolValue("accelerated");
-				if (config.isVar("contextReleaseBehavior")) contextReleaseBehavior = config.getBoolValue("contextReleaseBehavior");
+			Uint8 GL_Major = 3, GL_Minor = 1;
 				
-				if (config.isVar("GLMajorVersion")) GL_Major = config.getIntValue("GLMajorVersion");
-				if (config.isVar("GLMinorVersion")) GL_Minor = config.getIntValue("GLMinorVersion");
+			Uint8 contextProfile = 0;
 
-				if (config.isVar("contextProfile")) {
-					std::string value = config.getStringValue("contextProfile");
-					if (value == "SDL_GL_CONTEXT_PROFILE_CORE")
-						this->contextProfile = SDL_GL_CONTEXT_PROFILE_CORE;
-					else if (value == "SDL_GL_CONTEXT_PROFILE_COMPATIBILITY")
-						this->contextProfile = SDL_GL_CONTEXT_PROFILE_COMPATIBILITY;
-					else if (value == "SDL_GL_CONTEXT_PROFILE_ES")
-						this->contextProfile = SDL_GL_CONTEXT_PROFILE_ES;
-				}
+			glm::u8vec3 clearColor = {};
 
-				if (config.isVar("clearColorR")) color.r = config.getFloatValue("clearColorR");
-				if (config.isVar("clearColorG")) color.g = config.getFloatValue("clearColorG");
-				if (config.isVar("clearColorB")) color.b = config.getFloatValue("clearColorB");
+			_(JText::Object& config) {
+				depthR = config["OpenGL"]["depthColor"][0]._uint8(depthR);
+				depthG = config["OpenGL"]["depthColor"][1]._uint8(depthG);
+				depthB = config["OpenGL"]["depthColor"][2]._uint8(depthB);
+				depthA = config["OpenGL"]["depthColor"][3]._uint8(depthA);
+
+				bufferSize = config["OpenGL"]["bufferSize"]._uint8(bufferSize);
+				depthSize  = config["OpenGL"]["depthSize"]._uint8(depthSize);
+
+				doubleBuffer = config["OpenGL"]["doubleBuffer"]._bool(doubleBuffer);
+				accelerated  = config["OpenGL"]["accelerated"]._bool(accelerated);
+				contextReleaseBehavior = config["OpenGL"]["contextReleaseBehavior"]._bool(contextReleaseBehavior);
+
+				GL_Major = config["OpenGl"]["version"]._major(GL_Major);
+				GL_Minor = config["OpenGL"]["version"]._minor(GL_Minor);
+
+				std::string profile = config["OpenGL"]["contextProfile"]._str("");
+				if	    (profile == "SDL_GL_CONTEXT_PROFILE_CORE")			this->contextProfile = SDL_GL_CONTEXT_PROFILE_CORE;
+				else if (profile == "SDL_GL_CONTEXT_PROFILE_COMPATIBILITY") this->contextProfile = SDL_GL_CONTEXT_PROFILE_COMPATIBILITY;
+				else if (profile == "SDL_GL_CONTEXT_PROFILE_ES")			this->contextProfile = SDL_GL_CONTEXT_PROFILE_ES;
+				
+				clearColor.r = config["OpenGL"]["depthColor"][0]._uint8(clearColor.r);
+				clearColor.g = config["OpenGL"]["depthColor"][1]._uint8(clearColor.g);
+				clearColor.b = config["OpenGL"]["depthColor"][2]._uint8(clearColor.b);
 			}
-		} config;
+		} config(obj_config);
 
 		Log::info() << "Set OpenGL parameters";
 
-		GL_Context::color = config.color;
+		GL_Context::color = config.clearColor;
 
 		UINT8 success =
 			SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, config.depthSize) +
@@ -86,10 +85,10 @@ namespace EngineCore {
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, config.contextProfile) +
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_RELEASE_BEHAVIOR, config.contextReleaseBehavior) +
 			SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, config.bufferSize) +
-			SDL_GL_SetAttribute(SDL_GL_RED_SIZE, config.r) +
-			SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, config.g) +
-			SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, config.b) +
-			SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, config.a);
+			SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   config.depthR) +
+			SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, config.depthG) +
+			SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  config.depthB) +
+			SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, config.depthA);
 
 		if (success != 0) {
 			Log::error() << SDL_GetError();

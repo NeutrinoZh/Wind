@@ -27,12 +27,12 @@ namespace EngineCore {
 			Object* link();
 
 			Object* _parse();
-			static JText parse(std::string pathToFile);
-			friend JText parse(std::string pathToFile);
+			static bool parse(std::string pathToFile, JText& out);
+			friend bool parse(std::string pathToFile, Object& out);
 		public:
 			Object* root = NULL;
 		};
 
-		JText parse(std::string pathToFile);
+		bool parse(std::string pathToFile, Object& out);
 	}
 }

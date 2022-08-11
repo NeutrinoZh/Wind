@@ -1,5 +1,5 @@
 #pragma once
-#include "Log.h"
+#include "FileSystem.h"
 
 namespace EngineCore {
 	namespace JText {

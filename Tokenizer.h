@@ -11,8 +11,6 @@ namespace EngineCore {
 			std::string jtext = "";
 			char curr = '\0';
 		private:
-			std::string fileRead(std::string pathToFile);
-
 			char next();
 			char get(size_t offset=0);
 
@@ -27,7 +25,7 @@ namespace EngineCore {
 
 			std::vector<Token> _tokenization();
 		public:
-			static std::vector<Token> tokenization(std::string pathToFile);
+			static bool tokenization(std::string pathToFile, std::vector<Token>& out);
 		};
 	}
 }

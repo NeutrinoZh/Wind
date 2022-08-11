@@ -2,22 +2,6 @@
 
 namespace EngineCore {
 	namespace JText {
-		std::string Tokenizer::fileRead(std::string pathToFile) {
-			std::ifstream file(pathToFile);
-
-			if (!file.is_open()) {
-				Log::error() << "LexicalAnalyzer: Couldn't open JT file:" << pathToFile;
-				return "";
-			}
-
-			std::string text = "", line = "";
-			while (std::getline(file, line)) {
-				text += line + "\n";
-			}
-
-			file.close();
-			return text;
-		}
 		char Tokenizer::get(size_t offset) {
 			size_t pos = this->position + offset;
 			if (pos >= jtext.size())

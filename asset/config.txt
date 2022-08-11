@@ -1,5 +1,0 @@
-title=LittleDanger
-sizeW=1280
-sizeH=720
-delta=10
-SDL_WINDOW_OPENGL

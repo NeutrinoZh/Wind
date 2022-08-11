@@ -159,6 +159,7 @@
     <ClCompile Include="D:\libs\glad\src\glad.c" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="EventHandler.cpp" />
+    <ClCompile Include="FileSystemcpp.cpp" />
     <ClCompile Include="Fonts.cpp" />
     <ClCompile Include="JText.cpp" />
     <ClCompile Include="JTextHelper.cpp" />
@@ -199,6 +200,7 @@
     <ClInclude Include="Client.h" />
     <ClInclude Include="ConfigReader.h" />
     <ClInclude Include="Container.h" />
+    <ClInclude Include="FileSystem.h" />
     <ClInclude Include="Fonts.h" />
     <ClInclude Include="JText.h" />
     <ClInclude Include="Node2D.h" />

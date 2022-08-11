@@ -13,7 +13,7 @@ namespace EngineCore {
 		static glm::vec3 color;
 		static void (*user_render) (void);
 
-		static bool preInit();
+		static bool preInit(JText::Object& obj_config);
 		static bool postInit();
 		static void render();
 		static void free();

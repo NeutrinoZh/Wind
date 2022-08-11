@@ -103,6 +103,15 @@
     <Filter Include="Engine\JText">
       <UniqueIdentifier>{006a42c4-b44a-4704-98ff-5257428643e3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\JText\Tokenizer">
+      <UniqueIdentifier>{1978a43d-0f3a-4faf-b98e-6e091daa2f81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\JText\Object">
+      <UniqueIdentifier>{b5a63d57-3562-42e3-a7e8-c97a170c601d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\File">
+      <UniqueIdentifier>{b1c49dac-9f53-49e4-a0f7-6fbc2eaedc91}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Window.cpp">
@@ -217,13 +226,16 @@
       <Filter>Engine\JText</Filter>
     </ClCompile>
     <ClCompile Include="Tokenizer.cpp">
-      <Filter>Engine\JText</Filter>
+      <Filter>Engine\JText\Tokenizer</Filter>
     </ClCompile>
     <ClCompile Include="TokenizerHelper.cpp">
-      <Filter>Engine\JText</Filter>
+      <Filter>Engine\JText\Tokenizer</Filter>
     </ClCompile>
     <ClCompile Include="Object.cpp">
-      <Filter>Engine\JText</Filter>
+      <Filter>Engine\JText\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="FileSystemcpp.cpp">
+      <Filter>Engine\File</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -350,14 +362,17 @@
     <ClInclude Include="JText.h">
       <Filter>Engine\JText</Filter>
     </ClInclude>
-    <ClInclude Include="Token.h">
-      <Filter>Engine\JText</Filter>
-    </ClInclude>
     <ClInclude Include="Tokenizer.h">
-      <Filter>Engine\JText</Filter>
+      <Filter>Engine\JText\Tokenizer</Filter>
+    </ClInclude>
+    <ClInclude Include="Token.h">
+      <Filter>Engine\JText\Tokenizer</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
-      <Filter>Engine\JText</Filter>
+      <Filter>Engine\JText\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="FileSystem.h">
+      <Filter>Engine\File</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

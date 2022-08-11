@@ -1,0 +1,28 @@
+Window {
+    title = "Online PingPong"
+    size = [ 800, 600 ]
+    delta = 10
+    flags = [
+        "SDL_WINDOW_OPENGL"
+    ]
+}
+
+OpenGL {
+    version = "3.3"
+    
+    depthSize = 0
+    bufferSize = 0
+    doubleBuffer = false
+    accelerated = true
+    contextReleaseBehavior = true
+    autoResize = true
+    enableBlend = true
+    
+    blendSfactor = "GL_SRC_ALPHA"
+    blendDfactor = "GL_ONE_MINUS_SRC_ALPHA"
+
+    viewport = [ 0, 0, 800, 600 ]
+
+    depthColor = [ 3, 3, 2, 1 ]
+    clearColor = [ 0.5, 0.5, 0.5 ]
+}

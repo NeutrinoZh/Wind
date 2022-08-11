@@ -19,7 +19,7 @@ namespace EngineCore {
 		static SDL_Window* window;
 		static SDL_Event event;
 
-		static bool init();
+		static bool init(JText::Object& config);
 		static void loop();
 		static void free();
 		static void quit();

@@ -151,7 +151,13 @@ namespace EngineCore {
 
 				Log::info() << "JText. Link " << path << " as " << alias;
 
-				auto link_consts = JText::parse(path).consts;
+				JText jtext;
+				if (!JText::parse(path, jtext)) {
+					Log::error() << "JText. Couldn't link:" << path;
+					return NULL;
+				}
+
+				auto link_consts = jtext.consts;
 				for (auto _const : link_consts)
 					consts.insert(std::make_pair(
 						alias + "." + _const.first,
@@ -182,17 +188,27 @@ namespace EngineCore {
 			Log::info() << "JText. Finish parsing";
 			return root;
 		}
-		JText JText::parse(std::string pathToFile) {
+		bool JText::parse(std::string pathToFile, JText& out) {
 			JText jtext;
-			jtext.tokens = Tokenizer::tokenization(pathToFile);
+			
+			if (!Tokenizer::tokenization(pathToFile, jtext.tokens))
+				return false;
 
-			Log::info() << "JText. Finish lexical analyz";
+			Log::info() << "JText. Finish tokenization"; // !
 
 			jtext.root = jtext._parse();
-			return jtext;
+
+			out = jtext;
+			return true;
 		}
-		JText parse(std::string pathToFile) {
-			return JText::parse(pathToFile);
+		bool parse(std::string pathToFile, Object& out) {
+			JText jtext;
+			
+			if (!JText::parse(pathToFile, jtext))
+				return false;
+
+			out = *jtext.root;
+			return true;
 		}
 	}
 }

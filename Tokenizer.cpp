@@ -45,6 +45,8 @@ namespace EngineCore {
 				tokens.push_back({ TokenType::KEYWORD_AS, word });
 			else if (word == "inherit")
 				tokens.push_back({ TokenType::KEYWORD_INHERIT, word });
+			else if (word == "true" || word == "false")
+				tokens.push_back({ TokenType::STRING, word });
 			else
 				tokens.push_back({ TokenType::WORD, word });
 
@@ -155,14 +157,14 @@ namespace EngineCore {
 
 			return tokens;
 		}
-		std::vector<Token> Tokenizer::tokenization(std::string path) {
+		bool Tokenizer::tokenization(std::string path, std::vector<Token>& out) {
 			Tokenizer tokenizer;
 
-			tokenizer.jtext = tokenizer.fileRead(path);
-			if (tokenizer.jtext == "")
-				return {};
+			if (!FileSystem::readFile(path, tokenizer.jtext))
+				return false;
 
-			return tokenizer._tokenization();
+			out = tokenizer._tokenization();
+			return true;
 		}
 	}
 }

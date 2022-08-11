@@ -21,57 +21,34 @@ namespace EngineCore {
 			countFrame = 0, lastTime = 0;
 	}
 
-	bool Window::init() {
+	bool Window::init(JText::Object& obj_config) {
 		Log::begin() << "Window creation procedure started";
 
-		Log::info() << "Load window config";
-
-		struct _config {
+		struct _ {
 			std::string title = "Engine";
 			int sizeW = 800, sizeH = 600;
-			float minDelta = 0.15f;
+			float minFrameTime = 0.15f;
 			Uint32 flags = SDL_WINDOW_SHOWN;
 
-			_config() {
-				Config config = ConfigReader::read("./asset/config.txt");
+			_(JText::Object& config) {
+				title = config["Window"]["title"]._str(title);
+				
+				sizeW = config["Window"]["size"][0]._int(sizeW);
+				sizeH = config["Window"]["size"][1]._int(sizeH);
 
-				if (config.isVar("title")) title = config.getStringValue("title");
-				if (config.isVar("sizeW")) sizeW = config.getIntValue("sizeW");
-				if (config.isVar("sizeH")) sizeH = config.getIntValue("sizeH");
-				if (config.isVar("delta")) minDelta = config.getFloatValue("delta");
+				minFrameTime = config["Window"]["minFrameTime"]._float(minFrameTime);
 
-				if (config.isVar("SDL_WINDOW_OPENGL")) flags |= SDL_WINDOW_OPENGL;
-				if (config.isVar("SDL_WINDOW_FULLSCREEN")) flags |= SDL_WINDOW_FULLSCREEN;
-				if (config.isVar("SDL_WINDOW_FULLSCREEN_DESKTOP")) flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-				if (config.isVar("SDL_WINDOW_RESIZABLE")) flags |= SDL_WINDOW_RESIZABLE;
-				if (config.isVar("SDL_WINDOW_BORDERLESS")) flags |= SDL_WINDOW_BORDERLESS;
-				if (config.isVar("SDL_WINDOW_HIDDEN")) flags |= SDL_WINDOW_HIDDEN;
+				for (auto obj_flag : config["Window"]["flags"].children) {
+					std::string flag = obj_flag.second->_str("");
+					if		(flag == "SDL_WINDOW_OPENGL")			   flags |= SDL_WINDOW_OPENGL;
+					else if (flag == "SDL_WINDOW_FULLSCREEN")		   flags |= SDL_WINDOW_FULLSCREEN;
+					else if (flag == "SDL_WINDOW_FULLSCREEN_DESKTOP")  flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+					else if (flag == "SDL_WINDOW_RESIZABLE")		   flags |= SDL_WINDOW_RESIZABLE;
+					else if (flag == "SDL_WINDOW_BORDERLESS")		   flags |= SDL_WINDOW_BORDERLESS;
+					else if (flag == "SDL_WINDOW_HIDDEN")			   flags |= SDL_WINDOW_HIDDEN;
+				}
 			}
-		} config;
-
-		Log::info() << "SDL init (EVERYTHING)";
-
-		if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-			Log::error() << SDL_GetError();
-			return false;
-		}
-		
-		Log::info() << "SDL image init (PNG)";
-
-		if (IMG_Init(IMG_INIT_PNG) == 0) {
-			Log::error() << IMG_GetError();
-			return false;
-		}
-
-		Log::info() << "Calling the preinitialization method";
-
-		if (PreInit)
-			if (!PreInit()) {
-				Log::error() << "The preinitialization method returned an error.";
-				return false;
-		}
-
-		Log::info() << "Create a window";
+		} config(obj_config);
 
 		window = SDL_CreateWindow(
 			config.title.c_str(),
@@ -85,7 +62,7 @@ namespace EngineCore {
 			return false;
 		}
 
-		Window::minFrameTime = config.minDelta;
+		Window::minFrameTime = config.minFrameTime;
 
 		int w, h;
 		SDL_GetWindowSize(Window::window, &w, &h);
@@ -153,7 +130,7 @@ namespace EngineCore {
 				SDL_Delay(minFrameTime - (endFrameTime - beginFrameTime));
 
 			endFrameTime = SDL_GetTicks();
-			delta = (endFrameTime - beginFrameTime) / 14.f; // what?
+			delta = (endFrameTime - beginFrameTime) / 14.f; // what is 14?
 		}
 
 		Log::end() << "Program cycle break";

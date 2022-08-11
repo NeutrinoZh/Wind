@@ -7,20 +7,22 @@ namespace EngineCore {
 			std::string name = "";
 
 			std::map<std::string, Object*> children;
-		protected:
-			std::string value = "";
-			static Object NONE;
 
 			Object() {};
-			Object(std::string name, std::string value) :
-				name(name), value(value) {};
-			Object(std::string name) :
-				Object(name, "") {};
 			~Object() {
 				for (auto object : children)
 					delete object.second;
 				children.clear();
 			}
+		protected:
+			std::string value = "";
+			static Object NONE;
+
+			Object(std::string name, std::string value) :
+				name(name), value(value) {};
+			Object(std::string name) :
+				Object(name, "") {};
+			
 
 			Object* copy();
 			void inherit(Object* parent);
@@ -28,10 +30,21 @@ namespace EngineCore {
 
 			friend class JText;
 		public:
+			bool is() {
+				return !value.empty();
+			}
+
 			int _int(int defaultValue) {
 				if (value.empty())
 					return defaultValue;
 				return atoi(value.c_str());
+			}
+			uint8_t _uint8(uint8_t defaultValue) {
+				return static_cast<uint8_t>(
+					_int(
+						static_cast<int>(defaultValue)
+					)
+				);
 			}
 			float _float(float defaultValue) {
 				if (value.empty())
@@ -52,6 +65,17 @@ namespace EngineCore {
 				if (value.empty())
 					return defaultValue;
 				return (value == "true" || value == "false");
+			}
+
+			uint8_t _major(uint8_t defaultValue) {
+				if (value.empty()) // && format("d.d")
+					return defaultValue;
+				return value[0] - 49;
+			}
+			uint8_t _minor(uint8_t defaultValue) {
+				if (value.empty()) // && format("d.d")
+					return defaultValue;
+				return value[2] - 49;
 			}
 
 			Object& operator[](std::string name) {
