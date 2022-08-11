@@ -161,7 +161,7 @@
     <ClCompile Include="EventHandler.cpp" />
     <ClCompile Include="Fonts.cpp" />
     <ClCompile Include="JText.cpp" />
-    <ClCompile Include="LexicalAnalyzer.cpp" />
+    <ClCompile Include="JTextHelper.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="Nodes.cpp" />
     <ClCompile Include="Graphics.cpp" />
@@ -172,6 +172,7 @@
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Net.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="Perlin.cpp" />
     <ClCompile Include="Scenes.cpp" />
     <ClCompile Include="Server.cpp" />
@@ -182,6 +183,8 @@
     <ClCompile Include="Textures.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TileMap.cpp" />
+    <ClCompile Include="Tokenizer.cpp" />
+    <ClCompile Include="TokenizerHelper.cpp" />
     <ClCompile Include="Widget.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
@@ -198,13 +201,13 @@
     <ClInclude Include="Container.h" />
     <ClInclude Include="Fonts.h" />
     <ClInclude Include="JText.h" />
-    <ClInclude Include="LexicalAnalyzer.h" />
     <ClInclude Include="Node2D.h" />
     <ClInclude Include="Nodes.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="GUIObject.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="Label.h" />
+    <ClInclude Include="Object.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="EventHandler.h" />
@@ -225,6 +228,8 @@
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileMap.h" />
     <ClInclude Include="TileMapObject.h" />
+    <ClInclude Include="Token.h" />
+    <ClInclude Include="Tokenizer.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="Widget.h" />
     <ClInclude Include="Window.h" />
