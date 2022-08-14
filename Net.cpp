@@ -3,16 +3,18 @@
 namespace EngineCore {
 	bool Net::isServer = false;
 
-	bool Net::init() {
-		Log::info() << "SDL net init";
+	bool Net::init(JText::Object& config) {
+		Log::info() << "Net-System init";
 
-		if (SDLNet_Init() == -1) {
-			Log::error() << "SDLNet_GetError: " << SDLNet_GetError();
+		if (!SDLSystems::NET) {
+			Log::error() << "Net-System requires SDL_Net";
 			return false;
 		}
 
+		isServer = config.is();
+
 		if (isServer)
-			Server::run();
+			Server::run(config);
 
 		return true;
 	}
@@ -25,13 +27,11 @@ namespace EngineCore {
 	}
 
 	void Net::free() {
-		Log::info() << "Free memory from SDLNet";
+		Log::info() << "Free memory from Net-System";
 
 		if (isServer)
 			Server::shutdown();
 		else
 			Client::disconnect();
-
-		SDLNet_Quit();
 	}
 }

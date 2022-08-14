@@ -1,3 +1,10 @@
+SDL = [
+    "SDL_INIT_EVERYTHING",
+    "IMG_INIT_PNG",
+    "TTF_INIT",
+    "NET_INIT"
+]
+
 Window {
     title = "Online PingPong"
     size = [ 800, 600 ]

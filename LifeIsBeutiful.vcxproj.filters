@@ -237,6 +237,12 @@
     <ClCompile Include="FileSystemcpp.cpp">
       <Filter>Engine\File</Filter>
     </ClCompile>
+    <ClCompile Include="Packet.cpp">
+      <Filter>Engine\Net\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="SDLSystems.cpp">
+      <Filter>Engine\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -373,6 +379,9 @@
     </ClInclude>
     <ClInclude Include="FileSystem.h">
       <Filter>Engine\File</Filter>
+    </ClInclude>
+    <ClInclude Include="SDLSystems.h">
+      <Filter>Engine\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

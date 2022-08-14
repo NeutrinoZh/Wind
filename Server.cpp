@@ -172,28 +172,24 @@ namespace EngineCore {
 		}
 	}
 
-	void Server::run() {
+	void Server::run(JText::Object& obj_config) {
 		Log::info() << "Launched NetUDPServer";
 
-		struct _config {
-			int port = 7708;
+		struct _ {
+			uint32_t port = 7708;
 
 			clock_t TIME_WAIT_FOR_RESPONSE = 2000;
 			clock_t DELTA_TIME_FOR_SEND = 50;
 			clock_t TIME_WAIT_FOR_RESEND = 200;
 
-			_config(std::string path) {
-				Log::info() << "Read config NetUDPServer: " << path;
+			_(JText::Object& config) {
+				port = config["port"]._uint32(port);
 
-				Config config = ConfigReader::read(path);
-
-				if (config.isVar("port")) port = config.getIntValue("port");
-
-				if (config.isVar("TIME_WAIT_FOR_RESPONSE")) TIME_WAIT_FOR_RESPONSE = config.getIntValue("TIME_WAIT_FOR_RESPONSE");
-				if (config.isVar("DELTA_TIME_FOR_SEND"))	DELTA_TIME_FOR_SEND	   = config.getIntValue("DELTA_TIME_FOR_SEND");
-				if (config.isVar("TIME_WAIT_FOR_RESEND"))	TIME_WAIT_FOR_RESEND   = config.getIntValue("TIME_WAIT_FOR_RESEND");
+				TIME_WAIT_FOR_RESPONSE = config["TIME_WAIT_FOR_RESPONSE"]._uint32(TIME_WAIT_FOR_RESPONSE);
+				DELTA_TIME_FOR_SEND	   = config["DELTA_TIME_FOR_SEND"]._uint32(DELTA_TIME_FOR_SEND);
+				TIME_WAIT_FOR_RESEND   = config["TIME_WAIT_FOR_RESEND"]._uint32(TIME_WAIT_FOR_RESEND);
 			}
-		} config("./asset/server.txt");
+		} config(obj_config);
 
 		self.socket = SDLNet_UDP_Open(config.port);
 		if (self.socket == NULL) {

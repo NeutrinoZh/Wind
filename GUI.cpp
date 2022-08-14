@@ -4,13 +4,12 @@ namespace EngineCore {
 	Shader* GUI::shader = nullptr;
 	glm::mat4 GUI::proj = glm::mat4(1);
 
-	void GUI::init() {
-		Log::begin() << "Init GUI System";
+	bool GUI::init() {
+		Log::info() << "GUI-System Init";
 
-		Log::info() << "Init SDL ttf";
-		if (TTF_Init() != 0) {
-			Log::error() << TTF_GetError();
-			return;
+		if (!SDLSystems::TTF) {
+			Log::error() << "GUI-System requires SDL_TTF";
+			return false;
 		}
 
 		Log::info() << "Create ortho-graphic matrix projection for GUI System";
@@ -18,13 +17,7 @@ namespace EngineCore {
 		proj = glm::ortho(0.0f, Window::size.x / 100.f,
 						  0.0f, Window::size.y / 100.f, -1.f, 1.0f);
 
-		Log::end() << "Success init GUI System";
-	}
-
-	void GUI::free() {
-		Log::info() << "Free memory from GUI System";
-
-		TTF_Quit();
+		return true;
 	}
 
 	void GUI::drawRect(glm::vec2 position, glm::vec2 size, glm::vec4 color, Texture texture) {

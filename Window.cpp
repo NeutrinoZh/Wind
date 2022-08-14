@@ -10,8 +10,6 @@ namespace EngineCore {
 	void(*Window::Start)(void) = nullptr;
 	void(*Window::Update)(void) = nullptr;
 	bool(*Window::Exit)(void) = nullptr;
-	bool(*Window::PreInit)(void) = nullptr;
-	bool(*Window::PostInit)(void) = nullptr;
 	
 	SDL_Window* Window::window = nullptr;
 	SDL_Event Window::event;
@@ -22,23 +20,23 @@ namespace EngineCore {
 	}
 
 	bool Window::init(JText::Object& obj_config) {
-		Log::begin() << "Window creation procedure started";
+		Log::info() << "Window Init";
 
 		struct _ {
-			std::string title = "Engine";
+			std::string title = "WindEngine";
 			int sizeW = 800, sizeH = 600;
 			float minFrameTime = 0.15f;
 			Uint32 flags = SDL_WINDOW_SHOWN;
 
 			_(JText::Object& config) {
-				title = config["Window"]["title"]._str(title);
+				title = config["title"]._str(title);
 				
-				sizeW = config["Window"]["size"][0]._int(sizeW);
-				sizeH = config["Window"]["size"][1]._int(sizeH);
+				sizeW = config["size"][0]._int(sizeW);
+				sizeH = config["size"][1]._int(sizeH);
 
-				minFrameTime = config["Window"]["minFrameTime"]._float(minFrameTime);
+				minFrameTime = config["minFrameTime"]._float(minFrameTime);
 
-				for (auto obj_flag : config["Window"]["flags"].children) {
+				for (auto obj_flag : config["flags"].children) {
 					std::string flag = obj_flag.second->_str("");
 					if		(flag == "SDL_WINDOW_OPENGL")			   flags |= SDL_WINDOW_OPENGL;
 					else if (flag == "SDL_WINDOW_FULLSCREEN")		   flags |= SDL_WINDOW_FULLSCREEN;
@@ -68,15 +66,6 @@ namespace EngineCore {
 		SDL_GetWindowSize(Window::window, &w, &h);
 		Window::size = { static_cast<float>(w), static_cast<float>(h) };
 
-		Log::info() << "Calling the postinitialization method";
-
-		if (PostInit)
-			if (!PostInit()) {
-				Log::error() << "The postinitialization method returned an error.";
-				return false;
-		}
-
-		Log::end() << "Window creation procedure finished";
 		return true;
 	}
 
@@ -146,10 +135,9 @@ namespace EngineCore {
 	}
 
 	void Window::free() {
-		Log::info() << "Free memory from SDL";
+		Log::info() << "Free memory from Window";
 
 		HandlerGameController::free();
 		SDL_DestroyWindow(window);
-		SDL_Quit();
 	}
 }

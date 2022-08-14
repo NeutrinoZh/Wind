@@ -43,34 +43,37 @@ namespace EngineCore {
 				
 			Uint8 contextProfile = 0;
 
-			glm::u8vec3 clearColor = {};
+			glm::vec3 clearColor = {};
 
 			_(JText::Object& config) {
-				depthR = config["OpenGL"]["depthColor"][0]._uint8(depthR);
-				depthG = config["OpenGL"]["depthColor"][1]._uint8(depthG);
-				depthB = config["OpenGL"]["depthColor"][2]._uint8(depthB);
-				depthA = config["OpenGL"]["depthColor"][3]._uint8(depthA);
+				depthR = config["depthColor"][0]._uint8(depthR);
+				depthG = config["depthColor"][1]._uint8(depthG);
+				depthB = config["depthColor"][2]._uint8(depthB);
+				depthA = config["depthColor"][3]._uint8(depthA);
 
-				bufferSize = config["OpenGL"]["bufferSize"]._uint8(bufferSize);
-				depthSize  = config["OpenGL"]["depthSize"]._uint8(depthSize);
+				bufferSize = config["bufferSize"]._uint8(bufferSize);
+				depthSize  = config["depthSize"]._uint8(depthSize);
 
-				doubleBuffer = config["OpenGL"]["doubleBuffer"]._bool(doubleBuffer);
-				accelerated  = config["OpenGL"]["accelerated"]._bool(accelerated);
-				contextReleaseBehavior = config["OpenGL"]["contextReleaseBehavior"]._bool(contextReleaseBehavior);
+				doubleBuffer = config["doubleBuffer"]._bool(doubleBuffer);
+				accelerated  = config["accelerated"]._bool(accelerated);
+				contextReleaseBehavior = config["contextReleaseBehavior"]._bool(contextReleaseBehavior);
 
-				GL_Major = config["OpenGl"]["version"]._major(GL_Major);
-				GL_Minor = config["OpenGL"]["version"]._minor(GL_Minor);
+				GL_Major = config["version"]._major(GL_Major);
+				GL_Minor = config["version"]._minor(GL_Minor);
 
-				std::string profile = config["OpenGL"]["contextProfile"]._str("");
+				std::string profile = config["contextProfile"]._str("");
 				if	    (profile == "SDL_GL_CONTEXT_PROFILE_CORE")			this->contextProfile = SDL_GL_CONTEXT_PROFILE_CORE;
 				else if (profile == "SDL_GL_CONTEXT_PROFILE_COMPATIBILITY") this->contextProfile = SDL_GL_CONTEXT_PROFILE_COMPATIBILITY;
 				else if (profile == "SDL_GL_CONTEXT_PROFILE_ES")			this->contextProfile = SDL_GL_CONTEXT_PROFILE_ES;
 				
-				clearColor.r = config["OpenGL"]["depthColor"][0]._uint8(clearColor.r);
-				clearColor.g = config["OpenGL"]["depthColor"][1]._uint8(clearColor.g);
-				clearColor.b = config["OpenGL"]["depthColor"][2]._uint8(clearColor.b);
+				clearColor.r = config["clearColor"][0]._float(clearColor.r);
+				clearColor.g = config["clearColor"][1]._float(clearColor.g);
+				clearColor.b = config["clearColor"][2]._float(clearColor.b);
 			}
 		} config(obj_config);
+
+		Log::info() << "OpenGL Version: " << static_cast<int>(config.GL_Major) << "."
+										  << static_cast<int>(config.GL_Minor);
 
 		Log::info() << "Set OpenGL parameters";
 
@@ -98,27 +101,10 @@ namespace EngineCore {
 		return true;
 	}
 
-	bool GL_Context::postInit() {
+	bool GL_Context::postInit(JText::Object& obj_config) {
 		Log::info() << "PostInit OpenGL";
 
-		if (!Window::window) { // !!!
-			Log::error() << "Counldn't create OpenGL context because window been NULL";
-			return false;
-		}
-
-		context = SDL_GL_CreateContext(Window::window);
-		if (!context) {
-			Log::error() << SDL_GetError();
-			return false;
-		}
-
-		Log::info() << "GLAD init";
-		if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
-			Log::error() << "Couldn't init glad";
-			return false;
-		}
-
-		struct _config {
+		struct _ {
 			glm::u32vec4 viewport = {
 				0, 0,
 				Window::size.x, Window::size.y
@@ -127,36 +113,25 @@ namespace EngineCore {
 			bool EnableBlend = true, autoResize = false;
 			Uint32 sfactor = GL_SRC_ALPHA, dfactor = GL_ONE_MINUS_SRC_ALPHA;
 
-			_config() {
-				Log::info() << "Read OpenGL config";
+			_(JText::Object& config) {
+				EnableBlend = config["EnableBlend"]._bool(EnableBlend);
+				autoResize  = config["autoResize"]._bool(autoResize);
 
-				Config config = ConfigReader::read("./asset/opengl.txt");
+				viewport.x = config["viewport"][0]._uint32(viewport.x);
+				viewport.y = config["viewport"][1]._uint32(viewport.y);
+				viewport.z = config["viewport"][2]._uint32(viewport.z);
+				viewport.w = config["viewport"][3]._uint32(viewport.w);
 
-				if (config.isVar("EnableBlend")) EnableBlend = config.getBoolValue("EnableBlend");
-				if (config.isVar("autoResize")) autoResize = config.getBoolValue("autoResize");
+				if (EnableBlend)
+					for (Uint8 i = 0; i < 2; i++) {
+						std::string value;
 
-				if (config.isVar("viewportX")) viewport.x = config.getIntValue("viewportX");
-				if (config.isVar("viewportY")) viewport.y = config.getIntValue("viewportY");
-				if (config.isVar("viewportW")) viewport.z = config.getIntValue("viewportW");
-				if (config.isVar("viewportH")) viewport.w = config.getIntValue("viewportH");
+						if (i) value = config["blendSfactor"]._str("");
+						else   value = config["blendDfactor"]._str("");
 
-				for (Uint8 i = 0; i < 2; i++) {
-					if (config.isVar("BlendSfactor") || config.isVar("BlendDfactor")) {
-						
-						std::string name, value;
-						if (config.isVar("BlendSfactorName")) {
-							name = config.getStringValue("BlendSfactorName");
-							if (config.isVar("BlendSfactor"))
-								value = config.getStringValue("BlendSfactor");
-						} else {
-							name = config.getStringValue("BlendDfactorName");
-							if (config.isVar("BlendDfactor"))
-								value = config.getStringValue("BlendDfactor");
-						}
-					
-						#define GL_BLEND_FACTOR(flag) if (value == #flag) { (name == "sfactor" ? sfactor : dfactor) = flag; }
-						
-							 GL_BLEND_FACTOR(GL_ZERO)
+						#define GL_BLEND_FACTOR(flag) if (value == #flag) { (i ? sfactor : dfactor) = flag; }
+
+						GL_BLEND_FACTOR(GL_ZERO)
 						else GL_BLEND_FACTOR(GL_ONE)
 						else GL_BLEND_FACTOR(GL_SRC_COLOR)
 						else GL_BLEND_FACTOR(GL_ONE_MINUS_SRC_COLOR)
@@ -172,9 +147,20 @@ namespace EngineCore {
 						else GL_BLEND_FACTOR(GL_ONE_MINUS_CONSTANT_ALPHA)
 						else GL_BLEND_FACTOR(GL_SRC_ALPHA_SATURATE)
 					}
-				}
 			}
-		} config;
+		} config(obj_config);
+
+		context = SDL_GL_CreateContext(Window::window);
+		if (!context) {
+			Log::error() << SDL_GetError();
+			return false;
+		}
+
+		Log::info() << "GLAD init";
+		if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
+			Log::error() << "Couldn't init glad";
+			return false;
+		}
 
 		Log::info() << "Set OpenGL parameters";
 		GL_Context::autoResize = config.autoResize;

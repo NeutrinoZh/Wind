@@ -14,7 +14,7 @@ namespace EngineCore {
 		static void (*user_render) (void);
 
 		static bool preInit(JText::Object& obj_config);
-		static bool postInit();
+		static bool postInit(JText::Object& obj_config);
 		static void render();
 		static void free();
 	};

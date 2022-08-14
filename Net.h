@@ -3,9 +3,10 @@
 
 namespace EngineCore {
 	class Net {
-	public:
+	private:
 		static bool isServer;
-		static bool init();
+	public:
+		static bool init(JText::Object& config);
 		static void update();
 		static void free();
 	};

@@ -174,8 +174,10 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Net.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Packet.cpp" />
     <ClCompile Include="Perlin.cpp" />
     <ClCompile Include="Scenes.cpp" />
+    <ClCompile Include="SDLSystems.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="ServerHelper.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -221,6 +223,7 @@
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scenes.h" />
+    <ClInclude Include="SDLSystems.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Shaders.h" />

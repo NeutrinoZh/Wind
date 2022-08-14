@@ -62,7 +62,7 @@ namespace EngineCore {
 		static void addToSend(Uint16 clientID, Packet packet);
 		static void addToSendToEveryone(Packet packet);
 
-		static void run();
+		static void run(JText::Object& config);
 		static void update();
 		static void shutdown();
 	};

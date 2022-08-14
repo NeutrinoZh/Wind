@@ -31,7 +31,7 @@ namespace EngineCore {
 			friend class JText;
 		public:
 			bool is() {
-				return !value.empty();
+				return !value.empty() || !children.empty();
 			}
 
 			int _int(int defaultValue) {
@@ -41,6 +41,13 @@ namespace EngineCore {
 			}
 			uint8_t _uint8(uint8_t defaultValue) {
 				return static_cast<uint8_t>(
+					_int(
+						static_cast<int>(defaultValue)
+					)
+				);
+			}
+			uint32_t _uint32(uint32_t defaultValue) {
+				return static_cast<uint32_t>(
 					_int(
 						static_cast<int>(defaultValue)
 					)
@@ -70,12 +77,12 @@ namespace EngineCore {
 			uint8_t _major(uint8_t defaultValue) {
 				if (value.empty()) // && format("d.d")
 					return defaultValue;
-				return value[0] - 49;
+				return value[0] - 48;
 			}
 			uint8_t _minor(uint8_t defaultValue) {
 				if (value.empty()) // && format("d.d")
 					return defaultValue;
-				return value[2] - 49;
+				return value[2] - 48;
 			}
 
 			Object& operator[](std::string name) {

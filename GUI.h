@@ -9,8 +9,7 @@ namespace EngineCore {
 		static Shader* shader;
 		static glm::mat4 proj;
 		
-		static void init();
-		static void free();
+		static bool init();
 
 		static void drawRect(glm::vec2 position, glm::vec2 size, glm::vec4 color, Texture texture);
 	};

@@ -7,8 +7,6 @@ namespace EngineCore {
 		static void (*Start) (void);
 		static void (*Update) (void);
 		static bool (*Exit) (void);
-		static bool (*PreInit) (void);
-		static bool (*PostInit) (void);
 
 		static bool activeLoop;
 		static glm::vec2 size;

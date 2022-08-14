@@ -1,18 +1,5 @@
 #pragma once
-#include "ConfigReader.h"
-
-#include <SDL.h>
-
-#include <SDL_image.h>
-#include <SDL_net.h>
-#include <SDL_ttf.h>
-
-#include <glad/glad.h>
-#include <SDL_opengl.h>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include "SDLSystems.h"
 
 namespace EngineCore {
 	template <typename Type>

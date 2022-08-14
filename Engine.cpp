@@ -3,16 +3,7 @@
 namespace EngineCore {
 
 	namespace {
-		bool postInit() {
-			return (
-				EngineCore::GL_Context::postInit() &&
-				EngineCore::Net::init()
-			);
-		}
-
 		void start() {
-			GUI::init();
-
 			Log::begin() << "Start load resource";
 
 			EngineCore::textures().loadFolder("asset/meta-textures/");
@@ -49,28 +40,6 @@ namespace EngineCore {
 
 			EngineCore::GL_Context::render();
 		}
-
-		void free() {
-			Log::begin() << "Memory cleaning procedure started";
-
-			if (Node::root) {
-				Node::root->free();
-				delete Node::root;
-			}
-
-			EngineCore::animations().freeAll();
-			EngineCore::fonts().freeAll();
-			EngineCore::shaders().freeAll();
-			EngineCore::textures().freeAll();
-			EngineCore::nodes().freeAll();
-			EngineCore::scenes().freeAll();
-
-			EngineCore::Net::free();
-			EngineCore::Window::free();
-			EngineCore::GL_Context::free();
-
-			Log::end() << "Memory cleaning procedure finished";
-		}
 	}
 
 	//======================================================//
@@ -78,22 +47,74 @@ namespace EngineCore {
 	void (*Core::user_start)  (void) = nullptr;
 	void (*Core::user_update) (void) = nullptr;
 
-	bool SDL_Libs_Init() {
-		Log::info() << "SDL init (EVERYTHING)";
+	bool init() {
+		Log::begin() << "Started initialization";
 
-		if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-			Log::error() << SDL_GetError();
+		JText::Object config;
+		if (!JText::parse("./asset/config.jt", config)) {
+			Log::error() << "EngineCore. Couldn't read engine config file";
 			return false;
 		}
 
-		Log::info() << "SDL image init (PNG)";
-
-		if (IMG_Init(IMG_INIT_PNG) == 0) {
-			Log::error() << IMG_GetError();
+		if (!SDLSystems::init(config["SDL"])) {
+			Log::error() << "EngineCore. Couldn't init SDL libs";
 			return false;
 		}
+
+		if (!GL_Context::preInit(config["OpenGL"])) {
+			Log::error() << "EngineCore. Couldn't pre-init OpenGL";
+			return false;
+		}
+
+		if (!Window::init(config["Window"])) {
+			Log::error() << "EngineCore. Couldn't create window";
+			return false;
+		}
+
+		if (!GL_Context::postInit(config["OpenGL"])) {
+			Log::error() << "EngineCore. Couldn't post-init OpenGL";
+			return false;
+		}
+
+		if (!Net::init(config["Server"])) {
+			Log::error() << "EngineCore. Couldn't init Net-System";
+			return false;
+		}
+
+		if (!GUI::init()) {
+			Log::error() << "EngineCore. Couldn't init GUI-System";
+			return false;
+		}
+
+		Log::end() << "Success finish initialization";
 
 		return true;
+	}
+
+	void free() {
+		Log::begin() << "Memory cleaning procedure started";
+
+		if (Node::root) {
+			Node::root->free();
+			delete Node::root;
+		}
+
+		animations().freeAll();
+		fonts().freeAll();
+		shaders().freeAll();
+		textures().freeAll();
+		nodes().freeAll();
+		scenes().freeAll();
+
+		Log::info() << "Free memory from systems";
+
+		Net::free();
+		Window::free();
+		GL_Context::free();
+
+		SDLSystems::free();
+
+		Log::end() << "Memory cleaning procedure finished";
 	}
 
 	int Core::loop() {
@@ -103,33 +124,13 @@ namespace EngineCore {
 			self.numSpace = 2;
 		});
 
-		EngineCore::Window::PostInit = postInit;
 		EngineCore::Window::Start = start;
 		EngineCore::Window::Update = update;
 		EngineCore::GL_Context::user_render = render;
 
-		JText::Object config;
-		if (!JText::parse("./asset/config.jt", config)) {
-			Log::error() << "EngineCore. Couldn't read engine config file";
+		if (!init())
 			return EXIT_FAILURE;
-		}
-		
-		if (!SDL_Libs_Init()) {
-			Log::error() << "EngineCore. Couldn't init SDL libs";
-			return EXIT_FAILURE;
-		}
-
-		if (!GL_Context::preInit(config)) {
-			Log::error() << "EngineCore. Couldn't pre-init OpenGL";
-			return EXIT_FAILURE;
-		}
-
-		if (!EngineCore::Window::init(config)) {
-			Log::error() << "EngineCore. Couldn't create window";
-			return EXIT_FAILURE;
-		}
-
-		EngineCore::Window::loop();
+		Window::loop();
 		free();
 
 		return EXIT_SUCCESS;
