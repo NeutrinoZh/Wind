@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="wind\ConfigReader\ConfigReader.h" />
+    <ClInclude Include="wind\Core\Engine.h" />
+    <ClInclude Include="wind\Core\SDLSystems.h" />
+    <ClInclude Include="wind\File\FileSystem.h" />
+    <ClInclude Include="wind\Graphics\Animation\Animation.h" />
+    <ClInclude Include="wind\Graphics\Animation\Animator.h" />
+    <ClInclude Include="wind\Graphics\Camera\Camera.h" />
+    <ClInclude Include="wind\Graphics\Graphics.h" />
+    <ClInclude Include="wind\Graphics\Shader\Shader.h" />
+    <ClInclude Include="wind\Graphics\Sprite\Sprite.h" />
+    <ClInclude Include="wind\Graphics\Texture\Texture.h" />
+    <ClInclude Include="wind\Graphics\TileMap\Tile.h" />
+    <ClInclude Include="wind\Graphics\TileMap\TileMap.h" />
+    <ClInclude Include="wind\Graphics\TileMap\TileMapObject.h" />
+    <ClInclude Include="wind\GUI\Button\Button.h" />
+    <ClInclude Include="wind\GUI\Chat\Chat.h" />
+    <ClInclude Include="wind\GUI\Container\Container.h" />
+    <ClInclude Include="wind\GUI\GUI.h" />
+    <ClInclude Include="wind\GUI\GUIObject.h" />
+    <ClInclude Include="wind\GUI\Image\Image.h" />
+    <ClInclude Include="wind\GUI\Label\Label.h" />
+    <ClInclude Include="wind\GUI\Widget\Widget.h" />
+    <ClInclude Include="wind\JText\JText.h" />
+    <ClInclude Include="wind\JText\Object\Object.h" />
+    <ClInclude Include="wind\JText\Tokenizer\Token.h" />
+    <ClInclude Include="wind\JText\Tokenizer\Tokenizer.h" />
+    <ClInclude Include="wind\Log\Log.h" />
+    <ClInclude Include="wind\Math\Perlin.h" />
+    <ClInclude Include="wind\Net\Client\Client.h" />
+    <ClInclude Include="wind\Net\Net.h" />
+    <ClInclude Include="wind\Net\Packet\Packet.h" />
+    <ClInclude Include="wind\Net\Server\Server.h" />
+    <ClInclude Include="wind\Nodes\Behavior.h" />
+    <ClInclude Include="wind\Nodes\Node2D\Node2D.h" />
+    <ClInclude Include="wind\Nodes\Node\Node.h" />
+    <ClInclude Include="wind\Physics\Physics.h" />
+    <ClInclude Include="wind\Resource\Animations\Animations.h" />
+    <ClInclude Include="wind\Resource\Fonts\Fonts.h" />
+    <ClInclude Include="wind\Resource\Nodes\Nodes.h" />
+    <ClInclude Include="wind\Resource\Resource.h" />
+    <ClInclude Include="wind\Resource\Scenes\Scenes.h" />
+    <ClInclude Include="wind\Resource\Shaders\Shaders.h" />
+    <ClInclude Include="wind\Resource\Textures\Textures.h" />
+    <ClInclude Include="wind\utils.h" />
+    <ClInclude Include="wind\Window\EventHandler.h" />
+    <ClInclude Include="wind\Window\Window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="D:\libs\glad\src\glad.c" />
+    <ClCompile Include="game\main.cpp" />
+    <ClCompile Include="wind\ConfigReader\ConfigReader.cpp" />
+    <ClCompile Include="wind\Core\Engine.cpp" />
+    <ClCompile Include="wind\Core\SDLSystems.cpp" />
+    <ClCompile Include="wind\File\FileSystem.cpp" />
+    <ClCompile Include="wind\Graphics\Animation\Animation.cpp" />
+    <ClCompile Include="wind\Graphics\Camera\Camera.cpp" />
+    <ClCompile Include="wind\Graphics\Graphics.cpp" />
+    <ClCompile Include="wind\Graphics\Shader\Shader.cpp" />
+    <ClCompile Include="wind\Graphics\Sprite\Sprite.cpp" />
+    <ClCompile Include="wind\Graphics\TileMap\Tile.cpp" />
+    <ClCompile Include="wind\Graphics\TileMap\TileMap.cpp" />
+    <ClCompile Include="wind\GUI\Button\Button.cpp" />
+    <ClCompile Include="wind\GUI\Chat\Chat.cpp" />
+    <ClCompile Include="wind\GUI\Container\Contrainer.cpp" />
+    <ClCompile Include="wind\GUI\GUI.cpp" />
+    <ClCompile Include="wind\GUI\GUIObject.cpp" />
+    <ClCompile Include="wind\GUI\Image\Image.cpp" />
+    <ClCompile Include="wind\GUI\Label\Label.cpp" />
+    <ClCompile Include="wind\GUI\Widget\Widget.cpp" />
+    <ClCompile Include="wind\JText\JText.cpp" />
+    <ClCompile Include="wind\JText\JTextHelper.cpp" />
+    <ClCompile Include="wind\JText\Object\Object.cpp" />
+    <ClCompile Include="wind\JText\Tokenizer\Tokenizer.cpp" />
+    <ClCompile Include="wind\JText\Tokenizer\TokenizerHelper.cpp" />
+    <ClCompile Include="wind\Log\Log.cpp" />
+    <ClCompile Include="wind\Math\Perlin.cpp" />
+    <ClCompile Include="wind\Net\Client\Client.cpp" />
+    <ClCompile Include="wind\Net\Client\ClientHelper.cpp" />
+    <ClCompile Include="wind\Net\Net.cpp" />
+    <ClCompile Include="wind\Net\Packet\Packet.cpp" />
+    <ClCompile Include="wind\Net\Server\Server.cpp" />
+    <ClCompile Include="wind\Net\Server\ServerHelper.cpp" />
+    <ClCompile Include="wind\Nodes\Node2D\Node2D.cpp" />
+    <ClCompile Include="wind\Nodes\Node\Node.cpp" />
+    <ClCompile Include="wind\Resource\Animations\Animations.cpp" />
+    <ClCompile Include="wind\Resource\Fonts\Fonts.cpp" />
+    <ClCompile Include="wind\Resource\Nodes\Nodes.cpp" />
+    <ClCompile Include="wind\Resource\Scenes\Scenes.cpp" />
+    <ClCompile Include="wind\Resource\Shaders\Shaders.cpp" />
+    <ClCompile Include="wind\Resource\Textures\Textures.cpp" />
+    <ClCompile Include="wind\Window\EventHandler.cpp" />
+    <ClCompile Include="wind\Window\Window.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{b25da3a2-3258-40e9-990f-924cdea9b66f}</ProjectGuid>
+    <RootNamespace>LifeIsBeutiful</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>WindEngine</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>D:\libs\SDL2\include\SDL2;D:\libs\glm\;D:\libs\glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2test.lib;SDL2_image.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\libs\SDL2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>D:\libs\SDL2\include\SDL2;D:\libs\glm;D:\libs\glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>D:\libs\SDL2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2test.lib;SDL2_image.lib;SDL2_net.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

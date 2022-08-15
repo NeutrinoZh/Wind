@@ -1,0 +1,401 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Game">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="WindEngine">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="WindEngine\ConfigReader">
+      <UniqueIdentifier>{3bfef27c-3d18-4da4-ac9f-99983d93ef4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Core">
+      <UniqueIdentifier>{d41b4b60-82fa-4309-9081-9008634bf6cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\FileSystem">
+      <UniqueIdentifier>{824a50eb-cb89-4e69-baa9-a22f971ad3b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\JText">
+      <UniqueIdentifier>{423beed7-6920-4ab9-81b8-80fa4afb7948}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\JText\Object">
+      <UniqueIdentifier>{d42f8cad-9883-41b9-9864-84ee6b575d2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\JText\Tokenizer">
+      <UniqueIdentifier>{6673fe58-6013-4345-8fa4-7f771e2ad962}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Log">
+      <UniqueIdentifier>{d5099b7f-4a37-430a-9240-c0cdd72074e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Math">
+      <UniqueIdentifier>{d80d6e44-0009-418c-9280-73ec90b9c830}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Net">
+      <UniqueIdentifier>{d2e73e31-d60a-4789-8f95-f03a33dcd6ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Net\Client">
+      <UniqueIdentifier>{011cf351-df4d-4487-8193-777b45d7a486}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Net\Server">
+      <UniqueIdentifier>{54241b97-494d-4c9b-9129-a01d86b657d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Net\Packet">
+      <UniqueIdentifier>{09726adc-b9e6-497b-9158-6d75deae8421}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Nodes">
+      <UniqueIdentifier>{43f74bfd-364d-45f5-85cb-4a6fce619dd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Nodes\Node">
+      <UniqueIdentifier>{fae2f852-2222-4377-ad21-3c6564e89f91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Nodes\Node2D">
+      <UniqueIdentifier>{57901e27-13b8-42b3-9371-b20e2b3aa5e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Physics">
+      <UniqueIdentifier>{fb039d59-8911-4227-a35c-118d805aeaaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Resource">
+      <UniqueIdentifier>{914dfa41-928d-4173-8dcf-1a516d27a421}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Resource\Animations">
+      <UniqueIdentifier>{276941c5-38de-460a-9159-8ac451665745}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Resource\Fonts">
+      <UniqueIdentifier>{cbcada1c-ee31-4333-8b4f-1c1ed53ce5e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Resource\Nodes">
+      <UniqueIdentifier>{3c7a2743-3d81-4441-92ec-d67cf2212aaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Resource\Textures">
+      <UniqueIdentifier>{fe15ae5a-b1bb-46a1-9690-638569e53d88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Resource\Scenes">
+      <UniqueIdentifier>{4c6f73a6-a751-4d66-b60f-828e79ae93f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Resource\Shaders">
+      <UniqueIdentifier>{d6cce944-fc13-43fe-83d6-dbf0dcc8d638}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Window">
+      <UniqueIdentifier>{3cef66b7-d9c8-4e9d-98f5-4e00ee201e7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\GUI">
+      <UniqueIdentifier>{75527ed0-8227-4bf8-8d3d-f89829c90450}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\GUI\Label">
+      <UniqueIdentifier>{f936d366-ad01-476c-b08e-187959f8ad93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\GUI\Widget">
+      <UniqueIdentifier>{2a60c7a9-de83-4bc3-bc91-04f9b51ac72d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\GUI\Button">
+      <UniqueIdentifier>{ca25bd65-5608-4bfa-9059-7bc9e478241e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\GUI\Chat">
+      <UniqueIdentifier>{1a6ddbfa-060a-4e02-8ef2-c0d8edb96649}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\GUI\Container">
+      <UniqueIdentifier>{755be86f-a207-439a-930d-b96839d4b9c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\GUI\Image">
+      <UniqueIdentifier>{a01e1406-c887-4293-a00d-5a991b938069}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Graphics">
+      <UniqueIdentifier>{276988c5-2a88-4d09-9b30-6adae5c4fa79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Graphics\Animation">
+      <UniqueIdentifier>{83a338c7-823f-4148-ab0a-ece13aadff2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Graphics\Camera">
+      <UniqueIdentifier>{5221f3fb-5149-410f-be9c-a96a1e00bdd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Graphics\Shader">
+      <UniqueIdentifier>{854a2244-a78a-412a-bdc1-1f6075bf4a48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Graphics\Sprite">
+      <UniqueIdentifier>{a123ba23-4f65-440c-aa3d-0efe7b353723}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Graphics\Texture">
+      <UniqueIdentifier>{a9b87733-d04d-40f3-9afd-1851f9f45d25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Graphics\TileMap">
+      <UniqueIdentifier>{f47abfc9-f3d2-4f4b-90f9-cf8c1b4b7dff}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="wind\utils.h">
+      <Filter>WindEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\ConfigReader\ConfigReader.h">
+      <Filter>WindEngine\ConfigReader</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Core\Engine.h">
+      <Filter>WindEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Core\SDLSystems.h">
+      <Filter>WindEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\File\FileSystem.h">
+      <Filter>WindEngine\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\JText\JText.h">
+      <Filter>WindEngine\JText</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\JText\Object\Object.h">
+      <Filter>WindEngine\JText\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\JText\Tokenizer\Token.h">
+      <Filter>WindEngine\JText\Tokenizer</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\JText\Tokenizer\Tokenizer.h">
+      <Filter>WindEngine\JText\Tokenizer</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Log\Log.h">
+      <Filter>WindEngine\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Math\Perlin.h">
+      <Filter>WindEngine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Net\Client\Client.h">
+      <Filter>WindEngine\Net\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Net\Server\Server.h">
+      <Filter>WindEngine\Net\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Net\Packet\Packet.h">
+      <Filter>WindEngine\Net\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Net\Net.h">
+      <Filter>WindEngine\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Nodes\Node\Node.h">
+      <Filter>WindEngine\Nodes\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Nodes\Node2D\Node2D.h">
+      <Filter>WindEngine\Nodes\Node2D</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Nodes\Behavior.h">
+      <Filter>WindEngine\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Physics\Physics.h">
+      <Filter>WindEngine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Resource\Resource.h">
+      <Filter>WindEngine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Resource\Animations\Animations.h">
+      <Filter>WindEngine\Resource\Animations</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Resource\Fonts\Fonts.h">
+      <Filter>WindEngine\Resource\Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Resource\Nodes\Nodes.h">
+      <Filter>WindEngine\Resource\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Resource\Textures\Textures.h">
+      <Filter>WindEngine\Resource\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Resource\Scenes\Scenes.h">
+      <Filter>WindEngine\Resource\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Resource\Shaders\Shaders.h">
+      <Filter>WindEngine\Resource\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Window\EventHandler.h">
+      <Filter>WindEngine\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Window\Window.h">
+      <Filter>WindEngine\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\GUI\GUI.h">
+      <Filter>WindEngine\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\GUI\GUIObject.h">
+      <Filter>WindEngine\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\GUI\Label\Label.h">
+      <Filter>WindEngine\GUI\Label</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\GUI\Widget\Widget.h">
+      <Filter>WindEngine\GUI\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\GUI\Button\Button.h">
+      <Filter>WindEngine\GUI\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\GUI\Chat\Chat.h">
+      <Filter>WindEngine\GUI\Chat</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\GUI\Container\Container.h">
+      <Filter>WindEngine\GUI\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\GUI\Image\Image.h">
+      <Filter>WindEngine\GUI\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Graphics\Graphics.h">
+      <Filter>WindEngine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Graphics\Animation\Animation.h">
+      <Filter>WindEngine\Graphics\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Graphics\Animation\Animator.h">
+      <Filter>WindEngine\Graphics\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Graphics\Camera\Camera.h">
+      <Filter>WindEngine\Graphics\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Graphics\Shader\Shader.h">
+      <Filter>WindEngine\Graphics\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Graphics\Sprite\Sprite.h">
+      <Filter>WindEngine\Graphics\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Graphics\Texture\Texture.h">
+      <Filter>WindEngine\Graphics\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Graphics\TileMap\Tile.h">
+      <Filter>WindEngine\Graphics\TileMap</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Graphics\TileMap\TileMap.h">
+      <Filter>WindEngine\Graphics\TileMap</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Graphics\TileMap\TileMapObject.h">
+      <Filter>WindEngine\Graphics\TileMap</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="wind\ConfigReader\ConfigReader.cpp">
+      <Filter>WindEngine\ConfigReader</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Core\Engine.cpp">
+      <Filter>WindEngine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Core\SDLSystems.cpp">
+      <Filter>WindEngine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\File\FileSystem.cpp">
+      <Filter>WindEngine\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\JText\JText.cpp">
+      <Filter>WindEngine\JText</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\JText\JTextHelper.cpp">
+      <Filter>WindEngine\JText</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\JText\Object\Object.cpp">
+      <Filter>WindEngine\JText\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\JText\Tokenizer\Tokenizer.cpp">
+      <Filter>WindEngine\JText\Tokenizer</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\JText\Tokenizer\TokenizerHelper.cpp">
+      <Filter>WindEngine\JText\Tokenizer</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Log\Log.cpp">
+      <Filter>WindEngine\Log</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Math\Perlin.cpp">
+      <Filter>WindEngine\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Net\Client\Client.cpp">
+      <Filter>WindEngine\Net\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Net\Client\ClientHelper.cpp">
+      <Filter>WindEngine\Net\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Net\Server\Server.cpp">
+      <Filter>WindEngine\Net\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Net\Server\ServerHelper.cpp">
+      <Filter>WindEngine\Net\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Net\Packet\Packet.cpp">
+      <Filter>WindEngine\Net\Packet</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Net\Net.cpp">
+      <Filter>WindEngine\Net</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Nodes\Node\Node.cpp">
+      <Filter>WindEngine\Nodes\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Nodes\Node2D\Node2D.cpp">
+      <Filter>WindEngine\Nodes\Node2D</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Resource\Animations\Animations.cpp">
+      <Filter>WindEngine\Resource\Animations</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Resource\Fonts\Fonts.cpp">
+      <Filter>WindEngine\Resource\Fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Resource\Nodes\Nodes.cpp">
+      <Filter>WindEngine\Resource\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Resource\Textures\Textures.cpp">
+      <Filter>WindEngine\Resource\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Resource\Scenes\Scenes.cpp">
+      <Filter>WindEngine\Resource\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Resource\Shaders\Shaders.cpp">
+      <Filter>WindEngine\Resource\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Window\EventHandler.cpp">
+      <Filter>WindEngine\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Window\Window.cpp">
+      <Filter>WindEngine\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="game\main.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\GUI\GUI.cpp">
+      <Filter>WindEngine\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\GUI\GUIObject.cpp">
+      <Filter>WindEngine\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\GUI\Label\Label.cpp">
+      <Filter>WindEngine\GUI\Label</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\GUI\Widget\Widget.cpp">
+      <Filter>WindEngine\GUI\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\GUI\Button\Button.cpp">
+      <Filter>WindEngine\GUI\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\GUI\Chat\Chat.cpp">
+      <Filter>WindEngine\GUI\Chat</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\GUI\Container\Contrainer.cpp">
+      <Filter>WindEngine\GUI\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\GUI\Image\Image.cpp">
+      <Filter>WindEngine\GUI\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\libs\glad\src\glad.c">
+      <Filter>WindEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Graphics\Graphics.cpp">
+      <Filter>WindEngine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Graphics\Animation\Animation.cpp">
+      <Filter>WindEngine\Graphics\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Graphics\Camera\Camera.cpp">
+      <Filter>WindEngine\Graphics\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Graphics\Shader\Shader.cpp">
+      <Filter>WindEngine\Graphics\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Graphics\Sprite\Sprite.cpp">
+      <Filter>WindEngine\Graphics\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Graphics\TileMap\Tile.cpp">
+      <Filter>WindEngine\Graphics\TileMap</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Graphics\TileMap\TileMap.cpp">
+      <Filter>WindEngine\Graphics\TileMap</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
