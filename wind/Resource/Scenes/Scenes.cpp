@@ -3,17 +3,12 @@
 namespace WindEngine {
 	Scenes* Scenes::scenes = new Scenes("scenes");
 
-	Config Scenes::load(std::string path) {
-		Log::info() << "Load scene:" << path;
+	void Scenes::load_o(JText::Object& obj_scene) {
+		std::string name = obj_scene["name"]._str("none");
 
-		Config node = ConfigReader::read(path);
+		Log::info() << "Load scene:" << name;
 
-		if (node.isVar("name"))
-			this->add(node.getStringValue("name"), node);
-		else
-			Log::error() << "Couldn't load scene: missing scene name";
-
-		return node;
+		this->add(name, obj_scene);
 	}
 
 	Scenes& scenes() {

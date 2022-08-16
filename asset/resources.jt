@@ -1,0 +1,37 @@
+nodes = "./asset/nodes/"
+scenes = "./asset/scenes/"
+sprites = "./asset/sprites/"
+tilemaps = "./asset/tilemaps/"
+tilesets = "./asset/tilesets/"
+animations = "./asset/animations/"
+
+fonts = [
+    {
+        name = "PixelFont"
+        path = "./asset/fonts/PixelFont.ttf"
+        ptSize = 28
+    }
+]
+
+textures = [
+    {
+        name = "none"
+        path = "./asset/textures/none.png"
+        minFilter = "NEAREST"
+        magFilter = "NEAREST"
+    }, 
+    {
+        name = "player"
+        path = "./asset/textures/player.png"
+        minFilter = "NEAREST"
+        magFilter = "NEAREST"
+    }
+]
+
+shaders = [
+    {
+        name = "std-shader"
+        vtx = "./asset/shaders/std-shader.vtx"
+        fgt = "./asset/shaders/std-shader.fgt"
+    }
+]

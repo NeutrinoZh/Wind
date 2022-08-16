@@ -3,32 +3,25 @@
 namespace WindEngine {
 	Animations* Animations::animations = new Animations("animations");
 
-	Animation Animations::load(std::string path) {
-		Log::info() << "Load animation from " << path;
-
-		struct _meta {
+	void Animations::load_o(JText::Object& obj_animation) {
+		struct _ {
 			std::string name = "";
-			std::vector<Texture> frames = {};
 			Uint32 cycles = 1;
 			clock_t interval = 100;
 			bool loop = false;
 
-			_meta(std::string path) {
-				Config config = ConfigReader::read(path);
+			std::vector<Texture> frames = {};
 
-				if (config.isVar("name"))     name     = config.getStringValue("name");
-				if (config.isVar("cycles"))   cycles   = config.getIntValue("cycles");
-				if (config.isVar("interval")) interval = config.getIntValue("interval");
-				if (config.isVar("loop"))	  loop     = config.getBoolValue("loop");
+			_(JText::Object& animation) {
+				name = animation["name"]._str(name);
+				cycles = animation["cycles"]._uint32(cycles);
+				interval = animation["interval"]._uint32(interval);
+				loop = animation["loop"]._bool(loop);
 
-				for (Uint32 i = 0; i < 100; ++i) {
-					std::string n = "frame" + std::to_string(i);
-					if (config.isVar(n))
-						frames.push_back(textures()[config.getStringValue(n)]);
-					else break;
-				}
+				for (auto frame : animation["frames"].children)
+					frames.push_back(textures()[frame.second->_str("none")]);
 			}
-		} meta(path);
+		} meta(obj_animation);
 
 		Log::info() << "Create animation: " << meta.name;
 
@@ -36,12 +29,9 @@ namespace WindEngine {
 		animation.cycles = meta.cycles;
 		animation.interval = meta.interval;
 		animation.loop = meta.loop;;
-		for (Uint32 i = 0; i < meta.frames.size(); ++i) // ??
-			animation.addFrame(meta.frames[i]);
+		animation.get() = meta.frames;
 
 		this->add(meta.name, animation);
-
-		return animation;
 	}
 
 	void Animations::free(Animation animation) {};

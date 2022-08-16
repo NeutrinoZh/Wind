@@ -263,6 +263,9 @@
     <ClInclude Include="wind\Graphics\TileMap\TileMapObject.h">
       <Filter>WindEngine\Graphics\TileMap</Filter>
     </ClInclude>
+    <ClInclude Include="wind\Resource\Resources.h">
+      <Filter>WindEngine\Resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="wind\ConfigReader\ConfigReader.cpp">
@@ -396,6 +399,9 @@
     </ClCompile>
     <ClCompile Include="wind\Graphics\TileMap\TileMap.cpp">
       <Filter>WindEngine\Graphics\TileMap</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Resource\Resource.cpp">
+      <Filter>WindEngine\Resource</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

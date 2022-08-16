@@ -4,19 +4,6 @@ namespace WindEngine {
 
 	namespace {
 		void start() {
-			Log::begin() << "Start load resource";
-
-			textures().loadFolder("asset/meta-textures/");
-			shaders().loadFolder("asset/meta-shaders/");
-			fonts().loadFolder("asset/meta-fonts/");
-			animations().loadFolder("asset/animations/");
-			nodes().loadFolder("asset/nodes/");
-			scenes().loadFolder("asset/scenes/");
-
-			Log::end() << "Success finish load resource";
-
-			GUI::shader = shaders()["std-shader"]; // !
-
 			if (Core::user_start)
 				Core::user_start();
 
@@ -38,7 +25,7 @@ namespace WindEngine {
 			if (Node::root)
 				Node::root->update();
 
-			WindEngine::GL_Context::render();
+			GL_Context::render();
 		}
 	}
 
@@ -47,14 +34,8 @@ namespace WindEngine {
 	void (*Core::user_start)  (void) = nullptr;
 	void (*Core::user_update) (void) = nullptr;
 
-	bool init() {
+	bool Core::init(JText::Object& config) {
 		Log::begin() << "Started initialization";
-
-		JText::Object config;
-		if (!JText::parse("./asset/config.jt", config)) {
-			Log::error() << "WindEngine. Couldn't read engine config file";
-			return false;
-		}
 
 		if (!SDLSystems::init(config["SDL"])) {
 			Log::error() << "WindEngine. Couldn't init SDL libs";
@@ -90,8 +71,7 @@ namespace WindEngine {
 
 		return true;
 	}
-
-	void free() {
+	void Core::free() {
 		Log::begin() << "Memory cleaning procedure started";
 
 		if (Node::root) {
@@ -128,8 +108,18 @@ namespace WindEngine {
 		WindEngine::Window::Update = update;
 		WindEngine::GL_Context::user_render = render;
 
-		if (!init())
+		JText::Object config;
+		if (!JText::parse("./asset/config.jt", config)) {
+			Log::error() << "WindEngine. Couldn't read engine config file";
 			return EXIT_FAILURE;
+		}
+
+		if (!init(config))
+			return EXIT_FAILURE;
+		Resources::load("./asset/resources.jt");
+
+		GUI::shader = shaders()["std-shader"]; // !!
+
 		Window::loop();
 		free();
 

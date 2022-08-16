@@ -30,8 +30,8 @@ namespace WindEngine {
 		return result;
 	}
 
-	Texture Textures::load(std::string path) {
-		struct _meta {
+	void Textures::load_o(JText::Object& obj_texture) {
+		struct _ {
 			std::string path = "", name = "";
 			
 			Uint32 
@@ -43,62 +43,51 @@ namespace WindEngine {
 
 			std::vector<std::pair<std::string, glm::vec4>> atlas = {};
 
-			_meta(std::string path) {
-				Log::info() << "Load metadata for texturre:" << path;
+			_(JText::Object& texture) {
+				std::string wrap = texture["wrap"]._str("");
+				if      (wrap == "REPEAT")			this->wrap = GL_REPEAT;
+				else if (wrap == "MIRRORED_REPEAT") this->wrap = GL_MIRRORED_REPEAT;
+				else if (wrap == "CLAMP_TO_EDGE")	this->wrap = GL_CLAMP_TO_EDGE;
 
-				Config config = ConfigReader::read(path);
+				
+				std::string minFilter = texture["minFilter"]._str("");
+				if      (minFilter == "LINEAR")  this->minFilter = GL_LINEAR;
+				else if (minFilter == "NEAREST") this->minFilter = GL_NEAREST;
 
-				if (config.isVar("wrap")) {
-					std::string value = config.getStringValue("wrap");
-					if      (value == "REPEAT")			 wrap = GL_REPEAT;
-					else if (value == "MIRRORED_REPEAT") wrap = GL_MIRRORED_REPEAT;
-					else if (value == "CLAMP_TO_EDGE")	 wrap = GL_CLAMP_TO_EDGE;
-				}
+				std::string magFilter = texture["magFilter"]._str("");
+				if      (magFilter == "LINEAR")  this->magFilter = GL_LINEAR;
+				else if (magFilter == "NEAREST") this->magFilter = GL_NEAREST;
+				
+				std::string internalFormat = texture["internalFormat"]._str("");
+				if		(internalFormat == "RBA")  this->internalFormat = GL_RGB;
+				else if (internalFormat == "BGR")  this->internalFormat = GL_BGR;
+				else if (internalFormat == "RGBA") this->internalFormat = GL_RGBA;
+				else if (internalFormat == "BGRA") this->internalFormat = GL_BGRA;
 
-				if (config.isVar("minFilter")) {
-					std::string value = config.getStringValue("minFilter");
-					if      (value == "LINEAR")  minFilter = GL_LINEAR;
-					else if (value == "NEAREST") minFilter = GL_NEAREST;
-				}
+				
+				std::string format = texture["format"]._str("");
+				if      (format == "RBA")  this->format = GL_RGB;
+				else if (format == "BGR")  this->format = GL_BGR;
+				else if (format == "RGBA") this->format = GL_RGBA;
+				else if (format == "BGRA") this->format = GL_BGRA;
 
-				if (config.isVar("magFilter")) {
-					std::string value = config.getStringValue("magFilter");
-					if      (value == "LINEAR")  magFilter = GL_LINEAR;
-					else if (value == "NEAREST") magFilter = GL_NEAREST;
-				}
+				path = texture["path"]._str(path);
+				name = texture["name"]._str(name);
 
-				if (config.isVar("internalFormat")) {
-					std::string value = config.getStringValue("internalFormat");
-					if		(value == "RBA")  internalFormat = GL_RGB;
-					else if (value == "BGR")  internalFormat = GL_BGR;
-					else if (value == "RGBA") internalFormat = GL_RGBA;
-					else if (value == "BGRA") internalFormat = GL_BGRA;
-				}
-
-				if (config.isVar("format")) {
-					std::string value = config.getStringValue("format");
-					if      (value == "RBA")  format = GL_RGB;
-					else if (value == "BGR")  format = GL_BGR;
-					else if (value == "RGBA") format = GL_RGBA;
-					else if (value == "BGRA") format = GL_BGRA;
-				}
-
-				if (config.isVar("path")) this->path = config.getStringValue("path");
-				if (config.isVar("name"))       name = config.getStringValue("name");
-
-
-				int x = 0, y = 0;
-				if (config.isVar("gridX")) x = config.getIntValue("gridX");
-				if (config.isVar("gridY")) y = config.getIntValue("gridY");
+				Uint32 x = texture["gridX"]._uint32(0),
+					   y = texture["gridY"]._uint32(0);
 
 				if (x + y != 0) {
+					Uint32 size = x * y;
+					
 					float stepX = 1.f / x,
 						  stepY = 1.f / y;
 
-					for (Uint32 i = 0; i < static_cast<Uint32>(x * y); ++i) {
-						std::string str = std::to_string(i);
+					for (Uint32 i = 0; i < x * y; ++i) {
+						if (i >= texture["textures"].children.size())
+							break;
 
-						std::string name = "";
+						std::string name = texture["textures"][i]._str("");
 						glm::vec4 rect = {
 							(i % x) * stepX,
 							(i / x) * stepY,
@@ -106,23 +95,18 @@ namespace WindEngine {
 							(i / x) * stepY + stepY
 						};
 
-						if (config.isVar(str))
-							name = config.getStringValue(str);
-						else
-							Log::warning() << "Missing sprite " << i << " from " << this->name;
-
 						atlas.push_back({ name, rect });
 					}
 				}
 			}
-		} meta(path);
+		} meta(obj_texture);
 
 		Log::info() << "Load texture:" << meta.path;
 		
 		SDL_Surface* surface = IMG_Load(meta.path.c_str());
 		if (!surface) {
 			Log::error() << SDL_GetError();
-			return NULL;
+			return;
 		}
 
 		Texture texture = createFromSurface(surface,
@@ -133,8 +117,6 @@ namespace WindEngine {
 			Log::info() << "Create from " << meta.name << " texture: " << meta.atlas[i].first;
 			this->add(meta.atlas[i].first, Texture(texture.texture, meta.atlas[i].second));
 		}
-
-		return texture.texture;
 	}
 
 	void Textures::free(Texture texture) {

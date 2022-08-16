@@ -59,6 +59,7 @@
     <ClInclude Include="wind\Resource\Fonts\Fonts.h" />
     <ClInclude Include="wind\Resource\Nodes\Nodes.h" />
     <ClInclude Include="wind\Resource\Resource.h" />
+    <ClInclude Include="wind\Resource\Resources.h" />
     <ClInclude Include="wind\Resource\Scenes\Scenes.h" />
     <ClInclude Include="wind\Resource\Shaders\Shaders.h" />
     <ClInclude Include="wind\Resource\Textures\Textures.h" />
@@ -106,6 +107,7 @@
     <ClCompile Include="wind\Resource\Animations\Animations.cpp" />
     <ClCompile Include="wind\Resource\Fonts\Fonts.cpp" />
     <ClCompile Include="wind\Resource\Nodes\Nodes.cpp" />
+    <ClCompile Include="wind\Resource\Resource.cpp" />
     <ClCompile Include="wind\Resource\Scenes\Scenes.cpp" />
     <ClCompile Include="wind\Resource\Shaders\Shaders.cpp" />
     <ClCompile Include="wind\Resource\Textures\Textures.cpp" />

@@ -19,7 +19,13 @@ namespace WindEngine {
 	}
 
 	void Sprite::render() {
+		if (!paint) {
+			paint = static_cast<bool>(shader);
+			return;
+		}
+
 		if (!shader) {
+			paint = false;
 			Log::error() << "When sprite drawing shader been NULL";
 			return;
 		}

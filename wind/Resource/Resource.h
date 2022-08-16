@@ -10,8 +10,16 @@ namespace WindEngine {
 	public:
 		Resource(std::string name) : name(name) {};
 
-		virtual Type load(std::string path) = 0;
+		virtual void load_o(JText::Object& font) = 0;
 		virtual void free(Type obj) = 0;
+
+		void load_f(std::string path) {
+			JText::Object resource;
+			if (!JText::parse(path, resource))
+				Log::error() << "WindEngine. Couldn't load " << name << " from:" << path;
+
+			return this->load_o(resource);
+		};
 
 		void freeAll() {
 			Log::info() << "Free memory from resource(" << name << ")";
@@ -21,14 +29,18 @@ namespace WindEngine {
 		}
 
 		void loadFolder(std::string path) {
-			Log::begin() << "Start loading resource(" << name << ") from folder:" << path;
+			Log::info() << "Loading resource(" << name << ") from folder:" << path;
 			if (std::filesystem::is_directory(path))
 				for (const auto& entry : std::filesystem::directory_iterator(path))
-					load(entry.path().string());
+					load_f(entry.path().string());
 			else
 				Log::error() << "Failed loading resource(" << name << ") Could not find directory:" << path;
-			Log::end() << "Finish loading resource(" << name << ") from folder:" << path;
 		};
+
+		void loadFromObject(JText::Object& fonts) {
+			for (auto object : fonts.children)
+				load_o(*object.second);
+		}
 
 		void add(std::string name, Type obj) {
 			resource.insert({ name, obj });

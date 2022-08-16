@@ -7,7 +7,7 @@ namespace WindEngine {
 		Shaders(std::string name) : Resource<Shader*>(name) {};
 		static Shaders* shaders;
 
-		Shader* load(std::string path);
+		void load_o(JText::Object& shader);
 		void free(Shader* shader);
 	};
 

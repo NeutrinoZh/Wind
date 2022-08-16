@@ -3,17 +3,12 @@
 namespace WindEngine {
 	Nodes* Nodes::nodes = new Nodes("nodes");
 
-	Config Nodes::load(std::string path) {
-		Log::info() << "Load node:" << path;
+	void Nodes::load_o(JText::Object& obj_node) {
+		std::string name = obj_node["name"]._str("none");
 
-		Config node = ConfigReader::read(path);
+		Log::info() << "Load node:" << name;
 		
-		if (node.isVar("name"))
-			this->add(node.getStringValue("name"), node);
-		else
-			Log::error() << "Couldn't load node: missing node name";
-
-		return node;
+		this->add(name, obj_node);
 	}
 
 	Nodes& nodes() {

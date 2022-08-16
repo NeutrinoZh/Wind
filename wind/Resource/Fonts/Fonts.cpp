@@ -3,34 +3,28 @@
 namespace WindEngine {
 	Fonts* Fonts::fonts = new Fonts("fonts");
 
-	TTF_Font* Fonts::load(std::string path) {
-		struct _meta {
-			int ptsize = 18;
+	void Fonts::load_o(JText::Object& obj_font) {
+		struct _ {
+			int ptSize = 18;
 			std::string path = "";
 			std::string name = "";
 
-			_meta(std::string path) {
-				Log::info() << "Load metadata for font:" << path;
-
-				Config config = ConfigReader::read(path);
-
-				if (config.isVar("name"))   this->name = config.getStringValue("name");
-				if (config.isVar("path"))   this->path   = config.getStringValue("path");
-				if (config.isVar("ptSize")) this->ptsize = config.getIntValue("ptSize");
+			_(JText::Object& font) {
+				name   = font["name"]._str(name);
+				path   = font["path"]._str(path);
+				ptSize = font["ptSize"]._int(ptSize);
 			}
-		} meta(path);
+		} meta(obj_font);
 
 		Log::info() << "Load ttf font:" << meta.path;
 		
-		TTF_Font* font = TTF_OpenFont(meta.path.c_str(), meta.ptsize);
+		TTF_Font* font = TTF_OpenFont(meta.path.c_str(), meta.ptSize);
 		if (!font) {
 			Log::error() << TTF_GetError();
-			return nullptr;
+			return;
 		}
 
 		this->add(meta.name, font);
-
-		return font;
 	}
 
 	void Fonts::free(TTF_Font* font) {

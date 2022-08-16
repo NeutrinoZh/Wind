@@ -11,7 +11,7 @@ namespace WindEngine {
 		Texture createFromSurface(SDL_Surface* surface,
 			Uint32 wrap, Uint32 minFilter, Uint32 magFilter,
 			Uint32 internalFormat, Uint32 format, std::string name);
-		Texture load(std::string);
+		void load_o(JText::Object& texture);
 		void free(Texture);
 	};
 	

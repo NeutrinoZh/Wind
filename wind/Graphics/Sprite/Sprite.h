@@ -5,6 +5,7 @@ namespace WindEngine {
 	class Sprite : public Behavior {
 	private:
 		glm::mat4 transform = glm::mat4(1);
+		bool paint = true;
 	public:
 		Shader* shader = nullptr;
 
