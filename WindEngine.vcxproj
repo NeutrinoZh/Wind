@@ -45,7 +45,7 @@
     <ClInclude Include="wind\JText\Object\Object.h" />
     <ClInclude Include="wind\JText\Tokenizer\Token.h" />
     <ClInclude Include="wind\JText\Tokenizer\Tokenizer.h" />
-    <ClInclude Include="wind\Log\Log.h" />
+    <ClInclude Include="wind\Logger\Logger.h" />
     <ClInclude Include="wind\Math\Perlin.h" />
     <ClInclude Include="wind\Net\Client\Client.h" />
     <ClInclude Include="wind\Net\Net.h" />
@@ -94,7 +94,7 @@
     <ClCompile Include="wind\JText\Object\Object.cpp" />
     <ClCompile Include="wind\JText\Tokenizer\Tokenizer.cpp" />
     <ClCompile Include="wind\JText\Tokenizer\TokenizerHelper.cpp" />
-    <ClCompile Include="wind\Log\Log.cpp" />
+    <ClCompile Include="wind\Logger\Logger.cpp" />
     <ClCompile Include="wind\Math\Perlin.cpp" />
     <ClCompile Include="wind\Net\Client\Client.cpp" />
     <ClCompile Include="wind\Net\Client\ClientHelper.cpp" />

@@ -1,5 +1,5 @@
 #pragma once
-#include "../Log/Log.h"
+#include "../Logger/Logger.h"
 
 namespace WindEngine {
 	class FileSystem {

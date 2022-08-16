@@ -27,9 +27,6 @@
     <Filter Include="WindEngine\JText\Tokenizer">
       <UniqueIdentifier>{6673fe58-6013-4345-8fa4-7f771e2ad962}</UniqueIdentifier>
     </Filter>
-    <Filter Include="WindEngine\Log">
-      <UniqueIdentifier>{d5099b7f-4a37-430a-9240-c0cdd72074e3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="WindEngine\Math">
       <UniqueIdentifier>{d80d6e44-0009-418c-9280-73ec90b9c830}</UniqueIdentifier>
     </Filter>
@@ -123,6 +120,9 @@
     <Filter Include="WindEngine\Graphics\TileMap">
       <UniqueIdentifier>{f47abfc9-f3d2-4f4b-90f9-cf8c1b4b7dff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="WindEngine\Logger">
+      <UniqueIdentifier>{d5099b7f-4a37-430a-9240-c0cdd72074e3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wind\utils.h">
@@ -151,9 +151,6 @@
     </ClInclude>
     <ClInclude Include="wind\JText\Tokenizer\Tokenizer.h">
       <Filter>WindEngine\JText\Tokenizer</Filter>
-    </ClInclude>
-    <ClInclude Include="wind\Log\Log.h">
-      <Filter>WindEngine\Log</Filter>
     </ClInclude>
     <ClInclude Include="wind\Math\Perlin.h">
       <Filter>WindEngine\Math</Filter>
@@ -266,6 +263,9 @@
     <ClInclude Include="wind\Resource\Resources.h">
       <Filter>WindEngine\Resource</Filter>
     </ClInclude>
+    <ClInclude Include="wind\Logger\Logger.h">
+      <Filter>WindEngine\Logger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="wind\ConfigReader\ConfigReader.cpp">
@@ -294,9 +294,6 @@
     </ClCompile>
     <ClCompile Include="wind\JText\Tokenizer\TokenizerHelper.cpp">
       <Filter>WindEngine\JText\Tokenizer</Filter>
-    </ClCompile>
-    <ClCompile Include="wind\Log\Log.cpp">
-      <Filter>WindEngine\Log</Filter>
     </ClCompile>
     <ClCompile Include="wind\Math\Perlin.cpp">
       <Filter>WindEngine\Math</Filter>
@@ -402,6 +399,9 @@
     </ClCompile>
     <ClCompile Include="wind\Resource\Resource.cpp">
       <Filter>WindEngine\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Logger\Logger.cpp">
+      <Filter>WindEngine\Logger</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
