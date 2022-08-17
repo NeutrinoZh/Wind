@@ -5,10 +5,11 @@ SDL = [
     "NET_INIT"
 ]
 
+maxFPS = 60
+
 Window {
     title = "Online PingPong"
     size = [ 800, 600 ]
-    delta = 10
     flags = [
         "SDL_WINDOW_OPENGL"
     ]
@@ -32,4 +33,12 @@ OpenGL {
 
     depthColor = [ 3, 3, 2, 1 ]
     clearColor = [ 0.5, 0.5, 0.5 ]
+}
+
+Net {
+    Client {
+        TIME_WAIT_FOR_RESPONSE = 2000
+        DELTA_TIME_FOR_SEND = 50
+        TIME_WAIT_FOR_RESEND = 200 
+    }
 }

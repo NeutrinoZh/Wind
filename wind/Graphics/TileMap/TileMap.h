@@ -23,6 +23,5 @@ namespace WindEngine {
 		TileMap(Uint32 x, Uint32 y);
 
 		void draw(Uint32 w, Uint32 h);
-		static TileMap builder(std::string path);
 	};
 }

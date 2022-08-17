@@ -1,5 +1,5 @@
 #pragma once
-#include "../Resource/Resources.h"
+#include "FPSCounter/FPSCounter.h"
 
 namespace WindEngine {
 	struct Core {
@@ -8,9 +8,12 @@ namespace WindEngine {
 		static void loadResources();
 		static void free();
 	public:
+		static bool activeLoop;
 		static void (*user_start) (void);
 		static void (*user_update) (void);
+		static bool (*user_exit) (void);
 	public:
+		static void quit();
 		static int loop();
 	};
 }

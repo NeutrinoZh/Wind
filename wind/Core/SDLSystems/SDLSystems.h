@@ -1,5 +1,5 @@
 #pragma once
-#include "../ConfigReader/ConfigReader.h"
+#include "../../JText/JText.h"
 
 #include <SDL.h>
 

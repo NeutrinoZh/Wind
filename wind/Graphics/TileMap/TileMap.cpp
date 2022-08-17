@@ -13,8 +13,8 @@ namespace WindEngine {
 			return;
 		}
 
-		int cx = camera().position.x - position.x,
-			cy = camera().position.y - position.y;
+		int cx = static_cast<int>(camera().position.x - position.x),
+			cy = static_cast<int>(camera().position.y - position.y);
 
 		transform = glm::mat4(1);
 		transform = glm::scale(transform, glm::vec3(scale, 1.0f));
@@ -70,33 +70,6 @@ namespace WindEngine {
 		if (map[x][y] != NULL)
 			return tiles[map[x][y] - 1];
 		return Tile();
-	}
-
-	TileMap TileMap::builder(std::string path) {
-		Uint32 w = 0, h = 0;
-
-		Config config = ConfigReader::read(path);
-
-		if (config.isVar("sizeW")) w = config.getIntValue("sizeW");
-		if (config.isVar("sizeH")) h = config.getIntValue("sizeH");
-
-		TileMap tilemap(w, h);
-
-		if (config.isVar("shader")) tilemap.shader = shaders()[config.getStringValue("shader")];
-
-		if (config.isVar("scaleX")) tilemap.scale.x = config.getFloatValue("scaleX");
-		if (config.isVar("scaleY")) tilemap.scale.y = config.getFloatValue("scaleY");
-
-		if (config.isVar("x")) tilemap.position.x = config.getFloatValue("x");
-		if (config.isVar("y")) tilemap.position.y = config.getFloatValue("y");
-
-		Uint32 i = 0;
-		while (config.isVar(std::to_string(i))) {
-			tilemap.addTile(Tile::builder(config.getStringValue(std::to_string(i))));
-			++i;
-		}
-
-		return tilemap;
 	}
 
 	void TileMap::addTile(Tile tile) {

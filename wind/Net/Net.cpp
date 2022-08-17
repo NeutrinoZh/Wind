@@ -14,7 +14,8 @@ namespace WindEngine {
 		isServer = config.is();
 
 		if (isServer)
-			Server::run(config);
+			Server::run(config["Server"]);
+		else Client::init(config["Client"]);
 
 		return true;
 	}

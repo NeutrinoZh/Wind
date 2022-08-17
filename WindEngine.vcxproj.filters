@@ -9,9 +9,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="WindEngine\ConfigReader">
-      <UniqueIdentifier>{3bfef27c-3d18-4da4-ac9f-99983d93ef4e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="WindEngine\Core">
       <UniqueIdentifier>{d41b4b60-82fa-4309-9081-9008634bf6cd}</UniqueIdentifier>
     </Filter>
@@ -123,18 +120,18 @@
     <Filter Include="WindEngine\Logger">
       <UniqueIdentifier>{d5099b7f-4a37-430a-9240-c0cdd72074e3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="WindEngine\Core\SDLSystems">
+      <UniqueIdentifier>{a7ce1db6-2d81-4089-98aa-ffd5a5931851}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindEngine\Core\FPSCounter">
+      <UniqueIdentifier>{62a24a9a-6a4f-447f-bfdb-941435c4ebb9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wind\utils.h">
       <Filter>WindEngine</Filter>
     </ClInclude>
-    <ClInclude Include="wind\ConfigReader\ConfigReader.h">
-      <Filter>WindEngine\ConfigReader</Filter>
-    </ClInclude>
     <ClInclude Include="wind\Core\Engine.h">
-      <Filter>WindEngine\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="wind\Core\SDLSystems.h">
       <Filter>WindEngine\Core</Filter>
     </ClInclude>
     <ClInclude Include="wind\File\FileSystem.h">
@@ -266,15 +263,15 @@
     <ClInclude Include="wind\Logger\Logger.h">
       <Filter>WindEngine\Logger</Filter>
     </ClInclude>
+    <ClInclude Include="wind\Core\SDLSystems\SDLSystems.h">
+      <Filter>WindEngine\Core\SDLSystems</Filter>
+    </ClInclude>
+    <ClInclude Include="wind\Core\FPSCounter\FPSCounter.h">
+      <Filter>WindEngine\Core\FPSCounter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="wind\ConfigReader\ConfigReader.cpp">
-      <Filter>WindEngine\ConfigReader</Filter>
-    </ClCompile>
     <ClCompile Include="wind\Core\Engine.cpp">
-      <Filter>WindEngine\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="wind\Core\SDLSystems.cpp">
       <Filter>WindEngine\Core</Filter>
     </ClCompile>
     <ClCompile Include="wind\File\FileSystem.cpp">
@@ -402,6 +399,12 @@
     </ClCompile>
     <ClCompile Include="wind\Logger\Logger.cpp">
       <Filter>WindEngine\Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Core\SDLSystems\SDLSystems.cpp">
+      <Filter>WindEngine\Core\SDLSystems</Filter>
+    </ClCompile>
+    <ClCompile Include="wind\Core\FPSCounter\FPSCounter.cpp">
+      <Filter>WindEngine\Core\FPSCounter</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

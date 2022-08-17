@@ -8,7 +8,6 @@ namespace Game {
 		wd::Node2D* player  = new wd::Node2D();
 		player->position = { 2, 2 };
 		player->size	 = { 1, 1 };
-		player->addBehavior(wd::Sprite::builder("asset/sprites/sprite.meta"));
 
 		gameScene->addChild(player);
 	}

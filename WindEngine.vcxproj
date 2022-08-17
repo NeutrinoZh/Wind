@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="wind\ConfigReader\ConfigReader.h" />
     <ClInclude Include="wind\Core\Engine.h" />
-    <ClInclude Include="wind\Core\SDLSystems.h" />
+    <ClInclude Include="wind\Core\FPSCounter\FPSCounter.h" />
+    <ClInclude Include="wind\Core\SDLSystems\SDLSystems.h" />
     <ClInclude Include="wind\File\FileSystem.h" />
     <ClInclude Include="wind\Graphics\Animation\Animation.h" />
     <ClInclude Include="wind\Graphics\Animation\Animator.h" />
@@ -70,9 +70,9 @@
   <ItemGroup>
     <ClCompile Include="D:\libs\glad\src\glad.c" />
     <ClCompile Include="game\main.cpp" />
-    <ClCompile Include="wind\ConfigReader\ConfigReader.cpp" />
     <ClCompile Include="wind\Core\Engine.cpp" />
-    <ClCompile Include="wind\Core\SDLSystems.cpp" />
+    <ClCompile Include="wind\Core\FPSCounter\FPSCounter.cpp" />
+    <ClCompile Include="wind\Core\SDLSystems\SDLSystems.cpp" />
     <ClCompile Include="wind\File\FileSystem.cpp" />
     <ClCompile Include="wind\Graphics\Animation\Animation.cpp" />
     <ClCompile Include="wind\Graphics\Camera\Camera.cpp" />

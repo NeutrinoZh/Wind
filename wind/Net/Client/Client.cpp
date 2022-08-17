@@ -141,29 +141,14 @@ namespace WindEngine {
 		}
 	}
 
-	void Client::connect() {
+	void Client::init(JText::Object& config) {
+		self.TIME_WAIT_FOR_RESPONSE = config["TIME_WAIT_FOR_RESPONSE"]._uint32(2000);
+		self.DELTA_TIME_FOR_SEND = config["DELTA_TIME_FOR_SEND"]._uint32(50);
+		self.TIME_WAIT_FOR_RESEND = config["TIME_WAIT_FOR_RESEND"]._uint32(200);
+	}
+
+	void Client::connect(std::string ip, Uint32 port) {
 		Log::info() << "Launched NetUDPClient";
-
-		struct _config {
-			std::string ip = "127.0.0.1";
-			int port = 7708;
-
-			clock_t TIME_WAIT_FOR_RESPONSE = 10000;
-			clock_t DELTA_TIME_FOR_SEND = 50;
-			clock_t TIME_WAIT_FOR_RESEND = 200;
-
-			_config(std::string path) {
-				Log::info() << "Read config NetUDPClient: " << path;
-
-				Config config = ConfigReader::read(path);
-
-				if (config.isVar("ip")) ip = config.getStringValue("ip");
-				if (config.isVar("port")) port = config.getIntValue("port");
-				if (config.isVar("TIME_WAIT_FOR_RESPONSE")) TIME_WAIT_FOR_RESPONSE = config.getIntValue("TIME_WAIT_FOR_RESPONSE");
-				if (config.isVar("DELTA_TIME_FOR_SEND")) DELTA_TIME_FOR_SEND = config.getIntValue("DELTA_TIME_FOR_SEND");
-				if (config.isVar("TIME_WAIT_FOR_RESEND")) TIME_WAIT_FOR_RESEND = config.getIntValue("TIME_WAIT_FOR_RESEND");
-			}
-		} config("./asset/connect.txt");
 
 		self.socket = SDLNet_UDP_Open(0);
 		if (self.socket == NULL) {
@@ -171,16 +156,12 @@ namespace WindEngine {
 			return;
 		}
 
-		Log::info() << "Connect to NetUDPSerever on address " << config.ip << ":" << config.port;
+		Log::info() << "Connect to NetUDPSerever on address " << ip << ":" << port;
 
-		if (SDLNet_ResolveHost(&self.server, config.ip.c_str(), config.port) == -1) {
+		if (SDLNet_ResolveHost(&self.server, ip.c_str(), port) == -1) {
 			Log::error() << SDLNet_GetError();
 			return;
 		}
-
-		self.TIME_WAIT_FOR_RESPONSE = config.TIME_WAIT_FOR_RESPONSE;
-		self.DELTA_TIME_FOR_SEND	= config.DELTA_TIME_FOR_SEND;
-		self.TIME_WAIT_FOR_RESEND	= config.TIME_WAIT_FOR_RESEND;
 
 		self.lastReceiv = clock();
 		self.is_connect = true;

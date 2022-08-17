@@ -52,7 +52,8 @@ namespace WindEngine {
 		static void addCodeHandler(Uint16 code, void(*handler) (Packet*));
 		static bool isConnect();
 
-		static void connect();
+		static void init(JText::Object& config);
+		static void connect(std::string ip, Uint32 port);
 		static void update();
 		static void disconnect();
 	};

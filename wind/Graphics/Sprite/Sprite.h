@@ -21,7 +21,5 @@ namespace WindEngine {
 		void free() {};
 
 		void render();
-
-		static Sprite* builder(std::string path);
 	};
 }

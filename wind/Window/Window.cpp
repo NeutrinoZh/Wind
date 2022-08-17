@@ -1,23 +1,10 @@
-#include "Window.h"
+#include "../Core/Engine.h"
 
 namespace WindEngine {
-	int       Window::fps = 0;
-	float     Window::delta = 0;
-	bool      Window::activeLoop = true;
-	Uint32    Window::minFrameTime;
 	glm::vec2 Window::size;
-
-	void(*Window::Start)(void) = nullptr;
-	void(*Window::Update)(void) = nullptr;
-	bool(*Window::Exit)(void) = nullptr;
 	
 	SDL_Window* Window::window = nullptr;
 	SDL_Event Window::event;
-
-	namespace {
-		Uint32 beginFrameTime, endFrameTime,
-			countFrame = 0, lastTime = 0;
-	}
 
 	bool Window::init(JText::Object& obj_config) {
 		Log::info() << "Window Init";
@@ -60,8 +47,6 @@ namespace WindEngine {
 			return false;
 		}
 
-		Window::minFrameTime = config.minFrameTime;
-
 		int w, h;
 		SDL_GetWindowSize(Window::window, &w, &h);
 		Window::size = { static_cast<float>(w), static_cast<float>(h) };
@@ -69,69 +54,32 @@ namespace WindEngine {
 		return true;
 	}
 
-	void Window::loop() {
-		if (Start)
-			Start();
+	void Window::eventHandlers() {
+		Keyboard::swapbuffer();
+		Mouse::resetWhell();
+		HandlerGameController::clear();
 
-		Log::begin() << "Program loop launched";
-
-		while (activeLoop) {
-			beginFrameTime = SDL_GetTicks();
-
-			Keyboard::swapbuffer();
-			Mouse::resetWhell();
-			HandlerGameController::clear();
-
-			while (SDL_PollEvent(&Window::event)) {
-				if (event.type == SDL_QUIT) quit();
-				else if (event.type == SDL_KEYDOWN) Keyboard::down(&event);
-				else if (event.type == SDL_KEYUP) Keyboard::up(&event);
-				else if (event.type == SDL_MOUSEBUTTONDOWN) Mouse::down(&event);
-				else if (event.type == SDL_MOUSEBUTTONUP) Mouse::up(&event);
-				else if (event.type == SDL_MOUSEWHEEL) Mouse::whell(&event);
-				else if (event.type == SDL_MOUSEMOTION) Mouse::move(&event, Window::size);
-				else if (event.type == SDL_TEXTINPUT) Input::input(&event);
-				else if (event.type == SDL_JOYBUTTONDOWN) HandlerGameController::down(&event);
-				else if (event.type == SDL_JOYBUTTONUP) HandlerGameController::up(&event);
-				else if (event.type == SDL_JOYDEVICEADDED) HandlerGameController::added(event.jdevice.which);
-				else if (event.type == SDL_JOYDEVICEREMOVED) HandlerGameController::removed(event.jdevice.which);
-				else if (event.type == SDL_WINDOWEVENT) {
-					if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-						int w, h;
-						SDL_GetWindowSize(Window::window, &w, &h);
-						Window::size = { static_cast<float>(w), static_cast<float>(h) };
-					}
+		while (SDL_PollEvent(&Window::event)) {
+			if (event.type == SDL_QUIT) Core::quit(); 
+			else if (event.type == SDL_KEYDOWN) Keyboard::down(&event);
+			else if (event.type == SDL_KEYUP) Keyboard::up(&event);
+			else if (event.type == SDL_MOUSEBUTTONDOWN) Mouse::down(&event);
+			else if (event.type == SDL_MOUSEBUTTONUP) Mouse::up(&event);
+			else if (event.type == SDL_MOUSEWHEEL) Mouse::whell(&event);
+			else if (event.type == SDL_MOUSEMOTION) Mouse::move(&event, Window::size);
+			else if (event.type == SDL_TEXTINPUT) Input::input(&event);
+			else if (event.type == SDL_JOYBUTTONDOWN) HandlerGameController::down(&event);
+			else if (event.type == SDL_JOYBUTTONUP) HandlerGameController::up(&event);
+			else if (event.type == SDL_JOYDEVICEADDED) HandlerGameController::added(event.jdevice.which);
+			else if (event.type == SDL_JOYDEVICEREMOVED) HandlerGameController::removed(event.jdevice.which);
+			else if (event.type == SDL_WINDOWEVENT) {
+				if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+					int w, h;
+					SDL_GetWindowSize(Window::window, &w, &h);
+					Window::size = { static_cast<float>(w), static_cast<float>(h) };
 				}
 			}
-
-			if (Update)
-				Update();
-
-			countFrame++;
-			if (SDL_GetTicks() > lastTime + 1000) {
-				fps = countFrame;
-				countFrame = 0;
-				lastTime = SDL_GetTicks();
-			}
-
-			endFrameTime = SDL_GetTicks();
-			if (endFrameTime - beginFrameTime < minFrameTime)
-				SDL_Delay(minFrameTime - (endFrameTime - beginFrameTime));
-
-			endFrameTime = SDL_GetTicks();
-			delta = (endFrameTime - beginFrameTime) / 14.f; // what is 14?
 		}
-
-		Log::end() << "Program cycle break";
-	}
-
-	void Window::quit() {
-		if (Exit) {
-			Window::activeLoop = Exit();
-		} else activeLoop = false;
-
-		Log::info() << "Program exit request:"
-			<< (activeLoop ? "Unsuccessful" : "Successfull");
 	}
 
 	void Window::free() {

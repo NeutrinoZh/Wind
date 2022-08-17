@@ -2,30 +2,12 @@
 
 namespace WindEngine {
 
+	bool Core::activeLoop = true;
+
 	namespace {
-		void start() {
-			if (Core::user_start)
-				Core::user_start();
-
-			if (Node::root)
-				Node::root->start();
-		}
-
 		void render() {
 			if (Node::root)
 				Node::root->render();
-		}
-
-		void update() {
-			Net::update();
-
-			if (Core::user_update)
-				Core::user_update();
-
-			if (Node::root)
-				Node::root->update();
-
-			GL_Context::render();
 		}
 	}
 
@@ -33,6 +15,7 @@ namespace WindEngine {
 
 	void (*Core::user_start)  (void) = nullptr;
 	void (*Core::user_update) (void) = nullptr;
+	bool (*Core::user_exit) (void) = nullptr;
 
 	bool Core::init(JText::Object& config) {
 		Log::begin() << "Started initialization";
@@ -57,7 +40,7 @@ namespace WindEngine {
 			return false;
 		}
 
-		if (!Net::init(config["Server"])) {
+		if (!Net::init(config["Net"])) {
 			Log::error() << "WindEngine. Couldn't init Net-System";
 			return false;
 		}
@@ -104,9 +87,7 @@ namespace WindEngine {
 			self.numSpace = 2;
 		});
 
-		WindEngine::Window::Start = start;
-		WindEngine::Window::Update = update;
-		WindEngine::GL_Context::user_render = render;
+		GL_Context::user_render = render;
 
 		JText::Object config;
 		if (!JText::parse("./asset/config.jt", config)) {
@@ -114,15 +95,55 @@ namespace WindEngine {
 			return EXIT_FAILURE;
 		}
 
+		struct _ {
+			Uint32 maxFPS;
+
+			_(JText::Object& config) {
+				maxFPS = config["maxFPS"]._uint32(0);
+			}
+		} s_config(config);
+
 		if (!init(config))
 			return EXIT_FAILURE;
 		Resources::load("./asset/resources.jt");
 
 		GUI::shader = shaders()["std-shader"]; // !!
 
-		Window::loop();
+		if (Core::user_start)
+			Core::user_start();
+
+		if (Node::root)
+			Node::root->start();
+
+		Log::begin() << "Program loop launched";
+		while (Core::activeLoop) {
+			Window::eventHandlers();
+
+			Net::update();
+
+			if (Core::user_update)
+				Core::user_update();
+
+			if (Node::root)
+				Node::root->update();
+
+			FPSCounter::count(s_config.maxFPS);
+
+			GL_Context::render();
+		}
+		Log::end() << "Break program loop";
+
 		free();
 
 		return EXIT_SUCCESS;
+	}
+
+	void Core::quit() {
+		if (user_exit) {
+			activeLoop = user_exit();
+		} else activeLoop = false;
+
+		Log::info() << "Program exit request:"
+			<< (activeLoop ? "Unsuccessful" : "Successfull");
 	}
 }

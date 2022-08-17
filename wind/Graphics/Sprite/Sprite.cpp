@@ -1,23 +1,6 @@
 #include "Sprite.h"
 
 namespace WindEngine {
-	Sprite* Sprite::builder(std::string path) {
-		Sprite* sprite = new Sprite();
-
-		Config config = ConfigReader::read(path);
-		
-		if (config.isVar("texture"))
-			sprite->texture = textures()[config.getStringValue("texture")];
-
-		if (config.isVar("colorR")) sprite->color.r = config.getFloatValue("colorR");
-		if (config.isVar("colorG")) sprite->color.g = config.getFloatValue("colorG");
-		if (config.isVar("colorB")) sprite->color.b = config.getFloatValue("colorB");
-
-		if (config.isVar("shader")) sprite->shader = shaders()[config.getStringValue("shader")];
-
-		return sprite;
-	}
-
 	void Sprite::render() {
 		if (!paint) {
 			paint = static_cast<bool>(shader);

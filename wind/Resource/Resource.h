@@ -1,5 +1,5 @@
 #pragma once
-#include "../Core/SDLSystems.h"
+#include "../Core/SDLSystems/SDLSystems.h"
 
 namespace WindEngine {
 	template <typename Type>
